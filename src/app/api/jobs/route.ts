@@ -1,0 +1,47 @@
+import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
+import { getCurrentAdmin } from "@/lib/auth";
+import { z } from "zod";
+
+const jobSchema = z.object({
+  title: z.string().min(3),
+  department: z.string().min(1),
+  location: z.string().min(1),
+  type: z.string().min(1),
+  level: z.string().optional(),
+  quantity: z.coerce.number().int().min(1).default(1),
+  salaryMin: z.coerce.number().int().optional().nullable(),
+  salaryMax: z.coerce.number().int().optional().nullable(),
+  description: z.string().min(10),
+  requirements: z.string().min(10),
+  benefits: z.string().optional(),
+  deadline: z.string().optional().nullable(),
+  status: z.enum(["OPEN", "CLOSED"]).default("OPEN"),
+});
+
+export async function GET() {
+  const jobs = await prisma.job.findMany({ orderBy: { createdAt: "desc" } });
+  return NextResponse.json(jobs);
+}
+
+export async function POST(req: NextRequest) {
+  const admin = await getCurrentAdmin();
+  if (!admin) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const body = await req.json();
+  const parsed = jobSchema.safeParse(body);
+  if (!parsed.success) {
+    return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });
+  }
+
+  const { deadline, ...rest } = parsed.data;
+  const job = await prisma.job.create({
+    data: {
+      ...rest,
+      deadline: deadline ? new Date(deadline) : null,
+    },
+  });
+
+  return NextResponse.json(job, { status: 201 

@@ -1,0 +1,52 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Job {
+  id           String        @id @default(cuid())
+  title        String
+  department   String
+  location     String
+  type         String        // Toàn thời gian | Bán thời gian | Thời vụ | Thực tập
+  level        String?       // Nhân viên | Chuyên viên | Trưởng nhóm | Quản lý
+  quantity     Int           @default(1)
+  salaryMin    Int?
+  salaryMax    Int?
+  description  String
+  requirements String
+  benefits     String?
+  deadline     DateTime?
+  status       String        @default("OPEN") // OPEN | CLOSED
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  applications Application[]
+}
+
+model Application {
+  id               String    @id @default(cuid())
+  jobId            String
+  job              Job       @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  fullName         String
+  email            String
+  phone            String
+  dateOfBirth      DateTime? // Ngày sinh - dùng để lọc theo độ tuổi
+  education        String?   // Trình độ học vấn: THPT | Trung cấp | Cao đẳng | Đại học | Sau đại học
+  experienceYears  Int?      // Số năm kinh nghiệm
+  fieldOfExpertise String?   // Ngành nghề / chuyên môn
+  coverLetter      String?
+  cvFileName       String
+  cvFilePath       String
+  status           String    @default("NEW") // NEW | REVIEWING | INTERVIEW | REJECTED | HIRED
+  createdAt        DateTime  @default(now())
+}
+
+model Admin {
+  id           String @id @default(cuid())
+  username     String @unique
+  passwordHash String
+}
