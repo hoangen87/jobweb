@@ -44,4 +44,5 @@ export async function POST(req: NextRequest) {
     },
   });
 
-  return NextResponse.json(job, { status: 201 
+  return NextResponse.json(job, { status: 201 });
+}

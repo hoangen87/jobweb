@@ -27,4 +27,5 @@ export async function DELETE(_req: NextRequest, { params }: { params: { id: stri
   if (!admin) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   await prisma.application.delete({ where: { id: params.id } });
-  return NextResponse.json({ ok:
+  return NextResponse.json({ ok: true });
+}
