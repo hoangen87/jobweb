@@ -40,7 +40,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
 
   const { deadline, ...rest } = parsed.data;
 
-  const translations = await translateJobFields({
+  const { translations, failedLocales } = await translateJobFields({
     title: rest.title,
     department: rest.department,
     location: rest.location,
@@ -60,7 +60,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
     },
   });
 
-  return NextResponse.json(job);
+  return NextResponse.json({ ...job, translationWarning: failedLocales.length > 0 ? failedLocales : null });
 }
 
 export async function DELETE(_req: NextRequest, { params }: { params: { id: string } }) {

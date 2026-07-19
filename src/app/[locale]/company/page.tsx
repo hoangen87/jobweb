@@ -39,7 +39,7 @@ export default async function CompanyPage({
 
           <div className="mt-6 rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
             <h2 className="text-base font-semibold text-gray-900">{t("productsTitle")}</h2>
-            <p className="mt-3 text-sm leading-relaxed text-gray-600">{COMPANY.industryDetail}</p>
+            <p className="mt-3 text-sm leading-relaxed text-gray-600">{t("industryDetail")}</p>
           </div>
         </div>
 

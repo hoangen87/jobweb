@@ -70,7 +70,7 @@ async function main() {
   if (count === 0) {
     for (const jobData of SAMPLE_JOBS) {
       console.log(`Đang tạo và dịch tin: ${jobData.title}...`);
-      const translations = await translateJobFields({
+      const { translations, failedLocales } = await translateJobFields({
         title: jobData.title,
         department: jobData.department,
         location: jobData.location,
@@ -80,6 +80,9 @@ async function main() {
         requirements: jobData.requirements,
         benefits: jobData.benefits as string | null | undefined,
       });
+      if (failedLocales.length > 0) {
+        console.warn(`  ⚠ Dịch lỗi 1 phần cho ngôn ngữ: ${failedLocales.join(", ")} (đã fallback tiếng Việt)`);
+      }
       await prisma.job.create({ data: { ...jobData, translations } });
     }
   }
@@ -88,7 +91,7 @@ async function main() {
   const untranslated = await prisma.job.findMany({ where: { translations: { equals: Prisma.DbNull } } });
   for (const job of untranslated) {
     console.log(`Đang bổ sung bản dịch cho tin: ${job.title}...`);
-    const translations = await translateJobFields({
+    const { translations, failedLocales } = await translateJobFields({
       title: job.title,
       department: job.department,
       location: job.location,
@@ -98,6 +101,9 @@ async function main() {
       requirements: job.requirements,
       benefits: job.benefits,
     });
+    if (failedLocales.length > 0) {
+      console.warn(`  ⚠ Dịch lỗi 1 phần cho ngôn ngữ: ${failedLocales.join(", ")} (đã fallback tiếng Việt)`);
+    }
     await prisma.job.update({ where: { id: job.id }, data: { translations } });
   }
 }

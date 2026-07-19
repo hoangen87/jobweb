@@ -42,7 +42,7 @@ export async function POST(req: NextRequest) {
 
   const { deadline, ...rest } = parsed.data;
 
-  const translations = await translateJobFields({
+  const { translations, failedLocales } = await translateJobFields({
     title: rest.title,
     department: rest.department,
     location: rest.location,
@@ -61,5 +61,8 @@ export async function POST(req: NextRequest) {
     },
   });
 
-  return NextResponse.json(job, { status: 201 });
+  return NextResponse.json(
+    { ...job, translationWarning: failedLocales.length > 0 ? failedLocales : null },
+    { status: 201 }
+  );
 }

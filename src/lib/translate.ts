@@ -58,17 +58,28 @@ async function translateChunk(text: string, targetLang: string): Promise<string>
   return translated;
 }
 
+// Dịch 1 đoạn text (có thể nhiều chunk). Ném lỗi nếu bất kỳ chunk nào thất bại,
+// để phía gọi (translateJobFields) quyết định fallback + đánh dấu cảnh báo.
+async function translateChunkedText(text: string, targetLang: string): Promise<string> {
+  const chunks = splitIntoChunks(text);
+  const translatedChunks: string[] = [];
+  // Dịch tuần tự để tránh vượt rate-limit của API miễn phí.
+  for (const chunk of chunks) {
+    translatedChunks.push(await translateChunk(chunk, targetLang));
+  }
+  return translatedChunks.join("\n");
+}
+
+/**
+ * Dịch 1 chuỗi văn bản, luôn trả về kết quả (không ném lỗi). Nếu dịch thất
+ * bại thì trả về nguyên văn gốc. Dùng cho các trường hợp không cần theo dõi
+ * trạng thái thành công/thất bại chi tiết.
+ */
 export async function translateText(text: string, targetLang: string): Promise<string> {
   if (!text || !text.trim()) return text;
 
   try {
-    const chunks = splitIntoChunks(text);
-    const translatedChunks: string[] = [];
-    // Dịch tuần tự để tránh vượt rate-limit của API miễn phí.
-    for (const chunk of chunks) {
-      translatedChunks.push(await translateChunk(chunk, targetLang));
-    }
-    return translatedChunks.join("\n");
+    return await translateChunkedText(text, targetLang);
   } catch (err) {
     console.error(`[translate] Failed to translate to ${targetLang}:`, err);
     return text; // fallback: giữ nguyên tiếng Việt
@@ -88,36 +99,50 @@ export type JobTranslatable = {
 
 export type JobTranslations = Partial<Record<Exclude<Locale, "vi">, JobTranslatable>>;
 
+export type JobTranslationResult = {
+  translations: JobTranslations;
+  /** Các ngôn ngữ dịch bị lỗi ít nhất 1 trường (đã fallback về tiếng Việt cho trường đó). */
+  failedLocales: Exclude<Locale, "vi">[];
+};
+
 const TARGET_LOCALES: Exclude<Locale, "vi">[] = ["en", "zh"];
 
-export async function translateJobFields(job: JobTranslatable): Promise<JobTranslations> {
+export async function translateJobFields(job: JobTranslatable): Promise<JobTranslationResult> {
   const result: JobTranslations = {};
+  const failedLocales: Exclude<Locale, "vi">[] = [];
 
+  // Giữ 2 ngôn ngữ (en, zh) dịch song song — chỉ 2x số request cùng lúc, chấp
+  // nhận được. Nhưng BÊN TRONG mỗi ngôn ngữ, dịch tuần tự từng trường thay vì
+  // Promise.all cả 8 trường cùng lúc, để giảm nguy cơ bị MyMemory rate-limit.
   await Promise.all(
     TARGET_LOCALES.map(async (locale) => {
       const targetLang = TRANSLATE_LANG_CODE[locale];
-      try {
-        const [title, department, location, type, level, description, requirements, benefits] =
-          await Promise.all([
-            translateText(job.title, targetLang),
-            translateText(job.department, targetLang),
-            translateText(job.location, targetLang),
-            translateText(job.type, targetLang),
-            job.level ? translateText(job.level, targetLang) : Promise.resolve(job.level ?? null),
-            translateText(job.description, targetLang),
-            translateText(job.requirements, targetLang),
-            job.benefits
-              ? translateText(job.benefits, targetLang)
-              : Promise.resolve(job.benefits ?? null),
-          ]);
+      let hasFailure = false;
 
-        result[locale] = { title, department, location, type, level, description, requirements, benefits };
-      } catch (err) {
-        console.error(`[translate] Failed job translation for locale ${locale}:`, err);
-        result[locale] = { ...job };
+      async function translateField(text: string | null | undefined): Promise<string | null> {
+        if (!text || !text.trim()) return text ?? null;
+        try {
+          return await translateChunkedText(text, targetLang);
+        } catch (err) {
+          hasFailure = true;
+          console.error(`[translate] Failed field (locale ${locale}):`, err);
+          return text; // fallback: giữ nguyên văn gốc cho riêng trường này
+        }
       }
+
+      const title = (await translateField(job.title)) ?? job.title;
+      const department = (await translateField(job.department)) ?? job.department;
+      const location = (await translateField(job.location)) ?? job.location;
+      const type = (await translateField(job.type)) ?? job.type;
+      const level = await translateField(job.level);
+      const description = (await translateField(job.description)) ?? job.description;
+      const requirements = (await translateField(job.requirements)) ?? job.requirements;
+      const benefits = await translateField(job.benefits);
+
+      result[locale] = { title, department, location, type, level, description, requirements, benefits };
+      if (hasFailure) failedLocales.push(locale);
     })
   );
 
-  return result;
+  return { translations: result, failedLocales };
 }

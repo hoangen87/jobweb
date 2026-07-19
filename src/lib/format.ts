@@ -1,14 +1,31 @@
-export function formatSalary(min?: number | null, max?: number | null) {
-  const fmt = (n: number) => `${(n / 1000000).toLocaleString("vi-VN")} triệu`;
+import type { Locale } from "@/i18n/routing";
+
+const INTL_LOCALE: Record<Locale, string> = {
+  vi: "vi-VN",
+  en: "en-US",
+  zh: "zh-TW",
+};
+
+const SALARY_WORDS: Record<Locale, { million: string; from: string; to: string; negotiable: string }> = {
+  vi: { million: "triệu", from: "Từ", to: "Đến", negotiable: "Thỏa thuận" },
+  en: { million: "million", from: "From", to: "Up to", negotiable: "Negotiable" },
+  zh: { million: "百萬", from: "從", to: "至", negotiable: "面議" },
+};
+
+export function formatSalary(min?: number | null, max?: number | null, locale: Locale = "vi") {
+  const words = SALARY_WORDS[locale] ?? SALARY_WORDS.vi;
+  const intlLocale = INTL_LOCALE[locale] ?? INTL_LOCALE.vi;
+  const fmt = (n: number) => `${(n / 1000000).toLocaleString(intlLocale)} ${words.million}`;
   if (min && max) return `${fmt(min)} - ${fmt(max)}`;
-  if (min) return `Từ ${fmt(min)}`;
-  if (max) return `Đến ${fmt(max)}`;
-  return "Thỏa thuận";
+  if (min) return `${words.from} ${fmt(min)}`;
+  if (max) return `${words.to} ${fmt(max)}`;
+  return words.negotiable;
 }
 
-export function formatDate(date: Date | string) {
+export function formatDate(date: Date | string, locale: Locale = "vi") {
   const d = new Date(date);
-  return d.toLocaleDateString("vi-VN", { day: "2-digit", month: "2-digit", year: "numeric" });
+  const intlLocale = INTL_LOCALE[locale] ?? INTL_LOCALE.vi;
+  return d.toLocaleDateString(intlLocale, { day: "2-digit", month: "2-digit", year: "numeric" });
 }
 
 export function calculateAge(dateOfBirth: Date | string | null | undefined): number | null {

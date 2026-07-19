@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import PublicNavbar from "@/components/i18n/PublicNavbar";
 import PublicFooter from "@/components/i18n/PublicFooter";
+import SetHtmlLang from "@/components/i18n/SetHtmlLang";
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -40,6 +41,7 @@ export default async function LocaleLayout({
 
   return (
     <NextIntlClientProvider messages={messages}>
+      <SetHtmlLang />
       <div className="flex min-h-screen flex-col bg-gray-50">
         <PublicNavbar />
         <main className="flex-1">{children}</main>

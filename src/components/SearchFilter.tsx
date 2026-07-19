@@ -5,9 +5,11 @@ import { useSearchParams } from "next/navigation";
 import { useRouter } from "@/i18n/navigation";
 import { useState } from "react";
 
+type Option = { value: string; label: string };
+
 type Props = {
-  departments: string[];
-  locations: string[];
+  departments: Option[];
+  locations: Option[];
 };
 
 export default function SearchFilter({ departments, locations }: Props) {
@@ -53,8 +55,8 @@ export default function SearchFilter({ departments, locations }: Props) {
       >
         <option value="">{t("allDepartments")}</option>
         {departments.map((d) => (
-          <option key={d} value={d}>
-            {d}
+          <option key={d.value} value={d.value}>
+            {d.label}
           </option>
         ))}
       </select>
@@ -65,8 +67,8 @@ export default function SearchFilter({ departments, locations }: Props) {
       >
         <option value="">{t("allLocations")}</option>
         {locations.map((l) => (
-          <option key={l} value={l}>
-            {l}
+          <option key={l.value} value={l.value}>
+            {l.label}
           </option>
         ))}
       </select>

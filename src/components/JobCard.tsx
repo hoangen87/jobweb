@@ -1,6 +1,7 @@
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { formatSalary, formatDate } from "@/lib/format";
+import type { Locale } from "@/i18n/routing";
 
 type JobCardProps = {
   id: string;
@@ -17,6 +18,7 @@ type JobCardProps = {
 
 export default function JobCard(job: JobCardProps) {
   const t = useTranslations("jobCard");
+  const locale = useLocale() as Locale;
 
   return (
     <Link
@@ -37,9 +39,11 @@ export default function JobCard(job: JobCardProps) {
       </div>
       <div className="mt-3 flex items-center justify-between">
         <span className="text-sm font-semibold text-brand-700">
-          {formatSalary(job.salaryMin, job.salaryMax)}
+          {formatSalary(job.salaryMin, job.salaryMax, locale)}
         </span>
-        <span className="text-xs text-gray-400">{t("postedOn", { date: formatDate(job.createdAt) })}</span>
+        <span className="text-xs text-gray-400">
+          {t("postedOn", { date: formatDate(job.createdAt, locale) })}
+        </span>
       </div>
     </Link>
   );

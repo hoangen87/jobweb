@@ -1,4 +1,5 @@
 import { getTranslations } from "next-intl/server";
+import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import JobCard from "@/components/JobCard";
 import SearchFilter from "@/components/SearchFilter";
@@ -22,13 +23,32 @@ export default async function HomePage({
   searchParams: SearchParams;
 }) {
   const { locale } = await params;
+  const currentLocale = locale as Locale;
   const t = await getTranslations({ locale, namespace: "home" });
   const { q, department, location } = searchParams;
+
+  // Tìm kiếm phải khớp cả tiêu đề gốc (vi) lẫn bản dịch của ngôn ngữ đang xem,
+  // nếu không người dùng EN/ZH gõ từ khóa tiếng Anh/Trung sẽ không ra kết quả.
+  const titleWhere: Prisma.JobWhereInput = q
+    ? currentLocale === "vi"
+      ? { title: { contains: q } }
+      : {
+          OR: [
+            { title: { contains: q } },
+            {
+              translations: {
+                path: [currentLocale, "title"],
+                string_contains: q,
+              },
+            },
+          ],
+        }
+    : {};
 
   const jobs = await prisma.job.findMany({
     where: {
       status: "OPEN",
-      ...(q ? { title: { contains: q } } : {}),
+      ...titleWhere,
       ...(department ? { department } : {}),
       ...(location ? { location } : {}),
     },
@@ -36,10 +56,27 @@ export default async function HomePage({
   });
 
   const allJobs = await prisma.job.findMany({ where: { status: "OPEN" } });
-  const departments = Array.from(new Set(allJobs.map((j) => j.department))).sort();
-  const locations = Array.from(new Set(allJobs.map((j) => j.location))).sort();
 
-  const localizedJobs = jobs.map((job) => localizeJob(job, locale as Locale));
+  // Giá trị lọc (value) giữ nguyên tiếng Việt gốc để khớp đúng dữ liệu trong DB,
+  // nhưng nhãn hiển thị (label) trong dropdown được dịch theo ngôn ngữ đang xem.
+  const departmentLabels = new Map<string, string>();
+  const locationLabels = new Map<string, string>();
+  for (const job of allJobs) {
+    if (!departmentLabels.has(job.department)) {
+      departmentLabels.set(job.department, localizeJob(job, currentLocale).department);
+    }
+    if (!locationLabels.has(job.location)) {
+      locationLabels.set(job.location, localizeJob(job, currentLocale).location);
+    }
+  }
+  const departments = Array.from(departmentLabels, ([value, label]) => ({ value, label })).sort((a, b) =>
+    a.label.localeCompare(b.label)
+  );
+  const locations = Array.from(locationLabels, ([value, label]) => ({ value, label })).sort((a, b) =>
+    a.label.localeCompare(b.label)
+  );
+
+  const localizedJobs = jobs.map((job) => localizeJob(job, currentLocale));
 
   return (
     <div>

@@ -34,11 +34,11 @@ export default async function JobDetailPage({
             <span>
               👥 {job.quantity} {t("positions")}
             </span>
-            <span>💰 {formatSalary(job.salaryMin, job.salaryMax)}</span>
+            <span>💰 {formatSalary(job.salaryMin, job.salaryMax, locale as Locale)}</span>
           </div>
           <div className="mt-1 text-xs text-gray-400">
-            {t("postedOn", { date: formatDate(job.createdAt) })}
-            {job.deadline && <> · {t("deadline", { date: formatDate(job.deadline) })}</>}
+            {t("postedOn", { date: formatDate(job.createdAt, locale as Locale) })}
+            {job.deadline && <> · {t("deadline", { date: formatDate(job.deadline, locale as Locale) })}</>}
           </div>
 
           <div className="mt-8 space-y-6 rounded-xl border border-gray-200 bg-white p-6 shadow-sm">

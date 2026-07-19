@@ -41,6 +41,9 @@ export default function JobForm({ initial }: { initial?: Partial<JobFormValues> 
   const [values, setValues] = useState<JobFormValues>({ ...DEFAULTS, ...initial });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [warning, setWarning] = useState("");
+
+  const LOCALE_NAME: Record<string, string> = { en: "Tiếng Anh", zh: "Tiếng Trung" };
 
   function update<K extends keyof JobFormValues>(key: K, value: JobFormValues[K]) {
     setValues((v) => ({ ...v, [key]: value }));
@@ -50,6 +53,7 @@ export default function JobForm({ initial }: { initial?: Partial<JobFormValues> 
     e.preventDefault();
     setLoading(true);
     setError("");
+    setWarning("");
 
     const payload = {
       ...values,
@@ -72,6 +76,17 @@ export default function JobForm({ initial }: { initial?: Partial<JobFormValues> 
     if (!res.ok) {
       setError("Không thể lưu tin tuyển dụng. Vui lòng kiểm tra lại thông tin.");
       return;
+    }
+
+    const data = await res.json().catch(() => null);
+    const failedLocales: string[] | null = data?.translationWarning ?? null;
+
+    if (failedLocales && failedLocales.length > 0) {
+      const names = failedLocales.map((l) => LOCALE_NAME[l] ?? l).join(", ");
+      setWarning(
+        `Tin đã lưu, nhưng dịch tự động sang ${names} bị lỗi (do API dịch quá tải/mất mạng) — các trường lỗi đang tạm hiển thị bằng tiếng Việt. Anh có thể vào sửa lại tin để hệ thống dịch lại.`
+      );
+      return; // Không tự chuyển trang, để admin đọc cảnh báo rồi bấm tiếp.
     }
 
     router.push("/admin");
@@ -212,6 +227,22 @@ export default function JobForm({ initial }: { initial?: Partial<JobFormValues> 
       </div>
 
       {error && <p className="text-sm font-medium text-red-600">{error}</p>}
+
+      {warning && (
+        <div className="rounded-lg border border-amber-300 bg-amber-50 p-4 text-sm text-amber-800">
+          <p className="font-medium">⚠ {warning}</p>
+          <button
+            type="button"
+            onClick={() => {
+              router.push("/admin");
+              router.refresh();
+            }}
+            className="btn-primary mt-3"
+          >
+            Đã hiểu, quay lại danh sách
+          </button>
+        </div>
+      )}
 
       <div className="flex gap-3">
         <button type="submit" disabled={loading} className="btn-primary">
