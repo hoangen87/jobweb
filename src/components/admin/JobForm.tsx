@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { EDUCATION_LEVELS } from "@/lib/format";
 
 type JobFormValues = {
   id?: string;
@@ -18,6 +19,11 @@ type JobFormValues = {
   benefits: string;
   deadline: string;
   status: "OPEN" | "CLOSED";
+  reqEducationMin: string;
+  reqExperienceYearsMin: number | "";
+  reqAgeMin: number | "";
+  reqAgeMax: number | "";
+  reqField: string;
 };
 
 const DEFAULTS: JobFormValues = {
@@ -34,6 +40,11 @@ const DEFAULTS: JobFormValues = {
   benefits: "",
   deadline: "",
   status: "OPEN",
+  reqEducationMin: "",
+  reqExperienceYearsMin: "",
+  reqAgeMin: "",
+  reqAgeMax: "",
+  reqField: "",
 };
 
 export default function JobForm({ initial }: { initial?: Partial<JobFormValues> }) {
@@ -60,6 +71,9 @@ export default function JobForm({ initial }: { initial?: Partial<JobFormValues> 
       salaryMin: values.salaryMin === "" ? null : Number(values.salaryMin),
       salaryMax: values.salaryMax === "" ? null : Number(values.salaryMax),
       deadline: values.deadline || null,
+      reqExperienceYearsMin: values.reqExperienceYearsMin === "" ? null : Number(values.reqExperienceYearsMin),
+      reqAgeMin: values.reqAgeMin === "" ? null : Number(values.reqAgeMin),
+      reqAgeMax: values.reqAgeMax === "" ? null : Number(values.reqAgeMax),
     };
 
     const url = values.id ? `/api/jobs/${values.id}` : "/api/jobs";
@@ -216,6 +230,77 @@ export default function JobForm({ initial }: { initial?: Partial<JobFormValues> 
           onChange={(e) => update("requirements", e.target.value)}
         />
       </div>
+
+      <div className="rounded-lg border border-brand-100 bg-brand-50 p-4">
+        <p className="text-sm font-semibold text-brand-900">
+          Yêu cầu tuyển dụng cụ thể (để trống nếu không áp dụng)
+        </p>
+        <p className="mt-1 text-xs text-gray-500">
+          Hệ thống dùng các mục này để tự động chấm % phù hợp của từng hồ sơ ứng tuyển ở trang Hồ sơ ứng
+          tuyển. Tiêu chí nào để trống sẽ không được tính vào % chấm điểm.
+        </p>
+        <div className="mt-3 grid gap-4 sm:grid-cols-2">
+          <div>
+            <label className="label-field">Học vấn tối thiểu</label>
+            <select
+              className="input-field"
+              value={values.reqEducationMin}
+              onChange={(e) => update("reqEducationMin", e.target.value)}
+            >
+              <option value="">Không yêu cầu</option>
+              {EDUCATION_LEVELS.map((lvl) => (
+                <option key={lvl} value={lvl}>
+                  {lvl}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="label-field">Kinh nghiệm tối thiểu (năm)</label>
+            <input
+              type="number"
+              min={0}
+              className="input-field"
+              value={values.reqExperienceYearsMin}
+              onChange={(e) =>
+                update("reqExperienceYearsMin", e.target.value === "" ? "" : Number(e.target.value))
+              }
+            />
+          </div>
+          <div>
+            <label className="label-field">Độ tuổi</label>
+            <div className="flex items-center gap-1.5">
+              <input
+                type="number"
+                min={0}
+                placeholder="Từ"
+                className="input-field"
+                value={values.reqAgeMin}
+                onChange={(e) => update("reqAgeMin", e.target.value === "" ? "" : Number(e.target.value))}
+              />
+              <span className="text-gray-400">-</span>
+              <input
+                type="number"
+                min={0}
+                placeholder="Đến"
+                className="input-field"
+                value={values.reqAgeMax}
+                onChange={(e) => update("reqAgeMax", e.target.value === "" ? "" : Number(e.target.value))}
+              />
+            </div>
+          </div>
+          <div>
+            <label className="label-field">Ngành nghề / chuyên môn yêu cầu</label>
+            <input
+              className="input-field"
+              placeholder="VD: An toàn lao động, Cơ khí (cách nhau bằng dấu phẩy)"
+              value={values.reqField}
+              onChange={(e) => update("reqField", e.target.value)}
+            />
+          </div>
+        </div>
+      </div>
+
       <div>
         <label className="label-field">Quyền lợi</label>
         <textarea

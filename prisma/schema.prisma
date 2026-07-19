@@ -23,6 +23,13 @@ model Job {
   translations Json?         // Bản dịch tự động: { en: {...}, zh: {...} }
   deadline     DateTime?
   status       String        @default("OPEN") // OPEN | CLOSED
+  // Yêu cầu tuyển dụng dạng có cấu trúc (tùy chọn) — dùng để tự động chấm %
+  // phù hợp của ứng viên. Để trống nghĩa là không đặt yêu cầu cho tiêu chí đó.
+  reqEducationMin       String? // Học vấn tối thiểu: THPT | Trung cấp | Cao đẳng | Đại học | Sau đại học
+  reqExperienceYearsMin Int?    // Số năm kinh nghiệm tối thiểu
+  reqAgeMin             Int?    // Độ tuổi tối thiểu
+  reqAgeMax             Int?    // Độ tuổi tối đa
+  reqField              String? // Từ khóa ngành nghề/chuyên môn yêu cầu (phân cách bằng dấu phẩy)
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
   applications Application[]

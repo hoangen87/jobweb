@@ -60,7 +60,20 @@ export default async function ApplicationsPage({
   const [applications, jobLocations, jobLevels, applicationFields] = await Promise.all([
     prisma.application.findMany({
       where,
-      include: { job: { select: { title: true, location: true, level: true } } },
+      include: {
+        job: {
+          select: {
+            title: true,
+            location: true,
+            level: true,
+            reqEducationMin: true,
+            reqExperienceYearsMin: true,
+            reqAgeMin: true,
+            reqAgeMax: true,
+            reqField: true,
+          },
+        },
+      },
       orderBy: { createdAt: "desc" },
     }),
     prisma.job.findMany({ distinct: ["location"], select: { location: true } }),
@@ -90,7 +103,8 @@ export default async function ApplicationsPage({
       </div>
 
       <p className="mt-1 text-sm text-gray-500">
-        Sàng lọc theo bằng cấp, kinh nghiệm, khu vực, cấp bậc, độ tuổi, ngành nghề.
+        Sàng lọc theo bằng cấp, kinh nghiệm, khu vực, cấp bậc, độ tuổi, ngành nghề. Hệ thống tự động chấm %
+        phù hợp với yêu cầu tuyển dụng của từng tin (thiết lập yêu cầu khi đăng/sửa tin).
       </p>
 
       <div className="mt-4">

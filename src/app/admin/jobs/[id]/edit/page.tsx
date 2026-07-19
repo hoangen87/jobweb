@@ -26,6 +26,11 @@ export default async function EditJobPage({ params }: { params: { id: string } }
             benefits: job.benefits || "",
             deadline: job.deadline ? job.deadline.toISOString().slice(0, 10) : "",
             status: job.status as "OPEN" | "CLOSED",
+            reqEducationMin: job.reqEducationMin || "",
+            reqExperienceYearsMin: job.reqExperienceYearsMin ?? "",
+            reqAgeMin: job.reqAgeMin ?? "",
+            reqAgeMax: job.reqAgeMax ?? "",
+            reqField: job.reqField || "",
           }}
         />
       </div>

@@ -20,6 +20,11 @@ const jobUpdateSchema = z.object({
   benefits: z.string().optional(),
   deadline: z.string().optional().nullable(),
   status: z.enum(["OPEN", "CLOSED"]).default("OPEN"),
+  reqEducationMin: z.string().optional(),
+  reqExperienceYearsMin: z.coerce.number().int().min(0).optional().nullable(),
+  reqAgeMin: z.coerce.number().int().min(0).optional().nullable(),
+  reqAgeMax: z.coerce.number().int().min(0).optional().nullable(),
+  reqField: z.string().optional(),
 });
 
 export async function GET(_req: NextRequest, { params }: { params: { id: string } }) {
