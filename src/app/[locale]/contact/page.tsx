@@ -16,6 +16,11 @@ export default async function ContactPage({
     [t("taxCode"), COMPANY.taxCode],
   ];
 
+  const contactLinks = [
+    { label: t("phone"), value: COMPANY.phone, href: `tel:${COMPANY.phone}` },
+    { label: t("email"), value: COMPANY.email, href: `mailto:${COMPANY.email}` },
+  ];
+
   // Ghi chú quan trọng: dùng thẳng toạ độ (lat,lng) chỉ thả một pin trống —
   // Google không gắn được nó với địa điểm doanh nghiệp thật nên báo "Không tải
   // được thông tin về địa điểm" khi bấm vào pin. Công ty đã có sẵn hồ sơ doanh
@@ -50,6 +55,16 @@ export default async function ContactPage({
                 <div key={label} className="grid grid-cols-3 gap-4 py-3">
                   <dt className="text-gray-500">{label}</dt>
                   <dd className="col-span-2 font-medium text-gray-900">{value}</dd>
+                </div>
+              ))}
+              {contactLinks.map((item) => (
+                <div key={item.label} className="grid grid-cols-3 gap-4 py-3">
+                  <dt className="text-gray-500">{item.label}</dt>
+                  <dd className="col-span-2 font-medium text-brand-600">
+                    <a href={item.href} className="hover:text-[#930000] hover:underline">
+                      {item.value}
+                    </a>
+                  </dd>
                 </div>
               ))}
             </dl>

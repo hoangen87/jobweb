@@ -8,6 +8,8 @@ export const COMPANY = {
   industry: "Sản xuất sản phẩm từ plastic (mã ngành 2220)",
   industryDetail:
     "Sản xuất, gia công túi zip, các sản phẩm gia dụng: thảm lót sàn, tấm lót bàn ăn, thớt, thảm ngăn kéo, túi zip bảo quản thực phẩm... từ nhựa.",
+  phone: "02513683742",
+  email: "vn08@jhonsin.com.tw",
   // Toạ độ + link Google Maps lấy từ vị trí thật của công ty (do em cung cấp qua
   // link chia sẻ Google Maps), dùng để nhúng bản đồ chính xác ở trang /contact.
   mapLat: 10.8481484,

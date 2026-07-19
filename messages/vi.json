@@ -114,6 +114,8 @@
     "company": "Công ty",
     "address": "Địa chỉ",
     "taxCode": "Mã số thuế",
+    "phone": "Điện thoại",
+    "email": "Thư điện tử",
     "visitCompany": "Xem thông tin công ty",
     "openInMaps": "Mở trong Google Maps ↗"
   },

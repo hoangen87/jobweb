@@ -114,6 +114,8 @@
     "company": "Company",
     "address": "Address",
     "taxCode": "Tax Code",
+    "phone": "Phone",
+    "email": "Email",
     "visitCompany": "View company information",
     "openInMaps": "Open in Google Maps ↗"
   },

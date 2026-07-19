@@ -114,6 +114,8 @@
     "company": "公司",
     "address": "地址",
     "taxCode": "稅務代碼",
+    "phone": "電話",
+    "email": "電子郵件",
     "visitCompany": "查看公司資訊",
     "openInMaps": "在 Google 地圖中開啟 ↗"
   },
