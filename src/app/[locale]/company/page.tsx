@@ -88,10 +88,6 @@ export default async function CompanyPage({
               <li>✔ {t("why4")}</li>
             </ul>
           </div>
-          <div className="mt-6 rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-            <p className="text-sm font-semibold text-gray-900">{t("heritageTitle")}</p>
-            <p className="mt-3 text-sm leading-relaxed text-gray-600">{t("heritageDetail")}</p>
-          </div>
         </div>
       </div>
 
