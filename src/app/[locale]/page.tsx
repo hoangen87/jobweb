@@ -80,13 +80,19 @@ export default async function HomePage({
 
   return (
     <div>
-      <section className="border-b border-gray-200 bg-gradient-to-br from-brand-900 via-brand-700 to-brand-500 text-white">
-        <div className="container-page py-14 sm:py-20">
-          <p className="text-sm font-semibold uppercase tracking-wide text-brand-100">
+      <section className="relative overflow-hidden border-b-4 border-brand-600 bg-gradient-to-br from-[#4a0000] via-[#930000] to-[#c23a3a] text-white">
+        <span
+          aria-hidden
+          className="pointer-events-none absolute -right-6 -top-10 select-none text-[13rem] font-black italic leading-none text-white/10 sm:text-[17rem]"
+        >
+          J
+        </span>
+        <div className="container-page relative py-14 sm:py-20">
+          <p className="text-sm font-semibold uppercase tracking-wide text-white/80">
             {COMPANY.shortName}
           </p>
           <h1 className="mt-3 max-w-2xl text-3xl font-bold sm:text-4xl">{t("heroTitle")}</h1>
-          <p className="mt-4 max-w-2xl text-brand-50">{t("heroSubtitle")}</p>
+          <p className="mt-4 max-w-2xl text-white/90">{t("heroSubtitle")}</p>
         </div>
       </section>
 

@@ -26,11 +26,22 @@ export default async function CompanyPage({
   ];
 
   return (
-    <div className="container-page py-12">
-      <h1 className="text-2xl font-bold text-gray-900">{t("title")}</h1>
-      <p className="mt-2 text-gray-600">{COMPANY.legalName}</p>
+    <div>
+      <section className="relative overflow-hidden border-b-4 border-brand-600 bg-gradient-to-br from-[#4a0000] via-[#930000] to-[#c23a3a] text-white">
+        <span
+          aria-hidden
+          className="pointer-events-none absolute -right-6 -top-10 select-none text-[13rem] font-black italic leading-none text-white/10 sm:text-[17rem]"
+        >
+          J
+        </span>
+        <div className="container-page relative py-12 sm:py-16">
+          <h1 className="text-2xl font-bold sm:text-3xl">{t("title")}</h1>
+          <p className="mt-2 text-white/85">{COMPANY.legalName}</p>
+        </div>
+      </section>
 
-      <div className="mt-8 grid gap-8 lg:grid-cols-3">
+      <div className="container-page py-12">
+        <div className="grid gap-8 lg:grid-cols-3">
         <div className="lg:col-span-2">
           <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
             <h2 className="text-base font-semibold text-gray-900">{t("businessInfo")}</h2>
@@ -79,6 +90,7 @@ export default async function CompanyPage({
             <p className="mt-3 text-sm leading-relaxed text-gray-600">{t("heritageDetail")}</p>
           </div>
         </div>
+      </div>
       </div>
     </div>
   );
