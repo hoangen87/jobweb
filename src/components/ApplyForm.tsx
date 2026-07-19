@@ -1,9 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { EDUCATION_LEVELS } from "@/lib/format";
 
 export default function ApplyForm({ jobId }: { jobId: string }) {
+  const t = useTranslations("applyForm");
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
 
@@ -23,14 +25,14 @@ export default function ApplyForm({ jobId }: { jobId: string }) {
       });
       const data = await res.json();
       if (!res.ok) {
-        setErrorMsg(data.error || "Có lỗi xảy ra, vui lòng thử lại.");
+        setErrorMsg(data.error || t("genericError"));
         setStatus("error");
         return;
       }
       setStatus("success");
       form.reset();
     } catch {
-      setErrorMsg("Không thể kết nối máy chủ. Vui lòng thử lại.");
+      setErrorMsg(t("networkError"));
       setStatus("error");
     }
   }
@@ -38,10 +40,8 @@ export default function ApplyForm({ jobId }: { jobId: string }) {
   if (status === "success") {
     return (
       <div className="rounded-xl border border-green-200 bg-green-50 p-6 text-center">
-        <p className="text-lg font-semibold text-green-800">Nộp hồ sơ thành công!</p>
-        <p className="mt-2 text-sm text-green-700">
-          Cảm ơn bạn đã ứng tuyển. Bộ phận Nhân sự sẽ liên hệ khi hồ sơ phù hợp.
-        </p>
+        <p className="text-lg font-semibold text-green-800">{t("successTitle")}</p>
+        <p className="mt-2 text-sm text-green-700">{t("successMessage")}</p>
       </div>
     );
   }
@@ -50,29 +50,34 @@ export default function ApplyForm({ jobId }: { jobId: string }) {
     <form onSubmit={handleSubmit} className="space-y-4" encType="multipart/form-data">
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
-          <label className="label-field">Họ và tên *</label>
-          <input required name="fullName" className="input-field" placeholder="Nguyễn Văn A" />
+          <label className="label-field">{t("fullName")} *</label>
+          <input
+            required
+            name="fullName"
+            className="input-field"
+            placeholder={t("fullNamePlaceholder")}
+          />
         </div>
         <div>
-          <label className="label-field">Số điện thoại *</label>
+          <label className="label-field">{t("phone")} *</label>
           <input required name="phone" className="input-field" placeholder="09xxxxxxxx" />
         </div>
       </div>
       <div>
-        <label className="label-field">Email *</label>
+        <label className="label-field">{t("email")} *</label>
         <input required type="email" name="email" className="input-field" placeholder="ban@email.com" />
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
-          <label className="label-field">Ngày sinh *</label>
+          <label className="label-field">{t("dateOfBirth")} *</label>
           <input required type="date" name="dateOfBirth" className="input-field" />
         </div>
         <div>
-          <label className="label-field">Trình độ học vấn *</label>
+          <label className="label-field">{t("education")} *</label>
           <select required name="education" className="input-field" defaultValue="">
             <option value="" disabled>
-              Chọn trình độ
+              {t("educationSelect")}
             </option>
             {EDUCATION_LEVELS.map((lvl) => (
               <option key={lvl} value={lvl}>
@@ -82,7 +87,7 @@ export default function ApplyForm({ jobId }: { jobId: string }) {
           </select>
         </div>
         <div>
-          <label className="label-field">Số năm kinh nghiệm *</label>
+          <label className="label-field">{t("experienceYears")} *</label>
           <input
             required
             type="number"
@@ -93,27 +98,27 @@ export default function ApplyForm({ jobId }: { jobId: string }) {
           />
         </div>
         <div>
-          <label className="label-field">Ngành nghề / Chuyên môn *</label>
+          <label className="label-field">{t("fieldOfExpertise")} *</label>
           <input
             required
             name="fieldOfExpertise"
             className="input-field"
-            placeholder="VD: An toàn lao động, Cơ khí, Kế toán..."
+            placeholder={t("fieldOfExpertisePlaceholder")}
           />
         </div>
       </div>
 
       <div>
-        <label className="label-field">Thư giới thiệu (không bắt buộc)</label>
+        <label className="label-field">{t("coverLetter")}</label>
         <textarea
           name="coverLetter"
           rows={4}
           className="input-field"
-          placeholder="Vài dòng giới thiệu bản thân..."
+          placeholder={t("coverLetterPlaceholder")}
         />
       </div>
       <div>
-        <label className="label-field">Tải lên CV (PDF, DOC, DOCX - tối đa 5MB) *</label>
+        <label className="label-field">{t("cv")} *</label>
         <input
           required
           type="file"
@@ -128,7 +133,7 @@ export default function ApplyForm({ jobId }: { jobId: string }) {
       )}
 
       <button type="submit" disabled={status === "loading"} className="btn-primary w-full">
-        {status === "loading" ? "Đang gửi..." : "Nộp hồ sơ ứng tuyển"}
+        {status === "loading" ? t("submitting") : t("submit")}
       </button>
     </form>
   );

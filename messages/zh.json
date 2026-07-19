@@ -1,0 +1,78 @@
+{
+  "nav": {
+    "jobs": "職缺",
+    "company": "公司介紹",
+    "admin": "管理後台",
+    "tagline": "人才招募"
+  },
+  "footer": {
+    "field": "產業領域",
+    "taxCode": "稅務代碼",
+    "rights": "版權所有。"
+  },
+  "home": {
+    "heroTitle": "越南喬信職涯機會",
+    "heroSubtitle": "我們正在尋找用心負責的人才，一同在同奈省安福工業區的家用塑膠製品產業共同成長發展。",
+    "searchPlaceholder": "搜尋職位名稱...",
+    "allDepartments": "所有部門",
+    "allLocations": "所有地點",
+    "search": "搜尋",
+    "clear": "清除篩選",
+    "openPositions": "招募中職缺（{count}）",
+    "noResults": "目前沒有符合篩選條件的職缺。"
+  },
+  "jobCard": {
+    "positions": "名額",
+    "postedOn": "發布於 {date}"
+  },
+  "jobDetail": {
+    "applyNow": "立即應徵",
+    "applyHint": "請填寫您的資料並附上履歷。",
+    "jobDescription": "工作內容",
+    "requirements": "應徵條件",
+    "benefits": "福利待遇",
+    "positions": "名額",
+    "postedOn": "發布於 {date}",
+    "deadline": "應徵截止日期：{date}"
+  },
+  "applyForm": {
+    "fullName": "姓名",
+    "fullNamePlaceholder": "王小明",
+    "phone": "電話號碼",
+    "email": "電子郵件",
+    "dateOfBirth": "出生日期",
+    "education": "學歷",
+    "educationSelect": "請選擇學歷",
+    "experienceYears": "工作經驗年數",
+    "fieldOfExpertise": "專業領域",
+    "fieldOfExpertisePlaceholder": "例如：職業安全、機械、會計...",
+    "coverLetter": "自我推薦信（非必填）",
+    "coverLetterPlaceholder": "簡短介紹一下自己...",
+    "cv": "上傳履歷（PDF、DOC、DOCX，最大 5MB）",
+    "submit": "送出應徵",
+    "submitting": "傳送中...",
+    "successTitle": "應徵資料已成功送出！",
+    "successMessage": "感謝您的應徵，若條件合適，人資部門將主動與您聯繫。",
+    "genericError": "發生錯誤，請再試一次。",
+    "networkError": "無法連接伺服器，請再試一次。"
+  },
+  "company": {
+    "title": "公司介紹",
+    "businessInfo": "企業資訊",
+    "tradeName": "交易名稱",
+    "shortName": "簡稱",
+    "taxCode": "稅務代碼",
+    "legalRep": "法定代表人",
+    "address": "地址",
+    "industry": "經營行業",
+    "productsTitle": "產品與行業詳情",
+    "whyTitle": "為什麼選擇越南喬信？",
+    "why1": "安全的工作環境，符合 ISO、IWAY、C-TPAT 標準",
+    "why2": "依法提供完整社會保險與福利",
+    "why3": "培訓與職涯發展機會",
+    "why4": "位於同奈省安福工業區，交通便利"
+  },
+  "language": {
+    "label": "語言"
+  }
+}

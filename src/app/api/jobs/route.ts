@@ -1,7 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getCurrentAdmin } from "@/lib/auth";
+import { translateJobFields } from "@/lib/translate";
 import { z } from "zod";
+
+// Cho phép nhiều thời gian hơn vì dịch tự động EN/ZH có thể mất vài giây.
+export const maxDuration = 60;
 
 const jobSchema = z.object({
   title: z.string().min(3),
@@ -37,9 +41,22 @@ export async function POST(req: NextRequest) {
   }
 
   const { deadline, ...rest } = parsed.data;
+
+  const translations = await translateJobFields({
+    title: rest.title,
+    department: rest.department,
+    location: rest.location,
+    type: rest.type,
+    level: rest.level,
+    description: rest.description,
+    requirements: rest.requirements,
+    benefits: rest.benefits,
+  });
+
   const job = await prisma.job.create({
     data: {
       ...rest,
+      translations,
       deadline: deadline ? new Date(deadline) : null,
     },
   });

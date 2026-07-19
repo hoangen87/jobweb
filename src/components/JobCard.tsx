@@ -1,4 +1,5 @@
-import Link from "next/link";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import { formatSalary, formatDate } from "@/lib/format";
 
 type JobCardProps = {
@@ -15,6 +16,8 @@ type JobCardProps = {
 };
 
 export default function JobCard(job: JobCardProps) {
+  const t = useTranslations("jobCard");
+
   return (
     <Link
       href={`/jobs/${job.id}`}
@@ -28,13 +31,15 @@ export default function JobCard(job: JobCardProps) {
         <span>📍 {job.location}</span>
         <span>🕒 {job.type}</span>
         {job.level && <span>🎯 {job.level}</span>}
-        <span>👥 {job.quantity} chỉ tiêu</span>
+        <span>
+          👥 {job.quantity} {t("positions")}
+        </span>
       </div>
       <div className="mt-3 flex items-center justify-between">
         <span className="text-sm font-semibold text-brand-700">
           {formatSalary(job.salaryMin, job.salaryMax)}
         </span>
-        <span className="text-xs text-gray-400">Đăng ngày {formatDate(job.createdAt)}</span>
+        <span className="text-xs text-gray-400">{t("postedOn", { date: formatDate(job.createdAt) })}</span>
       </div>
     </Link>
   );

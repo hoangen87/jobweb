@@ -1,7 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getCurrentAdmin } from "@/lib/auth";
+import { translateJobFields } from "@/lib/translate";
 import { z } from "zod";
+
+export const maxDuration = 60;
 
 const jobUpdateSchema = z.object({
   title: z.string().min(3),
@@ -36,10 +39,23 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
   }
 
   const { deadline, ...rest } = parsed.data;
+
+  const translations = await translateJobFields({
+    title: rest.title,
+    department: rest.department,
+    location: rest.location,
+    type: rest.type,
+    level: rest.level,
+    description: rest.description,
+    requirements: rest.requirements,
+    benefits: rest.benefits,
+  });
+
   const job = await prisma.job.update({
     where: { id: params.id },
     data: {
       ...rest,
+      translations,
       deadline: deadline ? new Date(deadline) : null,
     },
   });

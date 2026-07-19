@@ -1,6 +1,8 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { useSearchParams } from "next/navigation";
+import { useRouter } from "@/i18n/navigation";
 import { useState } from "react";
 
 type Props = {
@@ -9,6 +11,7 @@ type Props = {
 };
 
 export default function SearchFilter({ departments, locations }: Props) {
+  const t = useTranslations("home");
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -39,7 +42,7 @@ export default function SearchFilter({ departments, locations }: Props) {
     >
       <input
         className="input-field sm:col-span-2"
-        placeholder="Tìm theo tên vị trí..."
+        placeholder={t("searchPlaceholder")}
         value={q}
         onChange={(e) => setQ(e.target.value)}
       />
@@ -48,7 +51,7 @@ export default function SearchFilter({ departments, locations }: Props) {
         value={department}
         onChange={(e) => setDepartment(e.target.value)}
       >
-        <option value="">Tất cả phòng ban</option>
+        <option value="">{t("allDepartments")}</option>
         {departments.map((d) => (
           <option key={d} value={d}>
             {d}
@@ -60,7 +63,7 @@ export default function SearchFilter({ departments, locations }: Props) {
         value={location}
         onChange={(e) => setLocation(e.target.value)}
       >
-        <option value="">Tất cả địa điểm</option>
+        <option value="">{t("allLocations")}</option>
         {locations.map((l) => (
           <option key={l} value={l}>
             {l}
@@ -69,10 +72,10 @@ export default function SearchFilter({ departments, locations }: Props) {
       </select>
       <div className="flex gap-2 sm:col-span-4">
         <button type="submit" className="btn-primary">
-          Tìm kiếm
+          {t("search")}
         </button>
         <button type="button" onClick={reset} className="btn-secondary">
-          Xóa lọc
+          {t("clear")}
         </button>
       </div>
     </form>

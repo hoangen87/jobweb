@@ -1,13 +1,25 @@
+import { getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
 import { formatSalary, formatDate } from "@/lib/format";
+import { localizeJob } from "@/lib/i18n-job";
 import ApplyForm from "@/components/ApplyForm";
 import { notFound } from "next/navigation";
+import type { Locale } from "@/i18n/routing";
 
 export const dynamic = "force-dynamic";
 
-export default async function JobDetailPage({ params }: { params: { id: string } }) {
-  const job = await prisma.job.findUnique({ where: { id: params.id } });
-  if (!job) notFound();
+export default async function JobDetailPage({
+  params,
+}: {
+  params: Promise<{ locale: string; id: string }> | { locale: string; id: string };
+}) {
+  const { locale, id } = await params;
+  const t = await getTranslations({ locale, namespace: "jobDetail" });
+
+  const rawJob = await prisma.job.findUnique({ where: { id } });
+  if (!rawJob) notFound();
+
+  const job = localizeJob(rawJob, locale as Locale);
 
   return (
     <div className="container-page py-10">
@@ -19,30 +31,32 @@ export default async function JobDetailPage({ params }: { params: { id: string }
             <span>📍 {job.location}</span>
             <span>🕒 {job.type}</span>
             {job.level && <span>🎯 {job.level}</span>}
-            <span>👥 {job.quantity} chỉ tiêu</span>
+            <span>
+              👥 {job.quantity} {t("positions")}
+            </span>
             <span>💰 {formatSalary(job.salaryMin, job.salaryMax)}</span>
           </div>
           <div className="mt-1 text-xs text-gray-400">
-            Đăng ngày {formatDate(job.createdAt)}
-            {job.deadline && <> · Hạn nộp hồ sơ: {formatDate(job.deadline)}</>}
+            {t("postedOn", { date: formatDate(job.createdAt) })}
+            {job.deadline && <> · {t("deadline", { date: formatDate(job.deadline) })}</>}
           </div>
 
           <div className="mt-8 space-y-6 rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
             <section>
-              <h2 className="text-base font-semibold text-gray-900">Mô tả công việc</h2>
+              <h2 className="text-base font-semibold text-gray-900">{t("jobDescription")}</h2>
               <p className="mt-2 whitespace-pre-line text-sm leading-relaxed text-gray-600">
                 {job.description}
               </p>
             </section>
             <section>
-              <h2 className="text-base font-semibold text-gray-900">Yêu cầu ứng viên</h2>
+              <h2 className="text-base font-semibold text-gray-900">{t("requirements")}</h2>
               <p className="mt-2 whitespace-pre-line text-sm leading-relaxed text-gray-600">
                 {job.requirements}
               </p>
             </section>
             {job.benefits && (
               <section>
-                <h2 className="text-base font-semibold text-gray-900">Quyền lợi</h2>
+                <h2 className="text-base font-semibold text-gray-900">{t("benefits")}</h2>
                 <p className="mt-2 whitespace-pre-line text-sm leading-relaxed text-gray-600">
                   {job.benefits}
                 </p>
@@ -53,8 +67,8 @@ export default async function JobDetailPage({ params }: { params: { id: string }
 
         <div>
           <div className="sticky top-24 rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-            <h2 className="text-base font-semibold text-gray-900">Ứng tuyển ngay</h2>
-            <p className="mt-1 text-sm text-gray-500">Điền thông tin và đính kèm CV của bạn.</p>
+            <h2 className="text-base font-semibold text-gray-900">{t("applyNow")}</h2>
+            <p className="mt-1 text-sm text-gray-500">{t("applyHint")}</p>
             <div className="mt-4">
               <ApplyForm jobId={job.id} />
             </div>

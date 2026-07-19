@@ -1,0 +1,78 @@
+{
+  "nav": {
+    "jobs": "Jobs",
+    "company": "About Us",
+    "admin": "Admin",
+    "tagline": "Careers"
+  },
+  "footer": {
+    "field": "Industry",
+    "taxCode": "Tax Code",
+    "rights": "All rights reserved."
+  },
+  "home": {
+    "heroTitle": "Career Opportunities at Jhonsin Vietnam",
+    "heroSubtitle": "We are looking for dedicated, responsible candidates to grow with us in the household plastic products manufacturing industry at An Phuoc Industrial Park, Dong Nai.",
+    "searchPlaceholder": "Search by job title...",
+    "allDepartments": "All departments",
+    "allLocations": "All locations",
+    "search": "Search",
+    "clear": "Clear filters",
+    "openPositions": "Open positions ({count})",
+    "noResults": "No positions match your current filters."
+  },
+  "jobCard": {
+    "positions": "opening(s)",
+    "postedOn": "Posted {date}"
+  },
+  "jobDetail": {
+    "applyNow": "Apply Now",
+    "applyHint": "Fill in your information and attach your CV.",
+    "jobDescription": "Job Description",
+    "requirements": "Requirements",
+    "benefits": "Benefits",
+    "positions": "opening(s)",
+    "postedOn": "Posted {date}",
+    "deadline": "Application deadline: {date}"
+  },
+  "applyForm": {
+    "fullName": "Full name",
+    "fullNamePlaceholder": "John Doe",
+    "phone": "Phone number",
+    "email": "Email",
+    "dateOfBirth": "Date of birth",
+    "education": "Education level",
+    "educationSelect": "Select education level",
+    "experienceYears": "Years of experience",
+    "fieldOfExpertise": "Field / Expertise",
+    "fieldOfExpertisePlaceholder": "e.g. Occupational Safety, Mechanical, Accounting...",
+    "coverLetter": "Cover letter (optional)",
+    "coverLetterPlaceholder": "A few lines about yourself...",
+    "cv": "Upload CV (PDF, DOC, DOCX - max 5MB)",
+    "submit": "Submit Application",
+    "submitting": "Submitting...",
+    "successTitle": "Application submitted successfully!",
+    "successMessage": "Thank you for applying. Our HR team will contact you if your profile is a good fit.",
+    "genericError": "Something went wrong, please try again.",
+    "networkError": "Could not connect to the server. Please try again."
+  },
+  "company": {
+    "title": "About the Company",
+    "businessInfo": "Business Information",
+    "tradeName": "Trade name",
+    "shortName": "Short name",
+    "taxCode": "Tax code",
+    "legalRep": "Legal representative",
+    "address": "Address",
+    "industry": "Business industry",
+    "productsTitle": "Products & Industry Details",
+    "whyTitle": "Why choose Jhonsin Vietnam?",
+    "why1": "Safe working environment, compliant with ISO, IWAY, C-TPAT",
+    "why2": "Full social insurance and benefits as required by law",
+    "why3": "Training and career development opportunities",
+    "why4": "Convenient location at An Phuoc Industrial Park, Dong Nai"
+  },
+  "language": {
+    "label": "Language"
+  }
+}

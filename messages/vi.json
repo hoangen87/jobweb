@@ -1,0 +1,78 @@
+{
+  "nav": {
+    "jobs": "Việc làm",
+    "company": "Giới thiệu công ty",
+    "admin": "Quản trị",
+    "tagline": "Tuyển dụng"
+  },
+  "footer": {
+    "field": "Lĩnh vực",
+    "taxCode": "MST",
+    "rights": "All rights reserved."
+  },
+  "home": {
+    "heroTitle": "Cơ hội nghề nghiệp tại Jhonsin Việt Nam",
+    "heroSubtitle": "Chúng tôi đang tìm kiếm những ứng viên tận tâm, trách nhiệm để cùng phát triển trong lĩnh vực sản xuất sản phẩm nhựa gia dụng tại KCN An Phước, Đồng Nai.",
+    "searchPlaceholder": "Tìm theo tên vị trí...",
+    "allDepartments": "Tất cả phòng ban",
+    "allLocations": "Tất cả địa điểm",
+    "search": "Tìm kiếm",
+    "clear": "Xóa lọc",
+    "openPositions": "Vị trí đang tuyển ({count})",
+    "noResults": "Hiện chưa có vị trí phù hợp với bộ lọc của bạn."
+  },
+  "jobCard": {
+    "positions": "chỉ tiêu",
+    "postedOn": "Đăng ngày {date}"
+  },
+  "jobDetail": {
+    "applyNow": "Ứng tuyển ngay",
+    "applyHint": "Điền thông tin và đính kèm CV của bạn.",
+    "jobDescription": "Mô tả công việc",
+    "requirements": "Yêu cầu ứng viên",
+    "benefits": "Quyền lợi",
+    "positions": "chỉ tiêu",
+    "postedOn": "Đăng ngày {date}",
+    "deadline": "Hạn nộp hồ sơ: {date}"
+  },
+  "applyForm": {
+    "fullName": "Họ và tên",
+    "fullNamePlaceholder": "Nguyễn Văn A",
+    "phone": "Số điện thoại",
+    "email": "Email",
+    "dateOfBirth": "Ngày sinh",
+    "education": "Trình độ học vấn",
+    "educationSelect": "Chọn trình độ",
+    "experienceYears": "Số năm kinh nghiệm",
+    "fieldOfExpertise": "Ngành nghề / Chuyên môn",
+    "fieldOfExpertisePlaceholder": "VD: An toàn lao động, Cơ khí, Kế toán...",
+    "coverLetter": "Thư giới thiệu (không bắt buộc)",
+    "coverLetterPlaceholder": "Vài dòng giới thiệu bản thân...",
+    "cv": "Tải lên CV (PDF, DOC, DOCX - tối đa 5MB)",
+    "submit": "Nộp hồ sơ ứng tuyển",
+    "submitting": "Đang gửi...",
+    "successTitle": "Nộp hồ sơ thành công!",
+    "successMessage": "Cảm ơn bạn đã ứng tuyển. Bộ phận Nhân sự sẽ liên hệ khi hồ sơ phù hợp.",
+    "genericError": "Có lỗi xảy ra, vui lòng thử lại.",
+    "networkError": "Không thể kết nối máy chủ. Vui lòng thử lại."
+  },
+  "company": {
+    "title": "Giới thiệu công ty",
+    "businessInfo": "Thông tin doanh nghiệp",
+    "tradeName": "Tên giao dịch",
+    "shortName": "Tên viết tắt",
+    "taxCode": "Mã số thuế",
+    "legalRep": "Người đại diện theo pháp luật",
+    "address": "Địa chỉ",
+    "industry": "Lĩnh vực sản xuất kinh doanh",
+    "productsTitle": "Sản phẩm & chi tiết ngành nghề",
+    "whyTitle": "Vì sao chọn Jhonsin Việt Nam?",
+    "why1": "Môi trường làm việc an toàn, tuân thủ ISO, IWAY, C-TPAT",
+    "why2": "Chế độ phúc lợi, BHXH đầy đủ theo quy định pháp luật",
+    "why3": "Cơ hội đào tạo và phát triển nghề nghiệp",
+    "why4": "Vị trí thuận tiện tại KCN An Phước, Đồng Nai"
+  },
+  "language": {
+    "label": "Ngôn ngữ"
+  }
+}

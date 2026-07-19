@@ -20,6 +20,7 @@ model Job {
   description  String
   requirements String
   benefits     String?
+  translations Json?         // Bản dịch tự động: { en: {...}, zh: {...} }
   deadline     DateTime?
   status       String        @default("OPEN") // OPEN | CLOSED
   createdAt    DateTime      @default(now())
