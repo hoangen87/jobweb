@@ -16,11 +16,14 @@ export default async function ContactPage({
     [t("taxCode"), COMPANY.taxCode],
   ];
 
-  // Dùng toạ độ thật (do em cung cấp qua link Google Maps) để ghim đúng vị trí công ty.
-  // Ghi chú: cú pháp "lat,lng(label)" không ổn định với endpoint output=embed
-  // (Google báo "Không tải được thông tin về địa điểm") — dùng thẳng toạ độ,
-  // không kèm nhãn, là cách nhúng bản đồ không-cần-API-key đáng tin cậy nhất.
-  const mapSrc = `https://maps.google.com/maps?q=${COMPANY.mapLat},${COMPANY.mapLng}&z=17&output=embed`;
+  // Ghi chú quan trọng: dùng thẳng toạ độ (lat,lng) chỉ thả một pin trống —
+  // Google không gắn được nó với địa điểm doanh nghiệp thật nên báo "Không tải
+  // được thông tin về địa điểm" khi bấm vào pin. Công ty đã có sẵn hồ sơ doanh
+  // nghiệp trên Google Maps dưới đúng tên tiếng Việt "CÔNG TY TNHH JHONSIN VIỆT
+  // NAM" (xác nhận qua link Maps em gửi) — tìm theo đúng tên này thì Google trả
+  // về địa điểm thật kèm đầy đủ thông tin, thay vì một pin toạ độ vô danh.
+  const mapQuery = encodeURIComponent(COMPANY.legalName);
+  const mapSrc = `https://maps.google.com/maps?q=${mapQuery}&z=17&output=embed`;
 
   return (
     <div>
