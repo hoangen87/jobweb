@@ -17,11 +17,10 @@ export default async function ContactPage({
   ];
 
   // Dùng toạ độ thật (do em cung cấp qua link Google Maps) để ghim đúng vị trí công ty.
-  // Lưu ý: cú pháp embed không-cần-API-key của Google yêu cầu dấu "+" nối giữa
-  // toạ độ và nhãn địa điểm — thiếu dấu này là lý do bản đồ báo "Không tải được
-  // thông tin về địa điểm".
-  const mapLabel = encodeURIComponent(COMPANY.tradeName);
-  const mapSrc = `https://maps.google.com/maps?q=${COMPANY.mapLat},${COMPANY.mapLng}+(${mapLabel})&z=17&output=embed`;
+  // Ghi chú: cú pháp "lat,lng(label)" không ổn định với endpoint output=embed
+  // (Google báo "Không tải được thông tin về địa điểm") — dùng thẳng toạ độ,
+  // không kèm nhãn, là cách nhúng bản đồ không-cần-API-key đáng tin cậy nhất.
+  const mapSrc = `https://maps.google.com/maps?q=${COMPANY.mapLat},${COMPANY.mapLng}&z=17&output=embed`;
 
   return (
     <div className="container-page py-12">
