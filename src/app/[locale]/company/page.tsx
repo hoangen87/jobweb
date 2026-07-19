@@ -27,13 +27,14 @@ export default async function CompanyPage({
 
   return (
     <div>
-      <section className="relative overflow-hidden border-b-4 border-brand-600 bg-gradient-to-br from-[#4a0000] via-[#930000] to-[#c23a3a] text-white">
-        <span
+      <section className="relative overflow-hidden border-b-4 border-brand-600 text-white">
+        <img
+          src="/images/banners/company.jpg"
+          alt=""
           aria-hidden
-          className="pointer-events-none absolute -right-6 -top-10 select-none text-[13rem] font-black italic leading-none text-white/10 sm:text-[17rem]"
-        >
-          J
-        </span>
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#4a0000]/95 via-[#930000]/85 to-[#930000]/50" />
         <div className="container-page relative py-12 sm:py-16">
           <h1 className="text-2xl font-bold sm:text-3xl">{t("title")}</h1>
           <p className="mt-2 text-white/85">{COMPANY.legalName}</p>

@@ -80,13 +80,14 @@ export default async function HomePage({
 
   return (
     <div>
-      <section className="relative overflow-hidden border-b-4 border-brand-600 bg-gradient-to-br from-[#4a0000] via-[#930000] to-[#c23a3a] text-white">
-        <span
+      <section className="relative overflow-hidden border-b-4 border-brand-600 text-white">
+        <img
+          src="/images/banners/home.jpg"
+          alt=""
           aria-hidden
-          className="pointer-events-none absolute -right-6 -top-10 select-none text-[13rem] font-black italic leading-none text-white/10 sm:text-[17rem]"
-        >
-          J
-        </span>
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#4a0000]/95 via-[#930000]/85 to-[#930000]/50" />
         <div className="container-page relative py-14 sm:py-20">
           <p className="text-sm font-semibold uppercase tracking-wide text-white/80">
             {COMPANY.shortName}
