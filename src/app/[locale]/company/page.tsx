@@ -18,6 +18,13 @@ export default async function CompanyPage({
     [t("industry"), COMPANY.industry],
   ];
 
+  const products = [
+    { image: "/images/jhonsin-products/print-placemat.jpg", name: t("productPlacemat") },
+    { image: "/images/jhonsin-products/zipper-bags.jpg", name: t("productZipperBags") },
+    { image: "/images/jhonsin-products/food-saver.jpg", name: t("productFoodSaver") },
+    { image: "/images/jhonsin-products/drawer-organizer.jpg", name: t("productOrganizer") },
+  ];
+
   return (
     <div className="container-page py-12">
       <h1 className="text-2xl font-bold text-gray-900">{t("title")}</h1>
@@ -40,6 +47,20 @@ export default async function CompanyPage({
           <div className="mt-6 rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
             <h2 className="text-base font-semibold text-gray-900">{t("productsTitle")}</h2>
             <p className="mt-3 text-sm leading-relaxed text-gray-600">{t("industryDetail")}</p>
+            <div className="mt-5 grid grid-cols-2 gap-4 sm:grid-cols-4">
+              {products.map((product) => (
+                <figure key={product.image} className="overflow-hidden rounded-lg border border-gray-100 bg-gray-50">
+                  <img
+                    src={product.image}
+                    alt={product.name}
+                    className="aspect-square w-full object-cover"
+                  />
+                  <figcaption className="p-3 text-center text-xs font-medium text-gray-700">
+                    {product.name}
+                  </figcaption>
+                </figure>
+              ))}
+            </div>
           </div>
         </div>
 
@@ -52,6 +73,10 @@ export default async function CompanyPage({
               <li>✔ {t("why3")}</li>
               <li>✔ {t("why4")}</li>
             </ul>
+          </div>
+          <div className="mt-6 rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+            <p className="text-sm font-semibold text-gray-900">{t("heritageTitle")}</p>
+            <p className="mt-3 text-sm leading-relaxed text-gray-600">{t("heritageDetail")}</p>
           </div>
         </div>
       </div>

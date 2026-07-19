@@ -2,6 +2,9 @@
   "nav": {
     "jobs": "職缺",
     "company": "公司介紹",
+    "products": "產品",
+    "capabilities": "製造能力",
+    "contact": "聯絡我們",
     "admin": "管理後台",
     "tagline": "人才招募"
   },
@@ -67,11 +70,50 @@
     "industry": "經營行業",
     "industryDetail": "生產、加工夾鏈袋及各類家用塑膠製品：地墊、餐墊、砧板、抽屜墊、食品保鮮夾鏈袋等塑膠製品。",
     "productsTitle": "產品與行業詳情",
+    "productPlacemat": "餐墊",
+    "productZipperBags": "多用途夾鏈袋",
+    "productFoodSaver": "食品保鮮盒",
+    "productOrganizer": "抽屜收納盒",
+    "heritageTitle": "喬信的根基",
+    "heritageDetail": "台灣喬信成立於 1983 年，具備材料研發、產品設計及製造能力。越南喬信將這份對創新與品質的承諾延續至越南的營運中。",
     "whyTitle": "為什麼選擇越南喬信？",
     "why1": "安全的工作環境，符合 ISO、IWAY、C-TPAT 標準",
     "why2": "依法提供完整社會保險與福利",
     "why3": "培訓與職涯發展機會",
     "why4": "位於同奈省安福工業區，交通便利"
+  },
+  "products": {
+    "eyebrow": "喬信家用品",
+    "title": "家用品系列",
+    "intro": "提供從食品保鮮到日常收納的實用家用品系列。",
+    "placemat": "餐墊",
+    "zipperBags": "多用途夾鏈袋",
+    "foodSaver": "食品保鮮盒",
+    "organizer": "抽屜收納盒",
+    "storageBox": "折疊收納箱",
+    "antiSlip": "防滑膠帶"
+  },
+  "capabilities": {
+    "eyebrow": "喬信製造能力",
+    "title": "製造能力",
+    "intro": "從材料研發到成品製造，喬信整合能力以兼顧品質與效率。",
+    "materialsTitle": "材料研發",
+    "materialsText": "開發並應用適合各項產品用途的材料。",
+    "designTitle": "設計與開發",
+    "designText": "結合產品設計、結構與實際使用需求。",
+    "manufacturingTitle": "整合製造",
+    "manufacturingText": "持續改善製程與設備，以維持穩定品質。",
+    "qualityTitle": "品質方向",
+    "qualityText": "致力於客戶滿意、團隊投入與永續經營。"
+  },
+  "contact": {
+    "eyebrow": "聯絡越南喬信",
+    "title": "聯絡我們",
+    "intro": "歡迎聯絡越南喬信，了解合作與職涯機會。",
+    "company": "公司",
+    "address": "地址",
+    "taxCode": "稅務代碼",
+    "visitCompany": "查看公司資訊"
   },
   "language": {
     "label": "語言"

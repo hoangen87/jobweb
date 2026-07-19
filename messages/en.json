@@ -2,6 +2,9 @@
   "nav": {
     "jobs": "Jobs",
     "company": "About Us",
+    "products": "Products",
+    "capabilities": "Manufacturing",
+    "contact": "Contact",
     "admin": "Admin",
     "tagline": "Careers"
   },
@@ -67,11 +70,50 @@
     "industry": "Business industry",
     "industryDetail": "Manufacturing and processing of zip bags and household plastic products: floor mats, table placemats, cutting boards, drawer liners, food storage zip bags, and more.",
     "productsTitle": "Products & Industry Details",
+    "productPlacemat": "Dining placemats",
+    "productZipperBags": "Multi-purpose zipper bags",
+    "productFoodSaver": "Food storage containers",
+    "productOrganizer": "Drawer organizers",
+    "heritageTitle": "The Jhonsin foundation",
+    "heritageDetail": "Established in 1983, Jhonsin Taiwan has built capabilities across material research, product design and manufacturing. Jhonsin Vietnam carries this commitment to innovation and quality into its operations in Vietnam.",
     "whyTitle": "Why choose Jhonsin Vietnam?",
     "why1": "Safe working environment, compliant with ISO, IWAY, C-TPAT",
     "why2": "Full social insurance and benefits as required by law",
     "why3": "Training and career development opportunities",
     "why4": "Convenient location at An Phuoc Industrial Park, Dong Nai"
+  },
+  "products": {
+    "eyebrow": "Jhonsin Houseware",
+    "title": "Houseware Products",
+    "intro": "Practical houseware ranges, from food storage to organizing everyday living spaces.",
+    "placemat": "Dining placemats",
+    "zipperBags": "Multi-purpose zipper bags",
+    "foodSaver": "Food storage containers",
+    "organizer": "Drawer organizers",
+    "storageBox": "Foldable storage boxes",
+    "antiSlip": "Anti-slip tape"
+  },
+  "capabilities": {
+    "eyebrow": "Jhonsin capability",
+    "title": "Manufacturing Capabilities",
+    "intro": "From material research to finished products, Jhonsin develops integrated capabilities for quality and efficiency.",
+    "materialsTitle": "Material Research",
+    "materialsText": "Developing and applying materials suited to each product purpose.",
+    "designTitle": "Design & Development",
+    "designText": "Connecting product design, structure and practical user needs.",
+    "manufacturingTitle": "Integrated Manufacturing",
+    "manufacturingText": "Continuously improving processes and equipment to maintain consistent quality.",
+    "qualityTitle": "Quality Direction",
+    "qualityText": "Working toward satisfied customers, engaged colleagues and sustainable business operations."
+  },
+  "contact": {
+    "eyebrow": "Contact Jhonsin Vietnam",
+    "title": "Contact Us",
+    "intro": "Connect with Jhonsin Vietnam to learn more about partnership and career opportunities.",
+    "company": "Company",
+    "address": "Address",
+    "taxCode": "Tax Code",
+    "visitCompany": "View company information"
   },
   "language": {
     "label": "Language"

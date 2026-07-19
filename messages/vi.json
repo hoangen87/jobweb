@@ -2,6 +2,9 @@
   "nav": {
     "jobs": "Việc làm",
     "company": "Giới thiệu công ty",
+    "products": "Sản phẩm",
+    "capabilities": "Năng lực sản xuất",
+    "contact": "Liên hệ",
     "admin": "Quản trị",
     "tagline": "Tuyển dụng"
   },
@@ -67,11 +70,50 @@
     "industry": "Lĩnh vực sản xuất kinh doanh",
     "industryDetail": "Sản xuất, gia công túi zip, các sản phẩm gia dụng: thảm lót sàn, tấm lót bàn ăn, thớt, thảm ngăn kéo, túi zip bảo quản thực phẩm... từ nhựa.",
     "productsTitle": "Sản phẩm & chi tiết ngành nghề",
+    "productPlacemat": "Tấm lót bàn ăn",
+    "productZipperBags": "Túi zipper đa dụng",
+    "productFoodSaver": "Hộp bảo quản thực phẩm",
+    "productOrganizer": "Khay chia ngăn kéo",
+    "heritageTitle": "Nền tảng Jhonsin",
+    "heritageDetail": "Jhonsin Taiwan được thành lập từ năm 1983, phát triển từ nghiên cứu vật liệu, thiết kế sản phẩm đến năng lực sản xuất. Jhonsin Việt Nam tiếp nối tinh thần đổi mới và chất lượng này trong hoạt động tại Việt Nam.",
     "whyTitle": "Vì sao chọn Jhonsin Việt Nam?",
     "why1": "Môi trường làm việc an toàn, tuân thủ ISO, IWAY, C-TPAT",
     "why2": "Chế độ phúc lợi, BHXH đầy đủ theo quy định pháp luật",
     "why3": "Cơ hội đào tạo và phát triển nghề nghiệp",
     "why4": "Vị trí thuận tiện tại KCN An Phước, Đồng Nai"
+  },
+  "products": {
+    "eyebrow": "Jhonsin Houseware",
+    "title": "Sản phẩm gia dụng",
+    "intro": "Các dòng sản phẩm gia dụng thiết thực, từ bảo quản thực phẩm đến sắp xếp không gian sống.",
+    "placemat": "Tấm lót bàn ăn",
+    "zipperBags": "Túi zipper đa dụng",
+    "foodSaver": "Hộp bảo quản thực phẩm",
+    "organizer": "Khay chia ngăn kéo",
+    "storageBox": "Hộp lưu trữ gấp gọn",
+    "antiSlip": "Băng keo chống trượt"
+  },
+  "capabilities": {
+    "eyebrow": "Jhonsin capability",
+    "title": "Năng lực sản xuất",
+    "intro": "Từ nghiên cứu vật liệu đến sản phẩm hoàn thiện, Jhonsin phát triển năng lực tích hợp để đáp ứng yêu cầu về chất lượng và hiệu quả.",
+    "materialsTitle": "Nghiên cứu vật liệu",
+    "materialsText": "Phát triển và ứng dụng vật liệu phù hợp cho từng mục đích sử dụng.",
+    "designTitle": "Thiết kế & phát triển",
+    "designText": "Kết nối thiết kế sản phẩm, cấu trúc và nhu cầu sử dụng thực tế.",
+    "manufacturingTitle": "Sản xuất tích hợp",
+    "manufacturingText": "Liên tục cải tiến quy trình và thiết bị để duy trì chất lượng ổn định.",
+    "qualityTitle": "Định hướng chất lượng",
+    "qualityText": "Hướng đến khách hàng hài lòng, đội ngũ gắn kết và hoạt động kinh doanh bền vững."
+  },
+  "contact": {
+    "eyebrow": "Contact Jhonsin Vietnam",
+    "title": "Liên hệ",
+    "intro": "Kết nối với Jhonsin Việt Nam để tìm hiểu thêm về cơ hội hợp tác và tuyển dụng.",
+    "company": "Công ty",
+    "address": "Địa chỉ",
+    "taxCode": "Mã số thuế",
+    "visitCompany": "Xem thông tin công ty"
   },
   "language": {
     "label": "Ngôn ngữ"

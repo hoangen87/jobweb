@@ -1,0 +1,58 @@
+REVIEW GITHUB REPOSITORY: hoangen87/jobweb (branch main)
+Snapshot reviewed: abfdb89f8eb2d490194f18007099432a34350af8
+
+BUILD
+- `npx next build` ran successfully on a fresh clone of this snapshot.
+- The full `npm run build` was intentionally not run because it executes
+  `prisma db push` against whichever database DATABASE_URL points to.
+
+CONFIRMED ISSUES
+
+1. CRITICAL - Next.js 14.2.15 has a known App Router DoS vulnerability.
+   File: package.json, line 16
+   The application uses the App Router. Next.js' official advisory identifies
+   14.2.35 as the fixed 14.x release.
+   Reference: https://nextjs.org/blog/security-update-2025-12-11
+
+2. HIGH - Production build mutates the production database schema.
+   File: package.json, line 7
+   The build script runs `prisma db push` on every deployment. This changes the
+   schema without a versioned migration history. It can stop deployment on a
+   destructive change, or require accepting potential data loss.
+   Reference: https://www.prisma.io/docs/orm/more/best-practices
+
+3. HIGH (if Vercel lacks SESSION_SECRET) - Public fallback signing secret.
+   File: src/lib/session.ts, line 11
+   If SESSION_SECRET is not configured, session tokens are signed with the
+   publicly visible string "fallback-secret", allowing forged admin cookies.
+
+4. HIGH (if seed runs without environment variables) - Public default admin
+   credentials.
+   File: prisma/seed.ts, lines 59-60
+   The seed defaults to username `admin` and password `Jhonsin@2026`.
+
+5. MEDIUM - English/Chinese job search does not search translated job titles.
+   File: src/app/[locale]/page.tsx, lines 31 and 42
+   Database filtering searches the Vietnamese `title` first. Translation is
+   only applied after filtering, so an English/Chinese query cannot match a
+   translated title.
+
+6. MEDIUM - English/Chinese pages format salary and dates in Vietnamese.
+   File: src/lib/format.ts, lines 1-11
+   Salary labels and date locale are hard-coded to Vietnamese and are used by
+   JobCard and the job detail page.
+
+7. MEDIUM - The HTML document language is always Vietnamese.
+   File: src/app/layout.tsx, line 5
+   Even /en and /zh render `<html lang="vi">`, affecting accessibility and SEO.
+
+CHECKS THAT PASSED
+- next-intl installed version: 3.26.5. routing/navigation/request and plugin
+  configuration use compatible APIs.
+- Middleware protects /admin routes and excludes /api, /_next, and static files.
+- Old public route files are absent: src/app/page.tsx, src/app/jobs, and
+  src/app/company.
+- Translation fallback preserves Vietnamese source text when MyMemory fails.
+- localizeJob safely falls back when translations are null or missing fields.
+- Prisma.DbNull is the correct sentinel for a JSON column that is SQL NULL.
+- Logo component uses /public/logo.png.

@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import NextLink from "next/link";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
@@ -6,27 +9,84 @@ import LanguageSwitcher from "@/components/i18n/LanguageSwitcher";
 
 export default function PublicNavbar() {
   const t = useTranslations("nav");
+  const [open, setOpen] = useState(false);
+
+  const links = [
+    { href: "/", label: t("jobs") },
+    { href: "/company", label: t("company") },
+    { href: "/products", label: t("products") },
+    { href: "/capabilities", label: t("capabilities") },
+    { href: "/contact", label: t("contact") },
+  ];
 
   return (
-    <header className="sticky top-0 z-40 border-b border-gray-200 bg-white/90 backdrop-blur">
-      <div className="container-page flex h-16 items-center justify-between gap-4">
+    <header className="sticky top-0 z-40 border-b-4 border-[#930000] bg-white shadow-sm">
+      <div className="container-page flex min-h-20 items-center justify-between gap-4 py-3">
         <Link href="/" className="flex items-center gap-2 shrink-0">
-          <Logo className="h-8" />
+          <Logo className="h-10" />
         </Link>
-        <nav className="hidden items-center gap-6 text-sm font-medium text-gray-600 sm:flex">
-          <Link href="/" className="hover:text-brand-600">
-            {t("jobs")}
-          </Link>
-          <Link href="/company" className="hover:text-brand-600">
-            {t("company")}
-          </Link>
+
+        <nav className="hidden items-center self-stretch bg-brand-600 px-3 text-xs font-semibold text-white lg:flex">
+          {links.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className="flex items-center px-3 transition hover:bg-[#930000]"
+            >
+              {link.label}
+            </Link>
+          ))}
           {/* Khu vực quản trị không đa ngôn ngữ, luôn ở đường dẫn /admin cố định */}
-          <NextLink href="/admin" className="hover:text-brand-600">
+          <NextLink href="/admin" className="flex items-center px-3 transition hover:bg-[#930000]">
             {t("admin")}
           </NextLink>
         </nav>
-        <LanguageSwitcher />
+
+        <div className="flex items-center gap-2">
+          <LanguageSwitcher />
+          <button
+            type="button"
+            onClick={() => setOpen((v) => !v)}
+            aria-expanded={open}
+            aria-label={open ? "Close menu" : "Open menu"}
+            className="flex h-9 w-9 items-center justify-center rounded-sm border border-gray-300 text-brand-900 lg:hidden"
+          >
+            {open ? (
+              <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 6l12 12M18 6l-12 12" />
+              </svg>
+            ) : (
+              <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4 7h16M4 12h16M4 17h16" />
+              </svg>
+            )}
+          </button>
+        </div>
       </div>
+
+      {open && (
+        <nav className="border-t border-gray-200 bg-brand-600 text-sm font-semibold text-white lg:hidden">
+          <div className="container-page flex flex-col py-2">
+            {links.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                onClick={() => setOpen(false)}
+                className="border-b border-white/10 py-3 transition hover:text-[#ffb3b3]"
+              >
+                {link.label}
+              </Link>
+            ))}
+            <NextLink
+              href="/admin"
+              onClick={() => setOpen(false)}
+              className="py-3 transition hover:text-[#ffb3b3]"
+            >
+              {t("admin")}
+            </NextLink>
+          </div>
+        </nav>
+      )}
     </header>
   );
 }
