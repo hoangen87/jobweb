@@ -1,10 +1,15 @@
 import type { Locale } from "@/i18n/routing";
 
-const INTL_LOCALE: Record<Locale, string> = {
+export const INTL_LOCALE: Record<Locale, string> = {
   vi: "vi-VN",
   en: "en-US",
   zh: "zh-TW",
 };
+
+export function formatArea(sqm: number, locale: Locale = "vi") {
+  const intlLocale = INTL_LOCALE[locale] ?? INTL_LOCALE.vi;
+  return `${sqm.toLocaleString(intlLocale)} m²`;
+}
 
 const SALARY_WORDS: Record<Locale, { million: string; from: string; to: string; negotiable: string }> = {
   vi: { million: "triệu", from: "Từ", to: "Đến", negotiable: "Thỏa thuận" },

@@ -21,6 +21,11 @@ export default async function CapabilitiesPage({
     { label: t("kpi4Label"), value: t("kpi4Value") },
   ];
 
+  const stages = [
+    { label: t("stage1Label"), capacity: t("stage1Capacity"), scope: t("stage1Scope") },
+    { label: t("stage2Label"), capacity: t("stage2Capacity"), scope: t("stage2Scope") },
+  ];
+
   return (
     <div>
       <section className="relative overflow-hidden border-b-4 border-brand-600 text-white">
@@ -50,6 +55,23 @@ export default async function CapabilitiesPage({
               <p className="mt-3 text-sm leading-relaxed text-gray-600">{item.text}</p>
             </div>
           ))}
+        </div>
+
+        <div className="mt-8 rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+          <h2 className="text-base font-semibold text-gray-900">{t("scaleTitle")}</h2>
+          <p className="mt-2 text-sm text-gray-600">{t("scaleIntro")}</p>
+          <div className="mt-5 grid gap-4 sm:grid-cols-2">
+            {stages.map((stage) => (
+              <div
+                key={stage.label}
+                className="rounded-sm border border-gray-200 bg-gray-50 p-5 transition hover:border-[#930000] hover:bg-white"
+              >
+                <div className="text-xs font-bold uppercase tracking-wide text-[#930000]">{stage.label}</div>
+                <div className="mt-2 text-xl font-bold text-brand-900">{stage.capacity}</div>
+                <p className="mt-2 text-sm leading-relaxed text-gray-600">{stage.scope}</p>
+              </div>
+            ))}
+          </div>
         </div>
 
         <div className="mt-8 rounded-xl border border-gray-200 bg-white p-6 shadow-sm">

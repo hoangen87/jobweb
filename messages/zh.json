@@ -67,6 +67,7 @@
     "taxCode": "稅務代碼",
     "legalRep": "法定代表人",
     "address": "地址",
+    "landArea": "使用土地面積",
     "industry": "經營行業",
     "industryDetail": "生產、加工夾鏈袋及各類家用塑膠製品：地墊、餐墊、砧板、防滑網、抽屜墊、踢腳板、收納盒等。",
     "productsTitle": "產品與行業詳情",
@@ -115,7 +116,15 @@
     "kpi3Value": "≥ 18/30 分",
     "kpi4Label": "準時且完整交貨率（DIFOT）",
     "kpi4Value": "100%",
-    "sourceNote": "內容彙整自越南喬信有限公司之領導承諾、品質手冊（ISO 9001:2015）及品質目標。"
+    "scaleTitle": "生產規模",
+    "scaleIntro": "依據投資登記證，工廠產能分為兩個階段建設：",
+    "stage1Label": "第一階段（2024年10月–2026年7月）",
+    "stage1Capacity": "年產能 12,800 噸",
+    "stage1Scope": "塑膠餐墊、砧板、抽屜墊",
+    "stage2Label": "第二階段（2026年8月起）",
+    "stage2Capacity": "年產能 42,000 噸",
+    "stage2Scope": "塑膠夾鏈袋、地墊、餐墊、砧板、防滑網、抽屜墊、踢腳板、收納盒",
+    "sourceNote": "內容彙整自越南喬信有限公司之領導承諾、品質手冊（ISO 9001:2015）、品質目標及投資登記證。"
   },
   "contact": {
     "eyebrow": "聯絡越南喬信",

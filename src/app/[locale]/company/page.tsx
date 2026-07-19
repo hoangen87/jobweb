@@ -1,5 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import { COMPANY } from "@/lib/constants";
+import { formatArea } from "@/lib/format";
+import type { Locale } from "@/i18n/routing";
 
 export default async function CompanyPage({
   params,
@@ -15,6 +17,7 @@ export default async function CompanyPage({
     [t("taxCode"), COMPANY.taxCode],
     [t("legalRep"), COMPANY.legalRepresentative],
     [t("address"), COMPANY.address],
+    [t("landArea"), formatArea(COMPANY.landAreaSqm, locale as Locale)],
     [t("industry"), COMPANY.industry],
   ];
 

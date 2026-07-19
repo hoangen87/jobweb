@@ -67,6 +67,7 @@
     "taxCode": "Tax code",
     "legalRep": "Legal representative",
     "address": "Address",
+    "landArea": "Land area",
     "industry": "Business industry",
     "industryDetail": "Manufacturing and processing of zipper bags and household plastic products: floor mats, table mats, cutting boards, anti-slip nets, drawer mats, baseboards, storage boxes, and more.",
     "productsTitle": "Products & Industry Details",
@@ -115,7 +116,15 @@
     "kpi3Value": "≥ 18/30 points",
     "kpi4Label": "Delivery On Time In Full (DIFOT)",
     "kpi4Value": "100%",
-    "sourceNote": "Content summarized from the Management Commitment, Quality Manual (ISO 9001:2015) and Quality Objectives of Jhonsin Vietnam Co., Ltd."
+    "scaleTitle": "Production Scale",
+    "scaleIntro": "According to the Investment Registration Certificate, the factory's capacity is developed in 2 stages:",
+    "stage1Label": "Stage 1 (Oct 2024 – Jul 2026)",
+    "stage1Capacity": "12,800 tons of products/year",
+    "stage1Scope": "Table mats, cutting boards, drawer mats made of plastic",
+    "stage2Label": "Stage 2 (from Aug 2026)",
+    "stage2Capacity": "42,000 tons of products/year",
+    "stage2Scope": "Zipper bags, floor mats, table mats, cutting boards, anti-slip nets, drawer mats, baseboards, storage boxes made of plastic",
+    "sourceNote": "Content summarized from the Management Commitment, Quality Manual (ISO 9001:2015), Quality Objectives and Investment Registration Certificate of Jhonsin Vietnam Co., Ltd."
   },
   "contact": {
     "eyebrow": "Contact Jhonsin Vietnam",

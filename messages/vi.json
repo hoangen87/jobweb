@@ -67,6 +67,7 @@
     "taxCode": "Mã số thuế",
     "legalRep": "Người đại diện theo pháp luật",
     "address": "Địa chỉ",
+    "landArea": "Diện tích đất sử dụng",
     "industry": "Lĩnh vực sản xuất kinh doanh",
     "industryDetail": "Sản xuất, gia công túi zip và các sản phẩm gia dụng từ nhựa: thảm lót sàn, tấm lót bàn ăn, thớt, lưới chống trơn trượt, thảm ngăn kéo, ốp chân tường, hộp đựng...",
     "productsTitle": "Sản phẩm & chi tiết ngành nghề",
@@ -115,7 +116,15 @@
     "kpi3Value": "≥ 18/30 điểm",
     "kpi4Label": "Giao hàng đúng hạn và đầy đủ (DIFOT)",
     "kpi4Value": "100%",
-    "sourceNote": "Nội dung tổng hợp từ Cam kết lãnh đạo, Sổ tay chất lượng (ISO 9001:2015) và Mục tiêu chất lượng của Công ty TNHH Jhonsin Việt Nam."
+    "scaleTitle": "Quy mô sản xuất",
+    "scaleIntro": "Theo Giấy chứng nhận đăng ký đầu tư, nhà máy triển khai công suất theo 2 giai đoạn:",
+    "stage1Label": "Giai đoạn 1 (10/2024 – 7/2026)",
+    "stage1Capacity": "12.800 tấn sản phẩm/năm",
+    "stage1Scope": "Tấm lót bàn ăn, thớt, thảm ngăn kéo từ nhựa",
+    "stage2Label": "Giai đoạn 2 (từ 8/2026)",
+    "stage2Capacity": "42.000 tấn sản phẩm/năm",
+    "stage2Scope": "Túi zip, thảm lót sàn, tấm lót bàn ăn, thớt, lưới chống trơn trượt, thảm ngăn kéo, ốp chân tường, hộp đựng từ nhựa",
+    "sourceNote": "Nội dung tổng hợp từ Cam kết lãnh đạo, Sổ tay chất lượng (ISO 9001:2015), Mục tiêu chất lượng và Giấy chứng nhận đăng ký đầu tư của Công ty TNHH Jhonsin Việt Nam."
   },
   "contact": {
     "eyebrow": "Contact Jhonsin Vietnam",

@@ -10,6 +10,8 @@ export const COMPANY = {
     "Sản xuất, gia công túi zip và các sản phẩm gia dụng từ nhựa: thảm lót sàn, tấm lót bàn ăn, thớt, lưới chống trơn trượt, thảm ngăn kéo, ốp chân tường, hộp đựng...",
   phone: "02513683742",
   email: "vn08@jhonsin.com.tw",
+  // Diện tích đất sử dụng theo Giấy chứng nhận đăng ký đầu tư (mã dự án 1004828513).
+  landAreaSqm: 21000,
   // Toạ độ + link Google Maps lấy từ vị trí thật của công ty (do em cung cấp qua
   // link chia sẻ Google Maps), dùng để nhúng bản đồ chính xác ở trang /contact.
   mapLat: 10.8481484,
