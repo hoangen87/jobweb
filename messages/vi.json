@@ -98,13 +98,14 @@
     "title": "Năng lực sản xuất",
     "intro": "Từ nghiên cứu vật liệu đến sản phẩm hoàn thiện, Jhonsin phát triển năng lực tích hợp để đáp ứng yêu cầu về chất lượng và hiệu quả.",
     "materialsTitle": "Nghiên cứu vật liệu",
-    "materialsText": "Phát triển và ứng dụng vật liệu phù hợp cho từng mục đích sử dụng.",
-    "designTitle": "Thiết kế & phát triển",
-    "designText": "Kết nối thiết kế sản phẩm, cấu trúc và nhu cầu sử dụng thực tế.",
+    "materialsText": "Tập đoàn Jhonsin phát triển công thức nguyên liệu nhựa (PS, PP, PE) theo yêu cầu riêng của từng khách hàng, giúp tối ưu chi phí và nâng cao tính cạnh tranh của sản phẩm.",
+    "designTitle": "Thiết kế & phát triển (ODM/OEM)",
+    "designText": "Đội ngũ thiết kế phát triển sản phẩm theo yêu cầu khách hàng, làm mẫu theo bản vẽ và tư vấn kỹ thuật chuyên sâu. Tập đoàn Jhonsin từng hợp tác thiết kế - sản xuất cho các thương hiệu quốc tế như IKEA, H&M HOME, ZARA.",
     "manufacturingTitle": "Sản xuất tích hợp",
-    "manufacturingText": "Liên tục cải tiến quy trình và thiết bị để duy trì chất lượng ổn định.",
+    "manufacturingText": "Từ ép cuộn/tấm nhựa (PS, PP, PE) đến hoàn thiện sản phẩm, tập đoàn Jhonsin liên tục cải tiến quy trình và thiết bị để duy trì chất lượng ổn định trên toàn hệ thống sản xuất.",
     "qualityTitle": "Định hướng chất lượng",
-    "qualityText": "Hướng đến khách hàng hài lòng, đội ngũ gắn kết và hoạt động kinh doanh bền vững."
+    "qualityText": "Hướng đến khách hàng hài lòng, đội ngũ gắn kết và hoạt động kinh doanh bền vững.",
+    "sourceNote": "Thông tin năng lực nghiên cứu, thiết kế và sản xuất tham khảo từ Jhonsin Đài Loan (công ty mẹ, thành lập năm 1983) — nền tảng mà Jhonsin Việt Nam kế thừa và tiếp nối."
   },
   "contact": {
     "eyebrow": "Contact Jhonsin Vietnam",
@@ -113,7 +114,8 @@
     "company": "Công ty",
     "address": "Địa chỉ",
     "taxCode": "Mã số thuế",
-    "visitCompany": "Xem thông tin công ty"
+    "visitCompany": "Xem thông tin công ty",
+    "openInMaps": "Mở trong Google Maps ↗"
   },
   "language": {
     "label": "Ngôn ngữ"

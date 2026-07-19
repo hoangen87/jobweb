@@ -98,13 +98,14 @@
     "title": "Manufacturing Capabilities",
     "intro": "From material research to finished products, Jhonsin develops integrated capabilities for quality and efficiency.",
     "materialsTitle": "Material Research",
-    "materialsText": "Developing and applying materials suited to each product purpose.",
-    "designTitle": "Design & Development",
-    "designText": "Connecting product design, structure and practical user needs.",
+    "materialsText": "The Jhonsin Group develops customized plastic material formulas (PS, PP, PE) to meet each customer's specific needs and improve product competitiveness.",
+    "designTitle": "Design & Development (ODM/OEM)",
+    "designText": "Our design team develops products to customer requirements, builds samples from customer drawings and provides professional technical advice. The Jhonsin Group has partnered with international brands such as IKEA, H&M HOME and ZARA on design and manufacturing.",
     "manufacturingTitle": "Integrated Manufacturing",
-    "manufacturingText": "Continuously improving processes and equipment to maintain consistent quality.",
+    "manufacturingText": "From plastic sheet and roll extrusion (PS, PP, PE) to finished products, the Jhonsin Group continuously improves processes and equipment to maintain consistent quality across its manufacturing operations.",
     "qualityTitle": "Quality Direction",
-    "qualityText": "Working toward satisfied customers, engaged colleagues and sustainable business operations."
+    "qualityText": "Working toward satisfied customers, engaged colleagues and sustainable business operations.",
+    "sourceNote": "Material research, design and manufacturing capability information is based on Jhonsin Taiwan (the parent company, founded in 1983) — the foundation Jhonsin Vietnam carries forward."
   },
   "contact": {
     "eyebrow": "Contact Jhonsin Vietnam",
@@ -113,7 +114,8 @@
     "company": "Company",
     "address": "Address",
     "taxCode": "Tax Code",
-    "visitCompany": "View company information"
+    "visitCompany": "View company information",
+    "openInMaps": "Open in Google Maps ↗"
   },
   "language": {
     "label": "Language"

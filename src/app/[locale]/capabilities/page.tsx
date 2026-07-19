@@ -33,6 +33,8 @@ export default async function CapabilitiesPage({
           </div>
         ))}
       </div>
+
+      <p className="mt-6 max-w-2xl text-xs text-gray-400">{t("sourceNote")}</p>
     </div>
   );
 }

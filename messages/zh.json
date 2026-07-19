@@ -98,13 +98,14 @@
     "title": "製造能力",
     "intro": "從材料研發到成品製造，喬信整合能力以兼顧品質與效率。",
     "materialsTitle": "材料研發",
-    "materialsText": "開發並應用適合各項產品用途的材料。",
-    "designTitle": "設計與開發",
-    "designText": "結合產品設計、結構與實際使用需求。",
+    "materialsText": "喬信集團依客戶需求提供客製化塑膠材料配方（PS、PP、PE），協助客戶降低成本並提升產品競爭力。",
+    "designTitle": "設計與開發（ODM/OEM）",
+    "designText": "設計團隊依客戶需求進行產品開發，依客戶圖面打樣並提供專業技術建議。喬信集團曾與 IKEA、H&M HOME、ZARA 等國際品牌合作設計與生產。",
     "manufacturingTitle": "整合製造",
-    "manufacturingText": "持續改善製程與設備，以維持穩定品質。",
+    "manufacturingText": "從塑膠捲材與板材押出（PS、PP、PE）到成品製造，喬信集團持續改善製程與設備，維持整體生產體系的穩定品質。",
     "qualityTitle": "品質方向",
-    "qualityText": "致力於客戶滿意、團隊投入與永續經營。"
+    "qualityText": "致力於客戶滿意、團隊投入與永續經營。",
+    "sourceNote": "材料研發、設計與製造能力資訊參考自台灣喬信（母公司，成立於 1983 年）——越南喬信傳承並延續的根基。"
   },
   "contact": {
     "eyebrow": "聯絡越南喬信",
@@ -113,7 +114,8 @@
     "company": "公司",
     "address": "地址",
     "taxCode": "稅務代碼",
-    "visitCompany": "查看公司資訊"
+    "visitCompany": "查看公司資訊",
+    "openInMaps": "在 Google 地圖中開啟 ↗"
   },
   "language": {
     "label": "語言"
