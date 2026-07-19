@@ -7,7 +7,7 @@ export const COMPANY = {
   address: "Số F5, F6, lô F, đường số 6, KCN An Phước, Xã An Phước, tỉnh Đồng Nai",
   industry: "Sản xuất sản phẩm từ plastic (mã ngành 2220)",
   industryDetail:
-    "Sản xuất, gia công túi zip, các sản phẩm gia dụng: thảm lót sàn, tấm lót bàn ăn, thớt, thảm ngăn kéo, túi zip bảo quản thực phẩm... từ nhựa.",
+    "Sản xuất, gia công túi zip và các sản phẩm gia dụng từ nhựa: thảm lót sàn, tấm lót bàn ăn, thớt, lưới chống trơn trượt, thảm ngăn kéo, ốp chân tường, hộp đựng...",
   phone: "02513683742",
   email: "vn08@jhonsin.com.tw",
   // Toạ độ + link Google Maps lấy từ vị trí thật của công ty (do em cung cấp qua

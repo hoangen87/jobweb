@@ -25,6 +25,8 @@ export default async function CompanyPage({
     { image: "/images/jhonsin-products/drawer-organizer.jpg", name: t("productOrganizer") },
   ];
 
+  const timeline = [t("timelineTaiwan"), t("timelineStage1"), t("timelineStage2")];
+
   return (
     <div>
       <section className="relative overflow-hidden border-b-4 border-brand-600 text-white">
@@ -92,6 +94,18 @@ export default async function CompanyPage({
           </div>
         </div>
       </div>
+
+        <div className="mt-8 rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+          <h2 className="text-base font-semibold text-gray-900">{t("timelineTitle")}</h2>
+          <ol className="mt-5 space-y-5 border-l-2 border-brand-100 pl-6">
+            {timeline.map((item, index) => (
+              <li key={index} className="relative text-sm leading-relaxed text-gray-600">
+                <span className="absolute -left-[1.95rem] top-1 h-3 w-3 rounded-full border-2 border-white bg-[#930000] shadow" />
+                {item}
+              </li>
+            ))}
+          </ol>
+        </div>
       </div>
     </div>
   );
