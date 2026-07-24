@@ -1,0 +1,17 @@
+<service>
+  <id>JhonsinJobWebsite</id>
+  <name>Jhonsin Job Website</name>
+  <description>Production server for the Jhonsin Vietnam job website.</description>
+  <executable>C:\Program Files\nodejs\npm.cmd</executable>
+  <arguments>run start</arguments>
+  <workingdirectory>D:\Job Website\job-website</workingdirectory>
+  <logpath>D:\Job Website\job-website\logs</logpath>
+  <log mode="roll-by-size-time">
+    <sizeThreshold>10240</sizeThreshold>
+    <pattern>yyyyMMdd</pattern>
+    <autoRollAtTime>00:00:00</autoRollAtTime>
+    <zipOlderThanNumDays>7</zipOlderThanNumDays>
+  </log>
+  <onfailure action="restart" delay="10 sec" />
+  <stoptimeout>15 sec</stoptimeout>
+</service>

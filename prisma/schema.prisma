@@ -50,6 +50,12 @@ model Application {
   cvFileName       String
   cvFilePath       String
   status           String    @default("NEW") // NEW | REVIEWING | INTERVIEW | REJECTED | HIRED
+  // Đánh giá AI (Hướng 3 — chỉ chạy cho hồ sơ đã "lọt vòng đầu" sàng lọc theo
+  // dữ liệu cấu trúc, hoặc khi tin tuyển dụng chưa đặt yêu cầu cấu trúc nào).
+  aiScore          Int?      // % phù hợp theo AI (0-100), null nếu chưa phân tích/bị bỏ qua
+  aiSummary        String?   // Nhận xét của AI: điểm phù hợp, điểm thiếu/rủi ro, đề xuất
+  aiStatus         String?   // PENDING | DONE | SKIPPED | ERROR
+  aiAnalyzedAt     DateTime?
   createdAt        DateTime  @default(now())
 }
 

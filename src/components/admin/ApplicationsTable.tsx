@@ -18,6 +18,10 @@ type Application = {
   cvFilePath: string;
   status: string;
   createdAt: string;
+  aiScore: number | null;
+  aiSummary: string | null;
+  aiStatus: string | null;
+  aiAnalyzedAt: string | null;
   job: {
     title: string;
     location?: string;
@@ -47,9 +51,26 @@ function scoreBadgeClass(result: ScreeningResult) {
   return "bg-red-100 text-red-700";
 }
 
+function aiBadgeClass(app: Application) {
+  if (app.aiStatus === "DONE" && app.aiScore !== null) {
+    return app.aiScore >= SCREENING_PASS_THRESHOLD ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700";
+  }
+  if (app.aiStatus === "ERROR") return "bg-amber-100 text-amber-700";
+  if (app.aiStatus === "SKIPPED") return "bg-gray-100 text-gray-500";
+  return "bg-gray-100 text-gray-400";
+}
+
+function aiBadgeLabel(app: Application) {
+  if (app.aiStatus === "DONE" && app.aiScore !== null) return `${app.aiScore}% (AI)`;
+  if (app.aiStatus === "ERROR") return "Lỗi phân tích";
+  if (app.aiStatus === "SKIPPED") return "Chưa lọt vòng 1";
+  return "Chưa phân tích";
+}
+
 export default function ApplicationsTable({ applications }: { applications: Application[] }) {
   const router = useRouter();
   const [bucket, setBucket] = useState<Bucket>("all");
+  const [analyzingIds, setAnalyzingIds] = useState<Set<string>>(new Set());
 
   const scored = useMemo(
     () => applications.map((app) => ({ app, result: screenApplication(app, app.job) })),
@@ -88,6 +109,20 @@ export default function ApplicationsTable({ applications }: { applications: Appl
     if (!confirm(`Xóa hồ sơ của "${name}"?`)) return;
     const res = await fetch(`/api/applications/${id}`, { method: "DELETE" });
     if (res.ok) router.refresh();
+  }
+
+  async function handleReanalyze(id: string) {
+    setAnalyzingIds((prev) => new Set(prev).add(id));
+    try {
+      await fetch(`/api/applications/${id}/ai-analyze`, { method: "POST" });
+      router.refresh();
+    } finally {
+      setAnalyzingIds((prev) => {
+        const next = new Set(prev);
+        next.delete(id);
+        return next;
+      });
+    }
   }
 
   if (applications.length === 0) {
@@ -159,6 +194,7 @@ export default function ApplicationsTable({ applications }: { applications: Appl
                 <th className="px-4 py-3">Kinh nghiệm</th>
                 <th className="px-4 py-3">Ngành nghề</th>
                 <th className="px-4 py-3">% Phù hợp</th>
+                <th className="px-4 py-3">Đánh giá AI</th>
                 <th className="px-4 py-3">Liên hệ</th>
                 <th className="px-4 py-3">CV</th>
                 <th className="px-4 py-3">Ngày nộp</th>
@@ -206,6 +242,29 @@ export default function ApplicationsTable({ applications }: { applications: Appl
                           {result.score}% · {result.qualified ? "Đạt yêu cầu" : "Không đạt"}
                         </span>
                       )}
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="flex flex-col items-start gap-1">
+                        <span
+                          className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${aiBadgeClass(app)}`}
+                          title={app.aiSummary ?? undefined}
+                        >
+                          {aiBadgeLabel(app)}
+                        </span>
+                        {app.aiSummary && app.aiStatus === "DONE" && (
+                          <p className="max-w-[220px] text-xs text-gray-500 line-clamp-3" title={app.aiSummary}>
+                            {app.aiSummary}
+                          </p>
+                        )}
+                        <button
+                          type="button"
+                          onClick={() => handleReanalyze(app.id)}
+                          disabled={analyzingIds.has(app.id)}
+                          className="text-xs text-brand-600 hover:underline disabled:text-gray-400"
+                        >
+                          {analyzingIds.has(app.id) ? "Đang phân tích..." : "Phân tích lại bằng AI"}
+                        </button>
+                      </div>
                     </td>
                     <td className="px-4 py-3 text-gray-600">
                       <div>{app.email}</div>

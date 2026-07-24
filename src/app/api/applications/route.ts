@@ -4,6 +4,11 @@ import { getCurrentAdmin } from "@/lib/auth";
 import { randomUUID } from "crypto";
 import { mkdir, writeFile } from "fs/promises";
 import path from "path";
+import { runAiAnalysisForApplication } from "@/lib/run-ai-analysis";
+
+// Cho phép nhiều thời gian hơn vì có thể chạy phân tích AI (đọc CV + gọi
+// Claude API) ngay sau khi ứng viên nộp hồ sơ.
+export const maxDuration = 60;
 
 // Trên Vercel, filesystem chỉ đọc (trừ /tmp không bền vững), nên khi có
 // BLOB_READ_WRITE_TOKEN (Vercel tự thêm khi bật Blob Storage) sẽ lưu CV lên
@@ -115,6 +120,15 @@ export async function POST(req: NextRequest) {
         cvFilePath,
       },
     });
+
+    // Chạy phân tích 2 vòng (lọc cấu trúc -> AI đọc CV thật nếu lọt vòng đầu)
+    // ngay khi ứng viên nộp hồ sơ. Không để lỗi ở bước này chặn việc nộp hồ
+    // sơ đã thành công — chỉ log lại, admin có thể bấm "Phân tích lại" sau.
+    try {
+      await runAiAnalysisForApplication(application.id, req.nextUrl.origin);
+    } catch (aiErr) {
+      console.error("[applications] AI analysis failed:", aiErr);
+    }
 
     return NextResponse.json({ ok: true, id: application.id }, { status: 201 });
   } catch (err) {

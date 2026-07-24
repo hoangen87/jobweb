@@ -104,7 +104,9 @@ export default async function ApplicationsPage({
 
       <p className="mt-1 text-sm text-gray-500">
         Sàng lọc theo bằng cấp, kinh nghiệm, khu vực, cấp bậc, độ tuổi, ngành nghề. Hệ thống tự động chấm %
-        phù hợp với yêu cầu tuyển dụng của từng tin (thiết lập yêu cầu khi đăng/sửa tin).
+        phù hợp với yêu cầu tuyển dụng của từng tin (thiết lập yêu cầu khi đăng/sửa tin). Hồ sơ đạt vòng 1
+        (≥ 70%) sẽ được AI tự động đọc CV thật để chấm điểm sâu hơn kèm nhận xét — tiết kiệm chi phí AI cho
+        các hồ sơ rõ ràng chưa phù hợp.
       </p>
 
       <div className="mt-4">
@@ -119,6 +121,7 @@ export default async function ApplicationsPage({
             ...a,
             createdAt: a.createdAt.toISOString(),
             dateOfBirth: a.dateOfBirth ? a.dateOfBirth.toISOString() : null,
+            aiAnalyzedAt: a.aiAnalyzedAt ? a.aiAnalyzedAt.toISOString() : null,
           }))}
         />
       </div>
