@@ -1,40 +1,115 @@
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans:wght@400;700&family=Newsreader:opsz,wght@6..72,400;6..72,700&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Hallmark · pre-emit critique: P5 H5 E4 S5 R5 V4 */
+/* Hallmark · genre: editorial · macrostructure: Catalogue · theme: Newsprint · enrichment: real photography · nav: N6 · footer: Ft1 · contrast: pass (40–41) · slop: pass (42–48) · mobile: pass (34, 49–57) */
+:root {
+  --color-paper: oklch(96% 0.012 75);
+  --color-paper-2: oklch(92% 0.018 75);
+  --color-ink: oklch(22% 0.025 30);
+  --color-ink-2: oklch(39% 0.025 35);
+  --color-muted: oklch(48% 0.018 45);
+  --color-rule: oklch(78% 0.025 60);
+  --color-accent: oklch(39% 0.145 26);
+  --color-accent-dark: oklch(30% 0.12 26);
+  --color-accent-ink: oklch(97% 0.008 75);
+  --color-focus: oklch(47% 0.15 255);
+  --color-success: oklch(45% 0.1 145);
+  --color-error: oklch(49% 0.18 28);
+  --font-display: "Newsreader", "Iowan Old Style", "Palatino Linotype", serif;
+  --font-body: "IBM Plex Sans", "Aptos", "Segoe UI", sans-serif;
+  --font-outlier: "IBM Plex Mono", "Cascadia Mono", monospace;
+  --page-gutter: clamp(1rem, 4vw, 3rem);
+}
+
+html,
+body { overflow-x: clip; }
 
 html {
   scroll-behavior: smooth;
 }
 
 body {
-  color: #333333;
-  background: #f7f7f7;
+  color: var(--color-ink);
+  background: var(--color-paper);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.6;
 }
 
 .container-page {
-  @apply mx-auto max-w-5xl px-4 sm:px-6 lg:px-8;
+  width: min(100%, 80rem);
+  margin-inline: auto;
+  padding-inline: var(--page-gutter);
 }
 
 .btn-primary {
-  @apply inline-flex items-center justify-center rounded-sm bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#930000] disabled:cursor-not-allowed disabled:opacity-60;
+  @apply inline-flex min-h-11 items-center justify-center px-5 text-sm font-bold transition disabled:cursor-not-allowed disabled:opacity-50;
+  color: var(--color-accent-ink);
+  background: var(--color-accent);
+  white-space: nowrap;
 }
 
 .btn-secondary {
-  @apply inline-flex items-center justify-center rounded-sm border border-gray-300 bg-white px-5 py-2.5 text-sm font-semibold text-gray-700 shadow-sm transition hover:border-brand-600 hover:text-brand-600;
+  @apply inline-flex min-h-11 items-center justify-center border px-5 text-sm font-bold transition;
+  color: var(--color-ink);
+  border-color: var(--color-rule);
+  background: transparent;
+  white-space: nowrap;
 }
 
 .input-field {
-  @apply w-full rounded-sm border border-gray-300 bg-white px-3.5 py-2.5 text-sm shadow-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500;
+  @apply min-h-11 w-full border px-3.5 py-2.5 text-sm;
+  color: var(--color-ink);
+  border-color: var(--color-rule);
+  background: var(--color-paper);
+  outline: 2px solid transparent;
+  outline-offset: 1px;
 }
 
 .label-field {
-  @apply mb-1.5 block text-sm font-medium text-gray-700;
+  @apply mb-1.5 block text-sm font-bold;
+  color: var(--color-ink-2);
 }
 
 .badge {
-  @apply inline-flex items-center rounded-sm bg-brand-50 px-3 py-1 text-xs font-medium text-brand-700;
+  @apply inline-flex items-center border px-3 py-1 text-xs font-bold;
+  color: var(--color-accent);
+  border-color: var(--color-rule);
+  background: transparent;
 }
 
 .section-kicker {
-  @apply text-xs font-bold uppercase tracking-[0.18em] text-[#930000];
+  @apply text-xs font-bold uppercase tracking-[0.14em];
+  color: var(--color-accent);
+}
+
+h1, h2, h3 { min-width: 0; overflow-wrap: anywhere; font-family: var(--font-display); font-style: normal; }
+a, button { -webkit-tap-highlight-color: transparent; }
+:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 3px; }
+.input-field:focus-visible { border-color: var(--color-ink-2); outline-offset: 1px; }
+
+.editorial-hero { position: relative; display: grid; min-height: clamp(27rem, 65svh, 43rem); align-items: end; overflow: hidden; border-bottom: 1px solid var(--color-rule); background: var(--color-ink); color: var(--color-paper); }
+.editorial-hero::after { position: absolute; inset: 0; content: ""; background: linear-gradient(90deg, color-mix(in oklch, var(--color-ink) 94%, transparent), color-mix(in oklch, var(--color-ink) 48%, transparent)); }
+.editorial-hero__image { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: saturate(.72) contrast(1.05); }
+.editorial-hero__content { position: relative; z-index: 1; padding-block: clamp(3rem, 8vw, 6rem); }
+.editorial-hero__title { max-width: 14ch; margin-top: .75rem; font-size: clamp(2.75rem, 6vw, 5.25rem); font-weight: 700; line-height: 1.02; letter-spacing: -.035em; }
+.editorial-hero__lede { max-width: 62ch; margin-top: 1.25rem; color: var(--color-paper-2); }
+.page-mast { position: relative; overflow: hidden; border-bottom: 1px solid var(--color-rule); background: var(--color-ink); color: var(--color-paper); }
+.page-mast__image { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: .3; filter: grayscale(.35); }
+.page-mast__content { position: relative; padding-block: clamp(3rem, 7vw, 5.5rem); }
+.page-mast__title { max-width: 16ch; font-size: clamp(2.5rem, 5vw, 4.5rem); font-weight: 700; line-height: 1.05; letter-spacing: -.03em; }
+.catalogue-rule { border-top: 1px solid var(--color-rule); }
+
+@media (hover: hover) and (pointer: fine) {
+  .btn-primary:hover { background: var(--color-accent-dark); transform: translateY(-1px); }
+  .btn-secondary:hover { border-color: var(--color-accent); color: var(--color-accent); }
+  .input-field:hover { background: var(--color-paper-2); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
 }

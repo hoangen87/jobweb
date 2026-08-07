@@ -23,13 +23,13 @@ export default function JobCard(job: JobCardProps) {
   return (
     <Link
       href={`/jobs/${job.id}`}
-      className="block rounded-xl border border-gray-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-300 hover:shadow-md"
+      className="group flex min-h-64 min-w-0 flex-col bg-[var(--color-paper)] p-5 transition sm:p-6"
     >
       <div className="flex items-start justify-between gap-3">
-        <h3 className="text-base font-semibold text-gray-900">{job.title}</h3>
+        <h3 className="text-xl font-bold leading-tight text-[var(--color-ink)]">{job.title}</h3>
         <span className="badge whitespace-nowrap">{job.department}</span>
       </div>
-      <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-sm text-gray-600">
+      <div className="mt-5 flex flex-wrap gap-x-4 gap-y-1 text-sm text-[var(--color-muted)]">
         <span>📍 {job.location}</span>
         <span>🕒 {job.type}</span>
         {job.level && <span>🎯 {job.level}</span>}
@@ -37,11 +37,11 @@ export default function JobCard(job: JobCardProps) {
           👥 {job.quantity} {t("positions")}
         </span>
       </div>
-      <div className="mt-3 flex items-center justify-between">
-        <span className="text-sm font-semibold text-brand-700">
+      <div className="mt-auto flex items-end justify-between gap-3 border-t border-[var(--color-rule)] pt-5">
+        <span className="text-sm font-bold text-[var(--color-accent)]">
           {formatSalary(job.salaryMin, job.salaryMax, locale)}
         </span>
-        <span className="text-xs text-gray-400">
+        <span className="text-right text-xs text-[var(--color-muted)]">
           {t("postedOn", { date: formatDate(job.createdAt, locale) })}
         </span>
       </div>

@@ -1,6 +1,7 @@
 import { COMPANY } from "@/lib/constants";
+import type { ReactNode } from "react";
 
-export default function Footer() {
+export default function Footer({ actions }: { actions?: ReactNode }) {
   return (
     <footer className="mt-16 border-t border-gray-200 bg-gray-50">
       <div className="container-page grid gap-8 py-10 sm:grid-cols-2">
@@ -15,6 +16,7 @@ export default function Footer() {
           <div className="mt-4 text-xs text-gray-400">
             © {new Date().getFullYear()} {COMPANY.shortName}. All rights reserved.
           </div>
+          {actions}
         </div>
       </div>
     </footer>

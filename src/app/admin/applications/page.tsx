@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import ApplicationsTable from "@/components/admin/ApplicationsTable";
 import ApplicationFilter from "@/components/admin/ApplicationFilter";
+import JobDescriptionManager from "@/components/admin/JobDescriptionManager";
 import Link from "next/link";
 import { ageRangeToDobRange } from "@/lib/format";
 import type { Prisma } from "@prisma/client";
@@ -57,7 +58,7 @@ export default async function ApplicationsPage({
       : {}),
   };
 
-  const [applications, jobLocations, jobLevels, applicationFields] = await Promise.all([
+  const [applications, jobDescriptions, jobLocations, jobLevels, applicationFields] = await Promise.all([
     prisma.application.findMany({
       where,
       include: {
@@ -75,6 +76,19 @@ export default async function ApplicationsPage({
         },
       },
       orderBy: { createdAt: "desc" },
+    }),
+    prisma.jobDescription.findMany({
+      select: {
+        id: true,
+        title: true,
+        department: true,
+        version: true,
+        fileName: true,
+        filePath: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+      orderBy: { updatedAt: "desc" },
     }),
     prisma.job.findMany({ distinct: ["location"], select: { location: true } }),
     prisma.job.findMany({
@@ -97,16 +111,23 @@ export default async function ApplicationsPage({
     <div className="container-page py-10">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-gray-900">Hồ sơ ứng tuyển</h1>
+        <div className="relative flex items-center gap-2">
+          <JobDescriptionManager
+            jobDescriptions={jobDescriptions.map((jd) => ({
+              ...jd,
+              createdAt: jd.createdAt.toISOString(),
+              updatedAt: jd.updatedAt.toISOString(),
+            }))}
+          />
         <Link href="/admin" className="btn-secondary">
           ← Quay lại
         </Link>
+        </div>
       </div>
 
       <p className="mt-1 text-sm text-gray-500">
-        Sàng lọc theo bằng cấp, kinh nghiệm, khu vực, cấp bậc, độ tuổi, ngành nghề. Hệ thống tự động chấm %
-        phù hợp với yêu cầu tuyển dụng của từng tin (thiết lập yêu cầu khi đăng/sửa tin). Hồ sơ đạt vòng 1
-        (≥ 70%) sẽ được AI tự động đọc CV thật để chấm điểm sâu hơn kèm nhận xét — tiết kiệm chi phí AI cho
-        các hồ sơ rõ ràng chưa phù hợp.
+        Hồ sơ ứng viên nộp từ website được tập trung tại đây. Bộ lọc bên dưới chỉ dùng để khoanh vùng hồ sơ
+        theo thông tin cơ bản; HR chọn một JD và nhiều CV để Gemini hỗ trợ so sánh, chấm điểm và xếp hạng.
       </p>
 
       <div className="mt-4">
@@ -117,6 +138,13 @@ export default async function ApplicationsPage({
 
       <div className="mt-2">
         <ApplicationsTable
+          jobDescriptions={jobDescriptions.map((jd) => ({
+            id: jd.id,
+            title: jd.title,
+            department: jd.department,
+            version: jd.version,
+            updatedAt: jd.updatedAt.toISOString(),
+          }))}
           applications={applications.map((a) => ({
             ...a,
             createdAt: a.createdAt.toISOString(),

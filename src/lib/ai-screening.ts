@@ -36,6 +36,9 @@ export type AiScreeningInput = {
 export type AiScreeningResult = {
   score: number;
   summary: string;
+  matchingExperience: string;
+  matchingSkills: string;
+  gaps: string;
   /** Nhà cung cấp AI đã dùng để phân tích — hiển thị cho admin biết. */
   provider: "claude" | "gemini";
 };
@@ -67,16 +70,24 @@ ${requirementLines ? `\nYêu cầu cụ thể (dữ liệu có cấu trúc, đã
 ${cvText}
 
 Chỉ trả lời bằng JSON hợp lệ duy nhất, không kèm bất kỳ văn bản nào khác ngoài JSON, đúng cấu trúc:
-{"score": <số nguyên 0-100>, "summary": "<nhận xét 3-5 câu bằng tiếng Việt: điểm phù hợp chính, điểm còn thiếu/rủi ro, đề xuất có nên mời phỏng vấn không>"}`;
+{"score": <số nguyên 0-100>, "matchingExperience": "<kinh nghiệm phù hợp, tiếng Việt>", "matchingSkills": "<kỹ năng phù hợp, tiếng Việt>", "gaps": "<điểm còn thiếu hoặc chưa có bằng chứng, tiếng Việt>", "summary": "<nhận xét tổng hợp 3-5 câu bằng tiếng Việt>"}
+
+Không được suy đoán thông tin không có trong CV. Kết quả chỉ hỗ trợ HR sàng lọc, không được tự động đưa ra quyết định tuyển dụng.`;
 }
 
-function parseAiJson(raw: string): { score: number; summary: string } {
+function parseAiJson(raw: string): Omit<AiScreeningResult, "provider"> {
   const jsonMatch = raw.match(/\{[\s\S]*\}/);
   if (!jsonMatch) {
     throw new Error("AI không trả về đúng định dạng JSON như yêu cầu.");
   }
 
-  let parsed: { score?: unknown; summary?: unknown };
+  let parsed: {
+    score?: unknown;
+    summary?: unknown;
+    matchingExperience?: unknown;
+    matchingSkills?: unknown;
+    gaps?: unknown;
+  };
   try {
     parsed = JSON.parse(jsonMatch[0]);
   } catch {
@@ -85,12 +96,21 @@ function parseAiJson(raw: string): { score: number; summary: string } {
 
   const score = Math.round(Number(parsed.score));
   const summary = String(parsed.summary ?? "").trim();
+  const matchingExperience = String(parsed.matchingExperience ?? "").trim();
+  const matchingSkills = String(parsed.matchingSkills ?? "").trim();
+  const gaps = String(parsed.gaps ?? "").trim();
 
-  if (!Number.isFinite(score) || !summary) {
-    throw new Error("AI trả về dữ liệu không hợp lệ (thiếu score hoặc summary).");
+  if (!Number.isFinite(score) || !summary || !matchingExperience || !matchingSkills || !gaps) {
+    throw new Error("AI trả về dữ liệu không hợp lệ hoặc thiếu các trường đánh giá.");
   }
 
-  return { score: Math.max(0, Math.min(100, score)), summary };
+  return {
+    score: Math.max(0, Math.min(100, score)),
+    summary,
+    matchingExperience,
+    matchingSkills,
+    gaps,
+  };
 }
 
 async function analyzeWithClaude(input: AiScreeningInput, apiKey: string): Promise<AiScreeningResult> {
@@ -141,22 +161,22 @@ async function analyzeWithGemini(input: AiScreeningInput, apiKey: string): Promi
 }
 
 /**
- * Ưu tiên Claude nếu đã cấu hình ANTHROPIC_API_KEY (chất lượng nhận xét tốt
- * hơn), nếu chưa thì tự động dùng Gemini (miễn phí) nếu có GEMINI_API_KEY.
- * Không cấu hình cái nào thì báo lỗi rõ ràng để admin biết cần thêm key.
+ * Ưu tiên Gemini theo luồng đánh giá hồ sơ của trang quản trị. Claude chỉ là
+ * phương án dự phòng để không làm gián đoạn hệ thống cũ.
  */
 export async function analyzeApplicationWithAI(input: AiScreeningInput): Promise<AiScreeningResult> {
+  const geminiKey = await getGeminiApiKey();
+  if (geminiKey) {
+    return analyzeWithGemini(input, geminiKey);
+  }
+
   const anthropicKey = process.env.ANTHROPIC_API_KEY;
   if (anthropicKey) {
     return analyzeWithClaude(input, anthropicKey);
-  }
-
-  const geminiKey = process.env.GEMINI_API_KEY;
-  if (geminiKey) {
-    return analyzeWithGemini(input, geminiKey);
   }
 
   throw new AiScreeningUnavailableError(
     "Chưa cấu hình ANTHROPIC_API_KEY hoặc GEMINI_API_KEY trên server."
   );
 }
+import { getGeminiApiKey } from "./secure-settings";

@@ -32,17 +32,16 @@ export default async function ContactPage({
 
   return (
     <div>
-      <section className="relative overflow-hidden border-b-4 border-brand-600 text-white">
+      <section className="page-mast">
         <img
           src="/images/banners/contact.jpg"
           alt=""
           aria-hidden
-          className="absolute inset-0 h-full w-full object-cover"
+          className="page-mast__image"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#4a0000]/95 via-[#930000]/85 to-[#930000]/50" />
-        <div className="container-page relative py-12 sm:py-16">
+        <div className="container-page page-mast__content">
           <p className="text-xs font-bold uppercase tracking-[0.18em] text-white/80">{t("eyebrow")}</p>
-          <h1 className="mt-2 text-2xl font-bold sm:text-3xl">{t("title")}</h1>
+          <h1 className="page-mast__title mt-2">{t("title")}</h1>
           <p className="mt-3 max-w-2xl text-sm leading-relaxed text-white/90">{t("intro")}</p>
         </div>
       </section>
@@ -61,7 +60,7 @@ export default async function ContactPage({
                 <div key={item.label} className="grid grid-cols-3 gap-4 py-3">
                   <dt className="text-gray-500">{item.label}</dt>
                   <dd className="col-span-2 font-medium text-brand-600">
-                    <a href={item.href} className="hover:text-[#930000] hover:underline">
+                    <a href={item.href} className="hover:text-[var(--color-accent)] hover:underline">
                       {item.value}
                     </a>
                   </dd>
@@ -71,7 +70,7 @@ export default async function ContactPage({
 
             <Link
               href="/company"
-              className="mt-6 inline-flex items-center text-sm font-semibold text-brand-600 hover:text-[#930000]"
+              className="mt-6 inline-flex items-center whitespace-nowrap text-sm font-semibold text-brand-600 hover:text-[var(--color-accent)]"
             >
               {t("visitCompany")} →
             </Link>
@@ -90,7 +89,7 @@ export default async function ContactPage({
               href={COMPANY.mapPlaceUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="block border-t border-gray-200 bg-white px-4 py-3 text-center text-sm font-semibold text-brand-600 hover:text-[#930000]"
+              className="block whitespace-nowrap border-t border-gray-200 bg-white px-4 py-3 text-center text-sm font-semibold text-brand-600 hover:text-[var(--color-accent)]"
             >
               {t("openInMaps")}
             </a>

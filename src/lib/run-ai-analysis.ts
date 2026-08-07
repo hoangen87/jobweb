@@ -11,13 +11,21 @@ import { analyzeApplicationWithAI, AiScreeningUnavailableError } from "./ai-scre
 export async function runAiAnalysisForApplication(
   applicationId: string,
   origin: string,
-  force = false
+  force = false,
+  jobDescriptionId?: string
 ): Promise<void> {
   const app = await prisma.application.findUnique({
     where: { id: applicationId },
     include: { job: true },
   });
   if (!app) throw new Error("Không tìm thấy hồ sơ ứng tuyển.");
+
+  const selectedJd = jobDescriptionId
+    ? await prisma.jobDescription.findUnique({ where: { id: jobDescriptionId } })
+    : null;
+  if (jobDescriptionId && !selectedJd) {
+    throw new Error("Không tìm thấy JD đã chọn.");
+  }
 
   const structured = screenApplication(app, app.job);
   const failedFirstRound = structured.score !== null && structured.qualified === false;
@@ -47,9 +55,9 @@ export async function runAiAnalysisForApplication(
 
   try {
     const result = await analyzeApplicationWithAI({
-      jobTitle: app.job.title,
-      jobDescription: app.job.description,
-      jobRequirements: app.job.requirements,
+      jobTitle: selectedJd?.title ?? app.job.title,
+      jobDescription: selectedJd?.content ?? app.job.description,
+      jobRequirements: selectedJd ? "Đánh giá theo toàn bộ nội dung JD đã tải lên." : app.job.requirements,
       reqEducationMin: app.job.reqEducationMin,
       reqExperienceYearsMin: app.job.reqExperienceYearsMin,
       reqAgeMin: app.job.reqAgeMin,
@@ -66,6 +74,7 @@ export async function runAiAnalysisForApplication(
         aiScore: result.score,
         aiSummary: `${providerLabel} ${result.summary}`,
         aiAnalyzedAt: new Date(),
+        aiJobDescriptionId: selectedJd?.id ?? null,
       },
     });
   } catch (err) {

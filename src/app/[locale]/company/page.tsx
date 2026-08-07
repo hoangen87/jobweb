@@ -32,16 +32,15 @@ export default async function CompanyPage({
 
   return (
     <div>
-      <section className="relative overflow-hidden border-b-4 border-brand-600 text-white">
+      <section className="page-mast">
         <img
           src="/images/banners/company.jpg"
           alt=""
           aria-hidden
-          className="absolute inset-0 h-full w-full object-cover"
+          className="page-mast__image"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#4a0000]/95 via-[#930000]/85 to-[#930000]/50" />
-        <div className="container-page relative py-12 sm:py-16">
-          <h1 className="text-2xl font-bold sm:text-3xl">{t("title")}</h1>
+        <div className="container-page page-mast__content">
+          <h1 className="page-mast__title">{t("title")}</h1>
           <p className="mt-2 text-white/85">{COMPANY.legalName}</p>
         </div>
       </section>
@@ -49,7 +48,7 @@ export default async function CompanyPage({
       <div className="container-page py-12">
         <div className="grid gap-8 lg:grid-cols-3">
         <div className="lg:col-span-2">
-          <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+          <div className="border-y border-[var(--color-rule)] py-6">
             <h2 className="text-base font-semibold text-gray-900">{t("businessInfo")}</h2>
             <dl className="mt-4 divide-y divide-gray-100 text-sm">
               {rows.map(([label, value]) => (
@@ -61,7 +60,7 @@ export default async function CompanyPage({
             </dl>
           </div>
 
-          <div className="mt-6 rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+          <div className="mt-10 border-y border-[var(--color-rule)] py-6">
             <h2 className="text-base font-semibold text-gray-900">{t("productsTitle")}</h2>
             <p className="mt-3 text-sm leading-relaxed text-gray-600">{t("industryDetail")}</p>
             <div className="mt-5 grid grid-cols-2 gap-4 sm:grid-cols-4">
@@ -82,7 +81,7 @@ export default async function CompanyPage({
         </div>
 
         <div>
-          <div className="rounded-xl border border-brand-100 bg-brand-50 p-6">
+          <div className="border-t-4 border-[var(--color-accent)] bg-[var(--color-paper-2)] p-6">
             <h2 className="text-base font-semibold text-brand-900">{t("whyTitle")}</h2>
             <ul className="mt-4 space-y-3 text-sm text-brand-900">
               <li>✔ {t("why1")}</li>
@@ -94,12 +93,12 @@ export default async function CompanyPage({
         </div>
       </div>
 
-        <div className="mt-8 rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+        <div className="mt-10 border-y border-[var(--color-rule)] py-6">
           <h2 className="text-base font-semibold text-gray-900">{t("timelineTitle")}</h2>
           <ol className="mt-5 space-y-5 border-l-2 border-brand-100 pl-6">
             {timeline.map((item, index) => (
               <li key={index} className="relative text-sm leading-relaxed text-gray-600">
-                <span className="absolute -left-[1.95rem] top-1 h-3 w-3 rounded-full border-2 border-white bg-[#930000] shadow" />
+                <span className="absolute -left-[1.95rem] top-1 h-3 w-3 rounded-full border-2 border-white bg-[var(--color-accent)] shadow" />
                 {item}
               </li>
             ))}

@@ -40,15 +40,19 @@ export default function SearchFilter({ departments, locations }: Props) {
   return (
     <form
       onSubmit={applyFilters}
-      className="grid gap-3 rounded-xl border border-gray-200 bg-white p-4 shadow-sm sm:grid-cols-4"
+      className="grid gap-3 border-y border-[var(--color-rule)] py-5 sm:grid-cols-4"
     >
+      <label className="sr-only" htmlFor="job-search">{t("searchPlaceholder")}</label>
       <input
+        id="job-search"
         className="input-field sm:col-span-2"
         placeholder={t("searchPlaceholder")}
         value={q}
         onChange={(e) => setQ(e.target.value)}
       />
+      <label className="sr-only" htmlFor="department-filter">{t("allDepartments")}</label>
       <select
+        id="department-filter"
         className="input-field"
         value={department}
         onChange={(e) => setDepartment(e.target.value)}
@@ -60,7 +64,9 @@ export default function SearchFilter({ departments, locations }: Props) {
           </option>
         ))}
       </select>
+      <label className="sr-only" htmlFor="location-filter">{t("allLocations")}</label>
       <select
+        id="location-filter"
         className="input-field"
         value={location}
         onChange={(e) => setLocation(e.target.value)}

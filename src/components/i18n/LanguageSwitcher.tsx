@@ -25,7 +25,7 @@ export default function LanguageSwitcher() {
   }
 
   return (
-    <div className="flex items-center gap-1 rounded-lg border border-gray-200 bg-white p-1">
+    <div className="flex items-center border border-[var(--color-rule)] bg-[var(--color-paper)] p-1">
       {routing.locales.map((l) => (
         <button
           key={l}
@@ -33,10 +33,10 @@ export default function LanguageSwitcher() {
           onClick={() => handleSelect(l)}
           disabled={isPending}
           aria-current={l === locale}
-          className={`rounded-md px-2.5 py-1 text-xs font-semibold transition ${
+          className={`min-h-9 whitespace-nowrap px-2 text-xs font-bold transition ${
             l === locale
-              ? "bg-brand-600 text-white"
-              : "text-gray-600 hover:bg-gray-100"
+              ? "bg-[var(--color-accent)] text-[var(--color-accent-ink)]"
+              : "text-[var(--color-muted)] hover:bg-[var(--color-paper-2)]"
           }`}
         >
           {LOCALE_SHORT_LABEL[l]}

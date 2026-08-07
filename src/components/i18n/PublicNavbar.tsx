@@ -10,7 +10,6 @@ import LanguageSwitcher from "@/components/i18n/LanguageSwitcher";
 export default function PublicNavbar() {
   const t = useTranslations("nav");
   const [open, setOpen] = useState(false);
-
   const links = [
     { href: "/", label: t("jobs") },
     { href: "/company", label: t("company") },
@@ -20,68 +19,47 @@ export default function PublicNavbar() {
   ];
 
   return (
-    <header className="sticky top-0 z-40 border-b-4 border-brand-600 bg-white shadow-sm">
-      <div className="container-page flex min-h-20 items-center justify-between gap-4 py-3">
-        <Link href="/" className="flex items-center gap-2 shrink-0">
-          <Logo className="h-10" />
+    <header className="sticky top-0 z-40 border-b border-[var(--color-ink)] bg-[var(--color-paper)]">
+      <div className="container-page relative flex min-h-16 items-center justify-start border-b border-[var(--color-rule)] py-3 lg:justify-center">
+        <Link href="/" className="shrink-0" aria-label="JHONSIN">
+          <Logo className="h-7 max-w-[92px] sm:h-11 sm:max-w-none" />
         </Link>
-
-        <nav className="hidden items-center self-stretch bg-[#930000] px-3 text-xs font-semibold text-white lg:flex">
-          {links.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="flex items-center px-3 transition hover:bg-brand-600"
-            >
-              {link.label}
-            </Link>
-          ))}
-          {/* Khu vực quản trị không đa ngôn ngữ, luôn ở đường dẫn /admin cố định */}
-          <NextLink href="/admin" className="flex items-center px-3 transition hover:bg-brand-600">
-            {t("admin")}
-          </NextLink>
-        </nav>
-
-        <div className="flex items-center gap-2">
+        <div className="absolute right-[var(--page-gutter)] flex items-center gap-2">
           <LanguageSwitcher />
           <button
             type="button"
-            onClick={() => setOpen((v) => !v)}
+            onClick={() => setOpen((value) => !value)}
             aria-expanded={open}
             aria-label={open ? "Close menu" : "Open menu"}
-            className="flex h-9 w-9 items-center justify-center rounded-sm border border-gray-300 text-brand-900 lg:hidden"
+            className="grid h-11 w-11 place-items-center border border-[var(--color-rule)] text-[var(--color-ink)] lg:hidden"
           >
-            {open ? (
-              <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6 6l12 12M18 6l-12 12" />
-              </svg>
-            ) : (
-              <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4 7h16M4 12h16M4 17h16" />
-              </svg>
-            )}
+            <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth={2} aria-hidden>
+              {open ? <path strokeLinecap="round" d="M6 6l12 12M18 6l-12 12" /> : <path strokeLinecap="round" d="M4 7h16M4 12h16M4 17h16" />}
+            </svg>
           </button>
         </div>
       </div>
 
+      <nav className="container-page hidden min-h-12 items-stretch justify-center text-xs font-bold uppercase tracking-[0.08em] lg:flex">
+        {links.map((link) => (
+          <Link key={link.href} href={link.href} className="flex items-center whitespace-nowrap border-x border-transparent px-4 transition hover:border-[var(--color-rule)] hover:text-[var(--color-accent)]">
+            {link.label}
+          </Link>
+        ))}
+        <NextLink href="/admin" className="flex items-center whitespace-nowrap border-x border-transparent px-4 transition hover:border-[var(--color-rule)] hover:text-[var(--color-accent)]">
+          {t("admin")}
+        </NextLink>
+      </nav>
+
       {open && (
-        <nav className="border-t border-gray-200 bg-[#930000] text-sm font-semibold text-white lg:hidden">
+        <nav className="border-t border-[var(--color-rule)] bg-[var(--color-paper)] text-sm font-bold lg:hidden">
           <div className="container-page flex flex-col py-2">
             {links.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                onClick={() => setOpen(false)}
-                className="border-b border-white/10 py-3 transition hover:text-brand-100"
-              >
+              <Link key={link.href} href={link.href} onClick={() => setOpen(false)} className="flex min-h-11 items-center whitespace-nowrap border-b border-[var(--color-rule)]">
                 {link.label}
               </Link>
             ))}
-            <NextLink
-              href="/admin"
-              onClick={() => setOpen(false)}
-              className="py-3 transition hover:text-brand-100"
-            >
+            <NextLink href="/admin" onClick={() => setOpen(false)} className="flex min-h-11 items-center whitespace-nowrap">
               {t("admin")}
             </NextLink>
           </div>

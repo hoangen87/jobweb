@@ -2,8 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { formatDate, calculateAge } from "@/lib/format";
-import { screenApplication, SCREENING_PASS_THRESHOLD, type ScreeningResult } from "@/lib/screening";
+import { calculateAge, formatDate } from "@/lib/format";
 
 type Application = {
   id: string;
@@ -14,24 +13,29 @@ type Application = {
   education: string | null;
   experienceYears: number | null;
   fieldOfExpertise: string | null;
-  cvFileName: string;
   cvFilePath: string;
   status: string;
   createdAt: string;
-  aiScore: number | null;
-  aiSummary: string | null;
-  aiStatus: string | null;
-  aiAnalyzedAt: string | null;
-  job: {
-    title: string;
-    location?: string;
-    level?: string | null;
-    reqEducationMin?: string | null;
-    reqExperienceYearsMin?: number | null;
-    reqAgeMin?: number | null;
-    reqAgeMax?: number | null;
-    reqField?: string | null;
-  };
+  job: { title: string; location?: string; level?: string | null };
+};
+
+type JobDescriptionOption = {
+  id: string;
+  title: string;
+  department: string;
+  version: number;
+  updatedAt: string;
+};
+
+type EvaluationResult = {
+  applicationId: string;
+  fullName: string;
+  score: number;
+  matchingExperience: string;
+  matchingSkills: string;
+  gaps: string;
+  aiComment: string;
+  rank: number;
 };
 
 const STATUS_OPTIONS = ["NEW", "REVIEWING", "INTERVIEW", "REJECTED", "HIRED"];
@@ -43,158 +47,144 @@ const STATUS_LABEL: Record<string, string> = {
   HIRED: "Đã tuyển",
 };
 
-type Bucket = "all" | "qualified" | "unqualified" | "unset";
-
-function scoreBadgeClass(result: ScreeningResult) {
-  if (result.score === null) return "bg-gray-100 text-gray-500";
-  if (result.qualified) return "bg-green-100 text-green-700";
-  return "bg-red-100 text-red-700";
-}
-
-function aiBadgeClass(app: Application) {
-  if (app.aiStatus === "DONE" && app.aiScore !== null) {
-    return app.aiScore >= SCREENING_PASS_THRESHOLD ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700";
-  }
-  if (app.aiStatus === "ERROR") return "bg-amber-100 text-amber-700";
-  if (app.aiStatus === "SKIPPED") return "bg-gray-100 text-gray-500";
-  return "bg-gray-100 text-gray-400";
-}
-
-function aiBadgeLabel(app: Application) {
-  if (app.aiStatus === "DONE" && app.aiScore !== null) return `${app.aiScore}% (AI)`;
-  if (app.aiStatus === "ERROR") return "Lỗi phân tích";
-  if (app.aiStatus === "SKIPPED") return "Chưa lọt vòng 1";
-  return "Chưa phân tích";
-}
-
-export default function ApplicationsTable({ applications }: { applications: Application[] }) {
+export default function ApplicationsTable({
+  applications,
+  jobDescriptions,
+}: {
+  applications: Application[];
+  jobDescriptions: JobDescriptionOption[];
+}) {
   const router = useRouter();
-  const [bucket, setBucket] = useState<Bucket>("all");
-  const [analyzingIds, setAnalyzingIds] = useState<Set<string>>(new Set());
+  const [selectedJdId, setSelectedJdId] = useState("");
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [evaluating, setEvaluating] = useState(false);
+  const [error, setError] = useState("");
+  const [results, setResults] = useState<EvaluationResult[]>([]);
+  const [resultErrors, setResultErrors] = useState<Array<{ fullName: string; error: string }>>([]);
 
-  const scored = useMemo(
-    () => applications.map((app) => ({ app, result: screenApplication(app, app.job) })),
-    [applications]
+  const allSelected = applications.length > 0 && selectedIds.size === applications.length;
+  const selectedJd = useMemo(
+    () => jobDescriptions.find((jd) => jd.id === selectedJdId),
+    [jobDescriptions, selectedJdId]
   );
 
-  const summary = useMemo(() => {
-    let qualified = 0;
-    let unqualified = 0;
-    let unset = 0;
-    for (const { result } of scored) {
-      if (result.score === null) unset++;
-      else if (result.qualified) qualified++;
-      else unqualified++;
-    }
-    return { qualified, unqualified, unset, total: scored.length };
-  }, [scored]);
+  function toggleOne(id: string) {
+    setSelectedIds((current) => {
+      const next = new Set(current);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }
 
-  const filtered = useMemo(() => {
-    if (bucket === "all") return scored;
-    if (bucket === "qualified") return scored.filter((s) => s.result.qualified === true);
-    if (bucket === "unqualified") return scored.filter((s) => s.result.qualified === false);
-    return scored.filter((s) => s.result.score === null);
-  }, [scored, bucket]);
+  function toggleAll() {
+    setSelectedIds(allSelected ? new Set() : new Set(applications.map((application) => application.id)));
+  }
+
+  async function evaluateSelected() {
+    if (!selectedJdId || selectedIds.size === 0) return;
+    setEvaluating(true);
+    setError("");
+    setResultErrors([]);
+    try {
+      const response = await fetch("/api/evaluations/batch", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          jobDescriptionId: selectedJdId,
+          applicationIds: Array.from(selectedIds),
+        }),
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(data.error || "Không thể đánh giá hồ sơ.");
+      setResults(data.results || []);
+      setResultErrors(data.errors || []);
+      router.refresh();
+    } catch (evaluationError) {
+      setError(evaluationError instanceof Error ? evaluationError.message : "Không thể đánh giá hồ sơ.");
+    } finally {
+      setEvaluating(false);
+    }
+  }
 
   async function updateStatus(id: string, status: string) {
-    const res = await fetch(`/api/applications/${id}`, {
+    const response = await fetch(`/api/applications/${id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ status }),
     });
-    if (res.ok) router.refresh();
+    if (response.ok) router.refresh();
   }
 
-  async function handleDelete(id: string, name: string) {
-    if (!confirm(`Xóa hồ sơ của "${name}"?`)) return;
-    const res = await fetch(`/api/applications/${id}`, { method: "DELETE" });
-    if (res.ok) router.refresh();
-  }
-
-  async function handleReanalyze(id: string) {
-    setAnalyzingIds((prev) => new Set(prev).add(id));
-    try {
-      await fetch(`/api/applications/${id}/ai-analyze`, { method: "POST" });
-      router.refresh();
-    } finally {
-      setAnalyzingIds((prev) => {
-        const next = new Set(prev);
-        next.delete(id);
-        return next;
-      });
-    }
-  }
-
-  if (applications.length === 0) {
-    return (
-      <div className="rounded-xl border border-dashed border-gray-300 bg-white p-10 text-center text-gray-500">
-        Không có hồ sơ nào khớp với bộ lọc hiện tại.
-      </div>
-    );
+  async function deleteApplication(id: string, fullName: string) {
+    if (!confirm(`Xóa hồ sơ của "${fullName}"?`)) return;
+    const response = await fetch(`/api/applications/${id}`, { method: "DELETE" });
+    if (response.ok) router.refresh();
   }
 
   return (
     <div>
-      <div className="grid gap-3 sm:grid-cols-4">
-        <button
-          type="button"
-          onClick={() => setBucket("all")}
-          className={`rounded-xl border p-4 text-left transition ${
-            bucket === "all" ? "border-brand-600 bg-brand-50" : "border-gray-200 bg-white hover:border-brand-300"
-          }`}
-        >
-          <div className="text-2xl font-bold text-gray-900">{summary.total}</div>
-          <div className="text-xs text-gray-500">Tổng số hồ sơ</div>
-        </button>
-        <button
-          type="button"
-          onClick={() => setBucket("qualified")}
-          className={`rounded-xl border p-4 text-left transition ${
-            bucket === "qualified" ? "border-green-600 bg-green-50" : "border-gray-200 bg-white hover:border-green-300"
-          }`}
-        >
-          <div className="text-2xl font-bold text-green-700">{summary.qualified}</div>
-          <div className="text-xs text-gray-500">Đạt yêu cầu (≥ {SCREENING_PASS_THRESHOLD}%)</div>
-        </button>
-        <button
-          type="button"
-          onClick={() => setBucket("unqualified")}
-          className={`rounded-xl border p-4 text-left transition ${
-            bucket === "unqualified" ? "border-red-600 bg-red-50" : "border-gray-200 bg-white hover:border-red-300"
-          }`}
-        >
-          <div className="text-2xl font-bold text-red-700">{summary.unqualified}</div>
-          <div className="text-xs text-gray-500">Không đạt yêu cầu</div>
-        </button>
-        <button
-          type="button"
-          onClick={() => setBucket("unset")}
-          className={`rounded-xl border p-4 text-left transition ${
-            bucket === "unset" ? "border-gray-500 bg-gray-100" : "border-gray-200 bg-white hover:border-gray-300"
-          }`}
-        >
-          <div className="text-2xl font-bold text-gray-500">{summary.unset}</div>
-          <div className="text-xs text-gray-500">Tin chưa đặt yêu cầu chấm điểm</div>
-        </button>
+      <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+        <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_auto_auto] lg:items-end">
+          <label className="block">
+            <span className="mb-1.5 block text-sm font-semibold text-gray-700">JD dùng để đánh giá</span>
+            <select
+              value={selectedJdId}
+              onChange={(event) => {
+                setSelectedJdId(event.target.value);
+                setResults([]);
+                setResultErrors([]);
+              }}
+              className="input-field"
+            >
+              <option value="">-- Chọn 01 JD trong thư viện --</option>
+              {jobDescriptions.map((jd) => (
+                <option key={jd.id} value={jd.id}>
+                  {jd.title} · {jd.department} · v{jd.version} · cập nhật {formatDate(jd.updatedAt)}
+                </option>
+              ))}
+            </select>
+          </label>
+          <button type="button" onClick={toggleAll} disabled={applications.length === 0} className="btn-secondary">
+            {allSelected ? "Bỏ chọn tất cả" : "Chọn tất cả"}
+          </button>
+          <button
+            type="button"
+            onClick={evaluateSelected}
+            disabled={!selectedJdId || selectedIds.size === 0 || evaluating}
+            className="btn-primary"
+          >
+            {evaluating ? `Đang đánh giá ${selectedIds.size} HS...` : `Đánh giá HS (${selectedIds.size})`}
+          </button>
+        </div>
+
+        {selectedJd && (
+          <div className="mt-3 rounded-md bg-brand-50 px-3 py-2 text-sm text-brand-900">
+            <strong>{selectedJd.title}</strong> · Phòng ban: {selectedJd.department} · Phiên bản: v
+            {selectedJd.version} · Cập nhật: {formatDate(selectedJd.updatedAt)}
+          </div>
+        )}
+        <p className="mt-2 text-xs text-gray-500">
+          Kết quả AI chỉ hỗ trợ HR sàng lọc, không tự động quyết định tuyển dụng.
+        </p>
+        {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
       </div>
 
-      {filtered.length === 0 ? (
+      {applications.length === 0 ? (
         <div className="mt-4 rounded-xl border border-dashed border-gray-300 bg-white p-10 text-center text-gray-500">
-          Không có hồ sơ nào trong nhóm này.
+          Chưa có hồ sơ ứng viên hoặc không có hồ sơ nào khớp với bộ lọc hiện tại.
         </div>
       ) : (
         <div className="mt-4 overflow-x-auto rounded-xl border border-gray-200 bg-white shadow-sm">
           <table className="min-w-full divide-y divide-gray-200 text-sm">
             <thead className="bg-gray-50 text-left text-xs font-semibold uppercase text-gray-500">
               <tr>
+                <th className="px-4 py-3">
+                  <input type="checkbox" checked={allSelected} onChange={toggleAll} aria-label="Chọn tất cả hồ sơ" />
+                </th>
                 <th className="px-4 py-3">Ứng viên</th>
-                <th className="px-4 py-3">Tuổi</th>
                 <th className="px-4 py-3">Vị trí ứng tuyển</th>
-                <th className="px-4 py-3">Bằng cấp</th>
-                <th className="px-4 py-3">Kinh nghiệm</th>
-                <th className="px-4 py-3">Ngành nghề</th>
-                <th className="px-4 py-3">% Phù hợp</th>
-                <th className="px-4 py-3">Đánh giá AI</th>
+                <th className="px-4 py-3">Thông tin sàng lọc</th>
                 <th className="px-4 py-3">Liên hệ</th>
                 <th className="px-4 py-3">CV</th>
                 <th className="px-4 py-3">Ngày nộp</th>
@@ -203,105 +193,117 @@ export default function ApplicationsTable({ applications }: { applications: Appl
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {filtered.map(({ app, result }) => {
-                const age = calculateAge(app.dateOfBirth);
-                const tooltip = result.criteria.map((c) => `${c.label}: ${c.detail}`).join("\n");
-                return (
-                  <tr key={app.id}>
-                    <td className="px-4 py-3 font-medium text-gray-900">{app.fullName}</td>
-                    <td className="px-4 py-3 text-gray-600">{age ?? "—"}</td>
-                    <td className="px-4 py-3 text-gray-600">
-                      <div>{app.job.title}</div>
-                      {app.job.location && (
-                        <div className="text-xs text-gray-400">
-                          {app.job.location}
-                          {app.job.level ? ` · ${app.job.level}` : ""}
-                        </div>
-                      )}
-                    </td>
-                    <td className="px-4 py-3 text-gray-600">{app.education ?? "—"}</td>
-                    <td className="px-4 py-3 text-gray-600">
-                      {app.experienceYears !== null ? `${app.experienceYears} năm` : "—"}
-                    </td>
-                    <td className="px-4 py-3 text-gray-600">{app.fieldOfExpertise ?? "—"}</td>
-                    <td className="px-4 py-3">
-                      {result.score === null ? (
-                        <span
-                          className="inline-flex rounded-full px-2.5 py-1 text-xs font-semibold bg-gray-100 text-gray-500"
-                          title="Tin tuyển dụng chưa đặt yêu cầu cụ thể để chấm điểm"
-                        >
-                          Chưa có yêu cầu
-                        </span>
-                      ) : (
-                        <span
-                          className={`inline-flex flex-col items-start rounded-full px-2.5 py-1 text-xs font-semibold ${scoreBadgeClass(
-                            result
-                          )}`}
-                          title={tooltip}
-                        >
-                          {result.score}% · {result.qualified ? "Đạt yêu cầu" : "Không đạt"}
-                        </span>
-                      )}
-                    </td>
-                    <td className="px-4 py-3">
-                      <div className="flex flex-col items-start gap-1">
-                        <span
-                          className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${aiBadgeClass(app)}`}
-                          title={app.aiSummary ?? undefined}
-                        >
-                          {aiBadgeLabel(app)}
-                        </span>
-                        {app.aiSummary && app.aiStatus === "DONE" && (
-                          <p className="max-w-[220px] text-xs text-gray-500 line-clamp-3" title={app.aiSummary}>
-                            {app.aiSummary}
-                          </p>
-                        )}
-                        <button
-                          type="button"
-                          onClick={() => handleReanalyze(app.id)}
-                          disabled={analyzingIds.has(app.id)}
-                          className="text-xs text-brand-600 hover:underline disabled:text-gray-400"
-                        >
-                          {analyzingIds.has(app.id) ? "Đang phân tích..." : "Phân tích lại bằng AI"}
-                        </button>
-                      </div>
-                    </td>
-                    <td className="px-4 py-3 text-gray-600">
-                      <div>{app.email}</div>
-                      <div>{app.phone}</div>
-                    </td>
-                    <td className="px-4 py-3">
-                      <a href={app.cvFilePath} target="_blank" className="text-brand-600 hover:underline">
-                        Xem CV
-                      </a>
-                    </td>
-                    <td className="px-4 py-3 text-gray-500">{formatDate(app.createdAt)}</td>
-                    <td className="px-4 py-3">
-                      <select
-                        className="rounded-md border border-gray-300 px-2 py-1 text-xs"
-                        value={app.status}
-                        onChange={(e) => updateStatus(app.id, e.target.value)}
-                      >
-                        {STATUS_OPTIONS.map((s) => (
-                          <option key={s} value={s}>
-                            {STATUS_LABEL[s]}
-                          </option>
-                        ))}
-                      </select>
-                    </td>
-                    <td className="px-4 py-3 text-right">
-                      <button
-                        onClick={() => handleDelete(app.id, app.fullName)}
-                        className="text-red-600 hover:underline"
-                      >
-                        Xóa
-                      </button>
-                    </td>
-                  </tr>
-                );
-              })}
+              {applications.map((application) => (
+                <tr key={application.id} className={selectedIds.has(application.id) ? "bg-brand-50/50" : ""}>
+                  <td className="px-4 py-3">
+                    <input
+                      type="checkbox"
+                      checked={selectedIds.has(application.id)}
+                      onChange={() => toggleOne(application.id)}
+                      aria-label={`Chọn hồ sơ ${application.fullName}`}
+                    />
+                  </td>
+                  <td className="px-4 py-3 font-medium text-gray-900">{application.fullName}</td>
+                  <td className="px-4 py-3 text-gray-600">
+                    <div>{application.job.title}</div>
+                    <div className="text-xs text-gray-400">
+                      {application.job.location}
+                      {application.job.level ? ` · ${application.job.level}` : ""}
+                    </div>
+                  </td>
+                  <td className="px-4 py-3 text-gray-600">
+                    <div>{application.education || "—"}</div>
+                    <div className="text-xs text-gray-400">
+                      {application.experienceYears ?? "—"} năm · {application.fieldOfExpertise || "—"} ·{" "}
+                      {calculateAge(application.dateOfBirth) ?? "—"} tuổi
+                    </div>
+                  </td>
+                  <td className="px-4 py-3 text-gray-600">
+                    <div>{application.email}</div>
+                    <div>{application.phone}</div>
+                  </td>
+                  <td className="px-4 py-3">
+                    <a href={application.cvFilePath} target="_blank" rel="noreferrer" className="text-brand-600 hover:underline">
+                      Xem CV
+                    </a>
+                  </td>
+                  <td className="px-4 py-3 text-gray-500">{formatDate(application.createdAt)}</td>
+                  <td className="px-4 py-3">
+                    <select
+                      className="rounded-md border border-gray-300 px-2 py-1 text-xs"
+                      value={application.status}
+                      onChange={(event) => updateStatus(application.id, event.target.value)}
+                    >
+                      {STATUS_OPTIONS.map((status) => (
+                        <option key={status} value={status}>{STATUS_LABEL[status]}</option>
+                      ))}
+                    </select>
+                  </td>
+                  <td className="px-4 py-3 text-right">
+                    <button
+                      type="button"
+                      onClick={() => deleteApplication(application.id, application.fullName)}
+                      className="text-red-600 hover:underline"
+                    >
+                      Xóa
+                    </button>
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
+        </div>
+      )}
+
+      {results.length > 0 && (
+        <div className="mt-8">
+          <div className="mb-3 flex items-end justify-between">
+            <div>
+              <h2 className="text-xl font-bold text-gray-900">Kết quả đánh giá và xếp hạng</h2>
+              <p className="text-sm text-gray-500">
+                {selectedJd?.title} · {selectedJd?.department} · v{selectedJd?.version}
+              </p>
+            </div>
+          </div>
+          <div className="overflow-x-auto rounded-xl border border-gray-200 bg-white shadow-sm">
+            <table className="min-w-full divide-y divide-gray-200 text-sm">
+              <thead className="bg-gray-50 text-left text-xs font-semibold uppercase text-gray-500">
+                <tr>
+                  <th className="px-4 py-3">Xếp hạng</th>
+                  <th className="px-4 py-3">Họ tên ứng viên</th>
+                  <th className="px-4 py-3">Điểm phù hợp</th>
+                  <th className="px-4 py-3">Kinh nghiệm phù hợp</th>
+                  <th className="px-4 py-3">Kỹ năng phù hợp</th>
+                  <th className="px-4 py-3">Điểm còn thiếu</th>
+                  <th className="px-4 py-3">Nhận xét của AI</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100">
+                {results.map((result) => (
+                  <tr key={result.applicationId}>
+                    <td className="px-4 py-3 text-center text-lg font-bold text-brand-700">#{result.rank}</td>
+                    <td className="px-4 py-3 font-semibold text-gray-900">{result.fullName}</td>
+                    <td className="px-4 py-3">
+                      <span className="rounded-full bg-brand-50 px-3 py-1 font-bold text-brand-700">{result.score}%</span>
+                    </td>
+                    <td className="min-w-[220px] px-4 py-3 text-gray-600">{result.matchingExperience}</td>
+                    <td className="min-w-[220px] px-4 py-3 text-gray-600">{result.matchingSkills}</td>
+                    <td className="min-w-[220px] px-4 py-3 text-gray-600">{result.gaps}</td>
+                    <td className="min-w-[260px] px-4 py-3 text-gray-600">{result.aiComment}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {resultErrors.length > 0 && (
+        <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">
+          <div className="font-semibold">Một số hồ sơ chưa đánh giá được:</div>
+          <ul className="mt-2 list-disc space-y-1 pl-5">
+            {resultErrors.map((item) => <li key={item.fullName}>{item.fullName}: {item.error}</li>)}
+          </ul>
         </div>
       )}
     </div>

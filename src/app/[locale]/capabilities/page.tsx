@@ -28,17 +28,16 @@ export default async function CapabilitiesPage({
 
   return (
     <div>
-      <section className="relative overflow-hidden border-b-4 border-brand-600 text-white">
+      <section className="page-mast">
         <img
           src="/images/banners/capabilities.jpg"
           alt=""
           aria-hidden
-          className="absolute inset-0 h-full w-full object-cover"
+          className="page-mast__image"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#4a0000]/95 via-[#930000]/85 to-[#930000]/50" />
-        <div className="container-page relative py-12 sm:py-16">
+        <div className="container-page page-mast__content">
           <p className="text-xs font-bold uppercase tracking-[0.18em] text-white/80">{t("eyebrow")}</p>
-          <h1 className="mt-2 text-2xl font-bold sm:text-3xl">{t("title")}</h1>
+          <h1 className="page-mast__title mt-2">{t("title")}</h1>
           <p className="mt-3 max-w-2xl text-sm leading-relaxed text-white/90">{t("intro")}</p>
         </div>
       </section>
@@ -48,9 +47,9 @@ export default async function CapabilitiesPage({
           {items.map((item) => (
             <div
               key={item.no}
-              className="rounded-sm border border-gray-200 bg-gray-50 p-6 transition hover:border-[#930000] hover:bg-white"
+              className="rounded-sm border border-gray-200 bg-gray-50 p-6 transition hover:border-[var(--color-accent)] hover:bg-white"
             >
-              <span className="text-xs font-bold tracking-widest text-[#930000]">{item.no}</span>
+              <span className="text-xs font-bold tracking-widest text-[var(--color-accent)]">{item.no}</span>
               <h2 className="mt-2 text-base font-semibold text-brand-900">{item.title}</h2>
               <p className="mt-3 text-sm leading-relaxed text-gray-600">{item.text}</p>
             </div>
@@ -64,9 +63,9 @@ export default async function CapabilitiesPage({
             {stages.map((stage) => (
               <div
                 key={stage.label}
-                className="rounded-sm border border-gray-200 bg-gray-50 p-5 transition hover:border-[#930000] hover:bg-white"
+                className="rounded-sm border border-gray-200 bg-gray-50 p-5 transition hover:border-[var(--color-accent)] hover:bg-white"
               >
-                <div className="text-xs font-bold uppercase tracking-wide text-[#930000]">{stage.label}</div>
+                <div className="text-xs font-bold uppercase tracking-wide text-[var(--color-accent)]">{stage.label}</div>
                 <div className="mt-2 text-xl font-bold text-brand-900">{stage.capacity}</div>
                 <p className="mt-2 text-sm leading-relaxed text-gray-600">{stage.scope}</p>
               </div>
@@ -81,9 +80,9 @@ export default async function CapabilitiesPage({
             {kpis.map((kpi) => (
               <div
                 key={kpi.label}
-                className="rounded-sm border border-gray-200 bg-gray-50 p-5 text-center transition hover:border-[#930000] hover:bg-white"
+                className="rounded-sm border border-gray-200 bg-gray-50 p-5 text-center transition hover:border-[var(--color-accent)] hover:bg-white"
               >
-                <div className="text-2xl font-bold text-[#930000]">{kpi.value}</div>
+                <div className="text-2xl font-bold text-[var(--color-accent)]">{kpi.value}</div>
                 <div className="mt-2 text-xs leading-relaxed text-gray-600">{kpi.label}</div>
               </div>
             ))}

@@ -8,59 +8,103 @@ datasource db {
 }
 
 model Job {
-  id           String        @id @default(cuid())
-  title        String
-  department   String
-  location     String
-  type         String        // Toàn thời gian | Bán thời gian | Thời vụ | Thực tập
-  level        String?       // Nhân viên | Chuyên viên | Trưởng nhóm | Quản lý
-  quantity     Int           @default(1)
-  salaryMin    Int?
-  salaryMax    Int?
-  description  String
-  requirements String
-  benefits     String?
-  translations Json?         // Bản dịch tự động: { en: {...}, zh: {...} }
-  deadline     DateTime?
-  status       String        @default("OPEN") // OPEN | CLOSED
+  id                    String        @id @default(cuid())
+  title                 String
+  department            String
+  location              String
+  type                  String // Toàn thời gian | Bán thời gian | Thời vụ | Thực tập
+  level                 String? // Nhân viên | Chuyên viên | Trưởng nhóm | Quản lý
+  quantity              Int           @default(1)
+  salaryMin             Int?
+  salaryMax             Int?
+  description           String
+  requirements          String
+  benefits              String?
+  translations          Json? // Bản dịch tự động: { en: {...}, zh: {...} }
+  deadline              DateTime?
+  status                String        @default("OPEN") // OPEN | CLOSED
   // Yêu cầu tuyển dụng dạng có cấu trúc (tùy chọn) — dùng để tự động chấm %
   // phù hợp của ứng viên. Để trống nghĩa là không đặt yêu cầu cho tiêu chí đó.
   reqEducationMin       String? // Học vấn tối thiểu: THPT | Trung cấp | Cao đẳng | Đại học | Sau đại học
-  reqExperienceYearsMin Int?    // Số năm kinh nghiệm tối thiểu
-  reqAgeMin             Int?    // Độ tuổi tối thiểu
-  reqAgeMax             Int?    // Độ tuổi tối đa
+  reqExperienceYearsMin Int? // Số năm kinh nghiệm tối thiểu
+  reqAgeMin             Int? // Độ tuổi tối thiểu
+  reqAgeMax             Int? // Độ tuổi tối đa
   reqField              String? // Từ khóa ngành nghề/chuyên môn yêu cầu (phân cách bằng dấu phẩy)
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
-  applications Application[]
+  createdAt             DateTime      @default(now())
+  updatedAt             DateTime      @updatedAt
+  applications          Application[]
 }
 
 model Application {
-  id               String    @id @default(cuid())
-  jobId            String
-  job              Job       @relation(fields: [jobId], references: [id], onDelete: Cascade)
-  fullName         String
-  email            String
-  phone            String
-  dateOfBirth      DateTime? // Ngày sinh - dùng để lọc theo độ tuổi
-  education        String?   // Trình độ học vấn: THPT | Trung cấp | Cao đẳng | Đại học | Sau đại học
-  experienceYears  Int?      // Số năm kinh nghiệm
-  fieldOfExpertise String?   // Ngành nghề / chuyên môn
-  coverLetter      String?
-  cvFileName       String
-  cvFilePath       String
-  status           String    @default("NEW") // NEW | REVIEWING | INTERVIEW | REJECTED | HIRED
+  id                 String                  @id @default(cuid())
+  jobId              String
+  job                Job                     @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  fullName           String
+  email              String
+  phone              String
+  dateOfBirth        DateTime? // Ngày sinh - dùng để lọc theo độ tuổi
+  education          String? // Trình độ học vấn: THPT | Trung cấp | Cao đẳng | Đại học | Sau đại học
+  experienceYears    Int? // Số năm kinh nghiệm
+  fieldOfExpertise   String? // Ngành nghề / chuyên môn
+  coverLetter        String?
+  cvFileName         String
+  cvFilePath         String
+  status             String                  @default("NEW") // NEW | REVIEWING | INTERVIEW | REJECTED | HIRED
   // Đánh giá AI (Hướng 3 — chỉ chạy cho hồ sơ đã "lọt vòng đầu" sàng lọc theo
   // dữ liệu cấu trúc, hoặc khi tin tuyển dụng chưa đặt yêu cầu cấu trúc nào).
-  aiScore          Int?      // % phù hợp theo AI (0-100), null nếu chưa phân tích/bị bỏ qua
-  aiSummary        String?   // Nhận xét của AI: điểm phù hợp, điểm thiếu/rủi ro, đề xuất
-  aiStatus         String?   // PENDING | DONE | SKIPPED | ERROR
-  aiAnalyzedAt     DateTime?
-  createdAt        DateTime  @default(now())
+  aiScore            Int? // % phù hợp theo AI (0-100), null nếu chưa phân tích/bị bỏ qua
+  aiSummary          String? // Nhận xét của AI: điểm phù hợp, điểm thiếu/rủi ro, đề xuất
+  aiStatus           String? // PENDING | DONE | SKIPPED | ERROR
+  aiAnalyzedAt       DateTime?
+  aiJobDescriptionId String?
+  aiJobDescription   JobDescription?         @relation("ApplicationEvaluationJd", fields: [aiJobDescriptionId], references: [id], onDelete: SetNull)
+  evaluations        ApplicationEvaluation[]
+  createdAt          DateTime                @default(now())
+}
+
+model JobDescription {
+  id          String                  @id @default(cuid())
+  title       String
+  department  String
+  version     Int                     @default(1)
+  fileName    String
+  filePath    String
+  content     String
+  createdAt   DateTime                @default(now())
+  updatedAt   DateTime                @updatedAt
+  evaluations Application[]           @relation("ApplicationEvaluationJd")
+  results     ApplicationEvaluation[]
+}
+
+model ApplicationEvaluation {
+  id                 String         @id @default(cuid())
+  applicationId      String
+  application        Application    @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  jobDescriptionId   String
+  jobDescription     JobDescription @relation(fields: [jobDescriptionId], references: [id], onDelete: Cascade)
+  jdVersion          Int
+  score              Int
+  matchingExperience String
+  matchingSkills     String
+  gaps               String
+  aiComment          String
+  rank               Int?
+  provider           String         @default("gemini")
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
+
+  @@unique([applicationId, jobDescriptionId])
+  @@index([jobDescriptionId, score])
 }
 
 model Admin {
   id           String @id @default(cuid())
   username     String @unique
   passwordHash String
+}
+
+model SystemSetting {
+  key            String   @id
+  encryptedValue String
+  updatedAt      DateTime @updatedAt
 }

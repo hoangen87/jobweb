@@ -80,38 +80,37 @@ export default async function HomePage({
 
   return (
     <div>
-      <section className="relative overflow-hidden border-b-4 border-brand-600 text-white">
+      <section className="editorial-hero">
         <img
           src="/images/banners/home.jpg"
           alt=""
           aria-hidden
-          className="absolute inset-0 h-full w-full object-cover"
+          className="editorial-hero__image"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#4a0000]/95 via-[#930000]/85 to-[#930000]/50" />
-        <div className="container-page relative py-14 sm:py-20">
-          <p className="text-sm font-semibold uppercase tracking-wide text-white/80">
+        <div className="container-page editorial-hero__content">
+          <p className="text-xs font-bold uppercase tracking-[0.14em] text-white/75">
             {COMPANY.shortName}
           </p>
-          <h1 className="mt-3 max-w-2xl text-3xl font-bold sm:text-4xl">{t("heroTitle")}</h1>
-          <p className="mt-4 max-w-2xl text-white/90">{t("heroSubtitle")}</p>
+          <h1 className="editorial-hero__title">{t("heroTitle")}</h1>
+          <p className="editorial-hero__lede">{t("heroSubtitle")}</p>
         </div>
       </section>
 
-      <div className="container-page -mt-8 pb-16">
+      <div className="container-page py-10 sm:py-14">
         <SearchFilter departments={departments} locations={locations} />
 
-        <div className="mt-6 flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-gray-900">
+        <div className="catalogue-rule mt-12 flex items-end justify-between gap-4 pt-5">
+          <h2 className="text-2xl font-bold text-[var(--color-ink)] sm:text-3xl">
             {t("openPositions", { count: jobs.length })}
           </h2>
         </div>
 
         {localizedJobs.length === 0 ? (
-          <div className="mt-6 rounded-xl border border-dashed border-gray-300 bg-white p-10 text-center text-gray-500">
+          <div className="mt-6 border-y border-[var(--color-rule)] py-16 text-center text-[var(--color-muted)]">
             {t("noResults")}
           </div>
         ) : (
-          <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-6 grid min-w-0 gap-px border border-[var(--color-rule)] bg-[var(--color-rule)] sm:grid-cols-2 lg:grid-cols-3">
             {localizedJobs.map((job) => (
               <JobCard key={job.id} {...job} />
             ))}
