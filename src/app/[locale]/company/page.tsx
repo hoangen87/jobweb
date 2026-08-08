@@ -2,6 +2,7 @@ import { getTranslations } from "next-intl/server";
 import { COMPANY } from "@/lib/constants";
 import { formatArea } from "@/lib/format";
 import type { Locale } from "@/i18n/routing";
+import { Check } from "lucide-react";
 
 export default async function CompanyPage({
   params,
@@ -49,29 +50,29 @@ export default async function CompanyPage({
         <div className="grid gap-8 lg:grid-cols-3">
         <div className="lg:col-span-2">
           <div className="border-y border-[var(--color-rule)] py-6">
-            <h2 className="text-base font-semibold text-gray-900">{t("businessInfo")}</h2>
-            <dl className="mt-4 divide-y divide-gray-100 text-sm">
+            <h2 className="text-base font-semibold text-[var(--color-ink)]">{t("businessInfo")}</h2>
+            <dl className="mt-4 divide-y divide-[var(--color-rule)] text-sm">
               {rows.map(([label, value]) => (
                 <div key={label} className="grid grid-cols-3 gap-4 py-3">
-                  <dt className="text-gray-500">{label}</dt>
-                  <dd className="col-span-2 font-medium text-gray-900">{value}</dd>
+                  <dt className="text-[var(--color-muted)]">{label}</dt>
+                  <dd className="col-span-2 font-medium text-[var(--color-ink)]">{value}</dd>
                 </div>
               ))}
             </dl>
           </div>
 
           <div className="mt-10 border-y border-[var(--color-rule)] py-6">
-            <h2 className="text-base font-semibold text-gray-900">{t("productsTitle")}</h2>
-            <p className="mt-3 text-sm leading-relaxed text-gray-600">{t("industryDetail")}</p>
+            <h2 className="text-base font-semibold text-[var(--color-ink)]">{t("productsTitle")}</h2>
+            <p className="mt-3 text-sm leading-relaxed text-[var(--color-ink-2)]">{t("industryDetail")}</p>
             <div className="mt-5 grid grid-cols-2 gap-4 sm:grid-cols-4">
               {products.map((product) => (
-                <figure key={product.image} className="overflow-hidden rounded-lg border border-gray-100 bg-gray-50">
+                <figure key={product.image} className="overflow-hidden border border-[var(--color-rule)] bg-[var(--color-paper-2)]">
                   <img
                     src={product.image}
                     alt={product.name}
                     className="aspect-square w-full object-cover"
                   />
-                  <figcaption className="p-3 text-center text-xs font-medium text-gray-700">
+                  <figcaption className="p-3 text-center text-xs font-medium text-[var(--color-ink-2)]">
                     {product.name}
                   </figcaption>
                 </figure>
@@ -82,23 +83,23 @@ export default async function CompanyPage({
 
         <div>
           <div className="border-t-4 border-[var(--color-accent)] bg-[var(--color-paper-2)] p-6">
-            <h2 className="text-base font-semibold text-brand-900">{t("whyTitle")}</h2>
-            <ul className="mt-4 space-y-3 text-sm text-brand-900">
-              <li>✔ {t("why1")}</li>
-              <li>✔ {t("why2")}</li>
-              <li>✔ {t("why3")}</li>
-              <li>✔ {t("why4")}</li>
+            <h2 className="text-base font-semibold text-[var(--color-ink)]">{t("whyTitle")}</h2>
+            <ul className="mt-4 space-y-3 text-sm text-[var(--color-ink)]">
+              <li className="flex items-start gap-2"><Check className="mt-0.5 h-4 w-4 shrink-0 text-[var(--color-accent)]" aria-hidden /> {t("why1")}</li>
+              <li className="flex items-start gap-2"><Check className="mt-0.5 h-4 w-4 shrink-0 text-[var(--color-accent)]" aria-hidden /> {t("why2")}</li>
+              <li className="flex items-start gap-2"><Check className="mt-0.5 h-4 w-4 shrink-0 text-[var(--color-accent)]" aria-hidden /> {t("why3")}</li>
+              <li className="flex items-start gap-2"><Check className="mt-0.5 h-4 w-4 shrink-0 text-[var(--color-accent)]" aria-hidden /> {t("why4")}</li>
             </ul>
           </div>
         </div>
       </div>
 
         <div className="mt-10 border-y border-[var(--color-rule)] py-6">
-          <h2 className="text-base font-semibold text-gray-900">{t("timelineTitle")}</h2>
-          <ol className="mt-5 space-y-5 border-l-2 border-brand-100 pl-6">
+          <h2 className="text-base font-semibold text-[var(--color-ink)]">{t("timelineTitle")}</h2>
+          <ol className="mt-5 space-y-5 border-l-2 border-[var(--color-rule)] pl-6">
             {timeline.map((item, index) => (
-              <li key={index} className="relative text-sm leading-relaxed text-gray-600">
-                <span className="absolute -left-[1.95rem] top-1 h-3 w-3 rounded-full border-2 border-white bg-[var(--color-accent)] shadow" />
+              <li key={index} className="relative text-sm leading-relaxed text-[var(--color-ink-2)]">
+                <span className="absolute -left-[1.95rem] top-1 h-3 w-3 rounded-full border-2 border-[var(--color-paper)] bg-[var(--color-accent)]" />
                 {item}
               </li>
             ))}

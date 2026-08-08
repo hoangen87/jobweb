@@ -4,25 +4,34 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Hallmark · pre-emit critique: P5 H5 E4 S5 R5 V4 */
-/* Hallmark · genre: editorial · macrostructure: Catalogue · theme: Newsprint · enrichment: real photography · nav: N6 · footer: Ft1 · contrast: pass (40–41) · slop: pass (42–48) · mobile: pass (34, 49–57) */
+/* Hallmark · genre: editorial · design-system: design.md · designed-as-app */
+/* Hallmark · theme: custom (tuned) "Steel Navy" · paper-band: light · display-style: roman-serif · accent-hue: cool */
+/* Hallmark · marketing/content family: macrostructure Catalogue · nav N6 · footer Ft1 */
+/* Hallmark · app family (/admin): shares tokens below · radius-app + shadow allowed per design.md */
 :root {
-  --color-paper: oklch(96% 0.012 75);
-  --color-paper-2: oklch(92% 0.018 75);
-  --color-ink: oklch(22% 0.025 30);
-  --color-ink-2: oklch(39% 0.025 35);
-  --color-muted: oklch(48% 0.018 45);
-  --color-rule: oklch(78% 0.025 60);
-  --color-accent: oklch(39% 0.145 26);
-  --color-accent-dark: oklch(30% 0.12 26);
-  --color-accent-ink: oklch(97% 0.008 75);
+  --color-paper: oklch(97% 0.008 250);
+  --color-paper-2: oklch(93% 0.014 248);
+  --color-ink: oklch(19% 0.035 255);
+  --color-ink-2: oklch(34% 0.04 255);
+  --color-muted: oklch(47% 0.03 250);
+  --color-rule: oklch(80% 0.02 245);
+  --color-accent: oklch(45% 0.135 258);
+  --color-accent-dark: oklch(35% 0.115 258);
+  --color-accent-soft: oklch(92% 0.03 250);
+  --color-accent-ink: oklch(98% 0.006 250);
   --color-focus: oklch(47% 0.15 255);
   --color-success: oklch(45% 0.1 145);
+  --color-success-soft: oklch(94% 0.05 145);
+  --color-warning: oklch(52% 0.13 70);
+  --color-warning-soft: oklch(94% 0.06 70);
   --color-error: oklch(49% 0.18 28);
+  --color-error-soft: oklch(94% 0.05 28);
   --font-display: "Newsreader", "Iowan Old Style", "Palatino Linotype", serif;
   --font-body: "IBM Plex Sans", "Aptos", "Segoe UI", sans-serif;
   --font-outlier: "IBM Plex Mono", "Cascadia Mono", monospace;
   --page-gutter: clamp(1rem, 4vw, 3rem);
+  --banner-height: 7.25rem;
+  --radius-app: 0.625rem;
 }
 
 html,

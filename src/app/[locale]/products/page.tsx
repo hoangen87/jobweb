@@ -40,14 +40,14 @@ export default async function ProductsPage({
               key={product.image}
               className="min-w-0 overflow-hidden border border-[var(--color-rule)] bg-[var(--color-paper-2)] transition hover:border-[var(--color-accent)]"
             >
-              <div className="aspect-square w-full overflow-hidden bg-white">
+              <div className="aspect-square w-full overflow-hidden bg-[var(--color-paper)]">
                 <img
                   src={product.image}
                   alt={product.name}
                   className="h-full w-full object-cover"
                 />
               </div>
-              <figcaption className="border-t border-gray-200 bg-white p-3 text-center text-sm font-medium text-gray-800">
+              <figcaption className="border-t border-[var(--color-rule)] bg-[var(--color-paper)] p-3 text-center text-sm font-medium text-[var(--color-ink-2)]">
                 {product.name}
               </figcaption>
             </figure>

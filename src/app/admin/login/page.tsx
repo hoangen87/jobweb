@@ -35,9 +35,9 @@ export default function AdminLoginPage() {
 
   return (
     <div className="container-page flex min-h-[70vh] items-center justify-center py-16">
-      <div className="w-full max-w-sm rounded-xl border border-gray-200 bg-white p-8 shadow-sm">
-        <h1 className="text-lg font-bold text-gray-900">Đăng nhập quản trị</h1>
-        <p className="mt-1 text-sm text-gray-500">Khu vực dành cho nhân sự quản lý tuyển dụng.</p>
+      <div className="w-full max-w-sm rounded-[var(--radius-app)] border border-[var(--color-rule)] bg-[var(--color-paper)] p-8 shadow-sm">
+        <h1 className="text-lg font-bold text-[var(--color-ink)]">Đăng nhập quản trị</h1>
+        <p className="mt-1 text-sm text-[var(--color-muted)]">Khu vực dành cho nhân sự quản lý tuyển dụng.</p>
 
         <form onSubmit={handleSubmit} className="mt-6 space-y-4">
           <div>
@@ -60,7 +60,7 @@ export default function AdminLoginPage() {
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
-          {error && <p className="text-sm font-medium text-red-600">{error}</p>}
+          {error && <p className="text-sm font-medium text-[var(--color-error)]">{error}</p>}
           <button type="submit" disabled={loading} className="btn-primary w-full">
             {loading ? "Đang đăng nhập..." : "Đăng nhập"}
           </button>

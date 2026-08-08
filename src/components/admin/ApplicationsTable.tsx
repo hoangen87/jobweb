@@ -24,6 +24,8 @@ type JobDescriptionOption = {
   title: string;
   department: string;
   version: number;
+  fileName: string;
+  filePath: string;
   updatedAt: string;
 };
 
@@ -122,12 +124,24 @@ export default function ApplicationsTable({
     if (response.ok) router.refresh();
   }
 
+  async function deleteJobDescription(id: string, title: string) {
+    if (!confirm(`Xóa Job Detail "${title}"? Các kết quả đánh giá AI đã chấm theo Job Detail này cũng sẽ bị xóa.`)) return;
+    const response = await fetch(`/api/job-descriptions/${id}`, { method: "DELETE" });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) {
+      alert(data.error || "Không thể xóa Job Detail.");
+      return;
+    }
+    if (selectedJdId === id) setSelectedJdId("");
+    router.refresh();
+  }
+
   return (
     <div>
-      <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+      <div className="rounded-[var(--radius-app)] border border-[var(--color-rule)] bg-[var(--color-paper)] p-4 shadow-sm">
         <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_auto_auto] lg:items-end">
           <label className="block">
-            <span className="mb-1.5 block text-sm font-semibold text-gray-700">JD dùng để đánh giá</span>
+            <span className="mb-1.5 block text-sm font-semibold text-[var(--color-ink-2)]">Job Detail dùng để đánh giá</span>
             <select
               value={selectedJdId}
               onChange={(event) => {
@@ -137,7 +151,7 @@ export default function ApplicationsTable({
               }}
               className="input-field"
             >
-              <option value="">-- Chọn 01 JD trong thư viện --</option>
+              <option value="">-- Chọn 01 Job Detail trong thư viện --</option>
               {jobDescriptions.map((jd) => (
                 <option key={jd.id} value={jd.id}>
                   {jd.title} · {jd.department} · v{jd.version} · cập nhật {formatDate(jd.updatedAt)}
@@ -159,25 +173,70 @@ export default function ApplicationsTable({
         </div>
 
         {selectedJd && (
-          <div className="mt-3 rounded-md bg-brand-50 px-3 py-2 text-sm text-brand-900">
+          <div className="mt-3 rounded-[var(--radius-app)] bg-[var(--color-accent-soft)] px-3 py-2 text-sm text-[var(--color-ink)]">
             <strong>{selectedJd.title}</strong> · Phòng ban: {selectedJd.department} · Phiên bản: v
             {selectedJd.version} · Cập nhật: {formatDate(selectedJd.updatedAt)}
           </div>
         )}
-        <p className="mt-2 text-xs text-gray-500">
+        <p className="mt-2 text-xs text-[var(--color-muted)]">
           Kết quả AI chỉ hỗ trợ HR sàng lọc, không tự động quyết định tuyển dụng.
         </p>
-        {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
+        {error && <p className="mt-3 text-sm text-[var(--color-error)]">{error}</p>}
+
+        {jobDescriptions.length > 0 && (
+          <div className="mt-4 overflow-x-auto rounded-[var(--radius-app)] border border-[var(--color-rule)]">
+            <table className="min-w-full divide-y divide-[var(--color-rule)] text-sm">
+              <thead className="bg-[var(--color-paper-2)] text-left text-xs font-semibold uppercase text-[var(--color-muted)]">
+                <tr>
+                  <th className="px-4 py-2.5">Tên Job Detail</th>
+                  <th className="px-4 py-2.5">Phòng ban</th>
+                  <th className="px-4 py-2.5">Phiên bản</th>
+                  <th className="px-4 py-2.5">Cập nhật</th>
+                  <th className="px-4 py-2.5 text-right">Thao tác</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[var(--color-rule)]">
+                {jobDescriptions.map((jd) => (
+                  <tr key={jd.id} className={jd.id === selectedJdId ? "bg-[var(--color-accent-soft)]/60" : ""}>
+                    <td className="px-4 py-2.5 font-medium text-[var(--color-ink)]">{jd.title}</td>
+                    <td className="px-4 py-2.5 text-[var(--color-muted)]">{jd.department}</td>
+                    <td className="px-4 py-2.5 text-[var(--color-muted)]">v{jd.version}</td>
+                    <td className="px-4 py-2.5 text-[var(--color-muted)]">{formatDate(jd.updatedAt)}</td>
+                    <td className="px-4 py-2.5 text-right">
+                      <div className="flex justify-end gap-3">
+                        <a
+                          href={jd.filePath}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="text-[var(--color-accent)] hover:underline"
+                        >
+                          Xem
+                        </a>
+                        <button
+                          type="button"
+                          onClick={() => deleteJobDescription(jd.id, jd.title)}
+                          className="text-[var(--color-error)] hover:underline"
+                        >
+                          Xóa
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
 
       {applications.length === 0 ? (
-        <div className="mt-4 rounded-xl border border-dashed border-gray-300 bg-white p-10 text-center text-gray-500">
+        <div className="mt-4 rounded-[var(--radius-app)] border border-dashed border-[var(--color-rule)] bg-[var(--color-paper)] p-10 text-center text-[var(--color-muted)]">
           Chưa có hồ sơ ứng viên hoặc không có hồ sơ nào khớp với bộ lọc hiện tại.
         </div>
       ) : (
-        <div className="mt-4 overflow-x-auto rounded-xl border border-gray-200 bg-white shadow-sm">
-          <table className="min-w-full divide-y divide-gray-200 text-sm">
-            <thead className="bg-gray-50 text-left text-xs font-semibold uppercase text-gray-500">
+        <div className="mt-4 overflow-x-auto rounded-[var(--radius-app)] border border-[var(--color-rule)] bg-[var(--color-paper)] shadow-sm">
+          <table className="min-w-full divide-y divide-[var(--color-rule)] text-sm">
+            <thead className="bg-[var(--color-paper-2)] text-left text-xs font-semibold uppercase text-[var(--color-muted)]">
               <tr>
                 <th className="px-4 py-3">
                   <input type="checkbox" checked={allSelected} onChange={toggleAll} aria-label="Chọn tất cả hồ sơ" />
@@ -192,9 +251,9 @@ export default function ApplicationsTable({
                 <th className="px-4 py-3 text-right">Thao tác</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100">
+            <tbody className="divide-y divide-[var(--color-rule)]">
               {applications.map((application) => (
-                <tr key={application.id} className={selectedIds.has(application.id) ? "bg-brand-50/50" : ""}>
+                <tr key={application.id} className={selectedIds.has(application.id) ? "bg-[var(--color-accent-soft)]/60" : ""}>
                   <td className="px-4 py-3">
                     <input
                       type="checkbox"
@@ -203,34 +262,34 @@ export default function ApplicationsTable({
                       aria-label={`Chọn hồ sơ ${application.fullName}`}
                     />
                   </td>
-                  <td className="px-4 py-3 font-medium text-gray-900">{application.fullName}</td>
-                  <td className="px-4 py-3 text-gray-600">
+                  <td className="px-4 py-3 font-medium text-[var(--color-ink)]">{application.fullName}</td>
+                  <td className="px-4 py-3 text-[var(--color-muted)]">
                     <div>{application.job.title}</div>
-                    <div className="text-xs text-gray-400">
+                    <div className="text-xs text-[var(--color-muted)]">
                       {application.job.location}
                       {application.job.level ? ` · ${application.job.level}` : ""}
                     </div>
                   </td>
-                  <td className="px-4 py-3 text-gray-600">
+                  <td className="px-4 py-3 text-[var(--color-muted)]">
                     <div>{application.education || "—"}</div>
-                    <div className="text-xs text-gray-400">
+                    <div className="text-xs text-[var(--color-muted)]">
                       {application.experienceYears ?? "—"} năm · {application.fieldOfExpertise || "—"} ·{" "}
                       {calculateAge(application.dateOfBirth) ?? "—"} tuổi
                     </div>
                   </td>
-                  <td className="px-4 py-3 text-gray-600">
+                  <td className="px-4 py-3 text-[var(--color-muted)]">
                     <div>{application.email}</div>
                     <div>{application.phone}</div>
                   </td>
                   <td className="px-4 py-3">
-                    <a href={application.cvFilePath} target="_blank" rel="noreferrer" className="text-brand-600 hover:underline">
+                    <a href={application.cvFilePath} target="_blank" rel="noreferrer" className="text-[var(--color-accent)] hover:underline">
                       Xem CV
                     </a>
                   </td>
-                  <td className="px-4 py-3 text-gray-500">{formatDate(application.createdAt)}</td>
+                  <td className="px-4 py-3 text-[var(--color-muted)]">{formatDate(application.createdAt)}</td>
                   <td className="px-4 py-3">
                     <select
-                      className="rounded-md border border-gray-300 px-2 py-1 text-xs"
+                      className="rounded-md border border-[var(--color-rule)] bg-[var(--color-paper)] px-2 py-1 text-xs"
                       value={application.status}
                       onChange={(event) => updateStatus(application.id, event.target.value)}
                     >
@@ -243,7 +302,7 @@ export default function ApplicationsTable({
                     <button
                       type="button"
                       onClick={() => deleteApplication(application.id, application.fullName)}
-                      className="text-red-600 hover:underline"
+                      className="text-[var(--color-error)] hover:underline"
                     >
                       Xóa
                     </button>
@@ -259,15 +318,15 @@ export default function ApplicationsTable({
         <div className="mt-8">
           <div className="mb-3 flex items-end justify-between">
             <div>
-              <h2 className="text-xl font-bold text-gray-900">Kết quả đánh giá và xếp hạng</h2>
-              <p className="text-sm text-gray-500">
+              <h2 className="text-xl font-bold text-[var(--color-ink)]">Kết quả đánh giá và xếp hạng</h2>
+              <p className="text-sm text-[var(--color-muted)]">
                 {selectedJd?.title} · {selectedJd?.department} · v{selectedJd?.version}
               </p>
             </div>
           </div>
-          <div className="overflow-x-auto rounded-xl border border-gray-200 bg-white shadow-sm">
-            <table className="min-w-full divide-y divide-gray-200 text-sm">
-              <thead className="bg-gray-50 text-left text-xs font-semibold uppercase text-gray-500">
+          <div className="overflow-x-auto rounded-[var(--radius-app)] border border-[var(--color-rule)] bg-[var(--color-paper)] shadow-sm">
+            <table className="min-w-full divide-y divide-[var(--color-rule)] text-sm">
+              <thead className="bg-[var(--color-paper-2)] text-left text-xs font-semibold uppercase text-[var(--color-muted)]">
                 <tr>
                   <th className="px-4 py-3">Xếp hạng</th>
                   <th className="px-4 py-3">Họ tên ứng viên</th>
@@ -278,18 +337,18 @@ export default function ApplicationsTable({
                   <th className="px-4 py-3">Nhận xét của AI</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100">
+              <tbody className="divide-y divide-[var(--color-rule)]">
                 {results.map((result) => (
                   <tr key={result.applicationId}>
-                    <td className="px-4 py-3 text-center text-lg font-bold text-brand-700">#{result.rank}</td>
-                    <td className="px-4 py-3 font-semibold text-gray-900">{result.fullName}</td>
+                    <td className="px-4 py-3 text-center text-lg font-bold text-[var(--color-accent)]">#{result.rank}</td>
+                    <td className="px-4 py-3 font-semibold text-[var(--color-ink)]">{result.fullName}</td>
                     <td className="px-4 py-3">
-                      <span className="rounded-full bg-brand-50 px-3 py-1 font-bold text-brand-700">{result.score}%</span>
+                      <span className="rounded-full bg-[var(--color-accent-soft)] px-3 py-1 font-bold text-[var(--color-accent)]">{result.score}%</span>
                     </td>
-                    <td className="min-w-[220px] px-4 py-3 text-gray-600">{result.matchingExperience}</td>
-                    <td className="min-w-[220px] px-4 py-3 text-gray-600">{result.matchingSkills}</td>
-                    <td className="min-w-[220px] px-4 py-3 text-gray-600">{result.gaps}</td>
-                    <td className="min-w-[260px] px-4 py-3 text-gray-600">{result.aiComment}</td>
+                    <td className="min-w-[220px] px-4 py-3 text-[var(--color-muted)]">{result.matchingExperience}</td>
+                    <td className="min-w-[220px] px-4 py-3 text-[var(--color-muted)]">{result.matchingSkills}</td>
+                    <td className="min-w-[220px] px-4 py-3 text-[var(--color-muted)]">{result.gaps}</td>
+                    <td className="min-w-[260px] px-4 py-3 text-[var(--color-muted)]">{result.aiComment}</td>
                   </tr>
                 ))}
               </tbody>
@@ -299,7 +358,7 @@ export default function ApplicationsTable({
       )}
 
       {resultErrors.length > 0 && (
-        <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">
+        <div className="mt-4 rounded-[var(--radius-app)] border border-[var(--color-warning)]/30 bg-[var(--color-warning-soft)] p-4 text-sm text-[var(--color-warning)]">
           <div className="font-semibold">Một số hồ sơ chưa đánh giá được:</div>
           <ul className="mt-2 list-disc space-y-1 pl-5">
             {resultErrors.map((item) => <li key={item.fullName}>{item.fullName}: {item.error}</li>)}

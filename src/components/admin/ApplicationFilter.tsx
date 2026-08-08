@@ -54,7 +54,7 @@ export default function ApplicationFilter({ locations, levels, fields }: Props) 
   return (
     <form
       onSubmit={applyFilters}
-      className="grid gap-3 rounded-xl border border-gray-200 bg-white p-4 shadow-sm sm:grid-cols-3 lg:grid-cols-6"
+      className="grid gap-3 rounded-[var(--radius-app)] border border-[var(--color-rule)] bg-[var(--color-paper)] p-4 shadow-sm sm:grid-cols-3 lg:grid-cols-6"
     >
       <div>
         <label className="label-field">Bằng cấp</label>
@@ -115,7 +115,7 @@ export default function ApplicationFilter({ locations, levels, fields }: Props) 
             value={expMin}
             onChange={(e) => setExpMin(e.target.value)}
           />
-          <span className="text-gray-400">-</span>
+          <span className="text-[var(--color-muted)]">-</span>
           <input
             type="number"
             min={0}
@@ -138,7 +138,7 @@ export default function ApplicationFilter({ locations, levels, fields }: Props) 
             value={ageMin}
             onChange={(e) => setAgeMin(e.target.value)}
           />
-          <span className="text-gray-400">-</span>
+          <span className="text-[var(--color-muted)]">-</span>
           <input
             type="number"
             min={0}

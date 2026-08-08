@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
 
   const parsed = requestSchema.safeParse(await req.json().catch(() => null));
   if (!parsed.success) {
-    return NextResponse.json({ error: "Vui lòng chọn 01 JD và ít nhất 01 hồ sơ." }, { status: 400 });
+    return NextResponse.json({ error: "Vui lòng chọn 01 Job Detail và ít nhất 01 hồ sơ." }, { status: 400 });
   }
 
   const { jobDescriptionId, applicationIds } = parsed.data;
@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
       include: { job: true },
     }),
   ]);
-  if (!jd) return NextResponse.json({ error: "Không tìm thấy JD đã chọn." }, { status: 404 });
+  if (!jd) return NextResponse.json({ error: "Không tìm thấy Job Detail đã chọn." }, { status: 404 });
   if (applications.length !== new Set(applicationIds).size) {
     return NextResponse.json({ error: "Có hồ sơ không tồn tại hoặc đã bị xóa." }, { status: 404 });
   }
@@ -54,7 +54,7 @@ export async function POST(req: NextRequest) {
       const result = await analyzeApplicationWithAI({
         jobTitle: jd.title,
         jobDescription: jd.content,
-        jobRequirements: `Phòng ban: ${jd.department}. Phiên bản JD: ${jd.version}.`,
+        jobRequirements: `Phòng ban: ${jd.department}. Phiên bản Job Detail: ${jd.version}.`,
         cvText: extracted.text,
       });
 

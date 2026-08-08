@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { EDUCATION_LEVELS } from "@/lib/format";
+import { TriangleAlert } from "lucide-react";
 
 type JobFormValues = {
   id?: string;
@@ -231,11 +232,11 @@ export default function JobForm({ initial }: { initial?: Partial<JobFormValues> 
         />
       </div>
 
-      <div className="rounded-lg border border-brand-100 bg-brand-50 p-4">
-        <p className="text-sm font-semibold text-brand-900">
+      <div className="rounded-[var(--radius-app)] border border-[var(--color-accent-soft)] bg-[var(--color-accent-soft)] p-4">
+        <p className="text-sm font-semibold text-[var(--color-ink)]">
           Yêu cầu tuyển dụng cụ thể (để trống nếu không áp dụng)
         </p>
-        <p className="mt-1 text-xs text-gray-500">
+        <p className="mt-1 text-xs text-[var(--color-muted)]">
           Hệ thống dùng các mục này để tự động chấm % phù hợp của từng hồ sơ ứng tuyển ở trang Hồ sơ ứng
           tuyển. Tiêu chí nào để trống sẽ không được tính vào % chấm điểm.
         </p>
@@ -278,7 +279,7 @@ export default function JobForm({ initial }: { initial?: Partial<JobFormValues> 
                 value={values.reqAgeMin}
                 onChange={(e) => update("reqAgeMin", e.target.value === "" ? "" : Number(e.target.value))}
               />
-              <span className="text-gray-400">-</span>
+              <span className="text-[var(--color-muted)]">-</span>
               <input
                 type="number"
                 min={0}
@@ -311,11 +312,11 @@ export default function JobForm({ initial }: { initial?: Partial<JobFormValues> 
         />
       </div>
 
-      {error && <p className="text-sm font-medium text-red-600">{error}</p>}
+      {error && <p className="text-sm font-medium text-[var(--color-error)]">{error}</p>}
 
       {warning && (
-        <div className="rounded-lg border border-amber-300 bg-amber-50 p-4 text-sm text-amber-800">
-          <p className="font-medium">⚠ {warning}</p>
+        <div className="rounded-[var(--radius-app)] border border-[var(--color-warning)]/30 bg-[var(--color-warning-soft)] p-4 text-sm text-[var(--color-warning)]">
+          <p className="flex items-center gap-2 font-medium"><TriangleAlert className="h-4 w-4 shrink-0" aria-hidden /> {warning}</p>
           <button
             type="button"
             onClick={() => {

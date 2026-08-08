@@ -17,7 +17,7 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
     const jobDescriptionId =
       typeof body.jobDescriptionId === "string" ? body.jobDescriptionId : undefined;
     if (!jobDescriptionId) {
-      return NextResponse.json({ error: "Vui lòng chọn JD để đánh giá hồ sơ." }, { status: 400 });
+      return NextResponse.json({ error: "Vui lòng chọn Job Detail để đánh giá hồ sơ." }, { status: 400 });
     }
     await runAiAnalysisForApplication(params.id, req.nextUrl.origin, true, jobDescriptionId);
   } catch (err) {

@@ -48,19 +48,19 @@ export default async function ContactPage({
 
       <div className="container-page py-12">
         <div className="grid gap-6 lg:grid-cols-2">
-          <div className="rounded-sm border border-gray-200 bg-gray-50 p-6">
-            <dl className="divide-y divide-gray-200 text-sm">
+          <div className="border border-[var(--color-rule)] bg-[var(--color-paper-2)] p-6">
+            <dl className="divide-y divide-[var(--color-rule)] text-sm">
               {rows.map(([label, value]) => (
                 <div key={label} className="grid grid-cols-3 gap-4 py-3">
-                  <dt className="text-gray-500">{label}</dt>
-                  <dd className="col-span-2 font-medium text-gray-900">{value}</dd>
+                  <dt className="text-[var(--color-muted)]">{label}</dt>
+                  <dd className="col-span-2 font-medium text-[var(--color-ink)]">{value}</dd>
                 </div>
               ))}
               {contactLinks.map((item) => (
                 <div key={item.label} className="grid grid-cols-3 gap-4 py-3">
-                  <dt className="text-gray-500">{item.label}</dt>
-                  <dd className="col-span-2 font-medium text-brand-600">
-                    <a href={item.href} className="hover:text-[var(--color-accent)] hover:underline">
+                  <dt className="text-[var(--color-muted)]">{item.label}</dt>
+                  <dd className="col-span-2 font-medium text-[var(--color-accent)]">
+                    <a href={item.href} className="hover:text-[var(--color-accent-dark)] hover:underline">
                       {item.value}
                     </a>
                   </dd>
@@ -70,13 +70,13 @@ export default async function ContactPage({
 
             <Link
               href="/company"
-              className="mt-6 inline-flex items-center whitespace-nowrap text-sm font-semibold text-brand-600 hover:text-[var(--color-accent)]"
+              className="mt-6 inline-flex items-center whitespace-nowrap text-sm font-semibold text-[var(--color-accent)] hover:text-[var(--color-accent-dark)]"
             >
               {t("visitCompany")} →
             </Link>
           </div>
 
-          <div className="overflow-hidden rounded-sm border border-gray-200 shadow-sm">
+          <div className="overflow-hidden border border-[var(--color-rule)]">
             <iframe
               src={mapSrc}
               className="h-full min-h-[280px] w-full"
@@ -89,7 +89,7 @@ export default async function ContactPage({
               href={COMPANY.mapPlaceUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="block whitespace-nowrap border-t border-gray-200 bg-white px-4 py-3 text-center text-sm font-semibold text-brand-600 hover:text-[var(--color-accent)]"
+              className="block whitespace-nowrap border-t border-[var(--color-rule)] bg-[var(--color-paper)] px-4 py-3 text-center text-sm font-semibold text-[var(--color-accent)] hover:text-[var(--color-accent-dark)]"
             >
               {t("openInMaps")}
             </a>

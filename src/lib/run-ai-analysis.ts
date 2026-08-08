@@ -24,7 +24,7 @@ export async function runAiAnalysisForApplication(
     ? await prisma.jobDescription.findUnique({ where: { id: jobDescriptionId } })
     : null;
   if (jobDescriptionId && !selectedJd) {
-    throw new Error("Không tìm thấy JD đã chọn.");
+    throw new Error("Không tìm thấy Job Detail đã chọn.");
   }
 
   const structured = screenApplication(app, app.job);
@@ -57,7 +57,7 @@ export async function runAiAnalysisForApplication(
     const result = await analyzeApplicationWithAI({
       jobTitle: selectedJd?.title ?? app.job.title,
       jobDescription: selectedJd?.content ?? app.job.description,
-      jobRequirements: selectedJd ? "Đánh giá theo toàn bộ nội dung JD đã tải lên." : app.job.requirements,
+      jobRequirements: selectedJd ? "Đánh giá theo toàn bộ nội dung Job Detail đã tải lên." : app.job.requirements,
       reqEducationMin: app.job.reqEducationMin,
       reqExperienceYearsMin: app.job.reqExperienceYearsMin,
       reqAgeMin: app.job.reqAgeMin,

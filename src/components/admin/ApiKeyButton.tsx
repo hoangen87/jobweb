@@ -42,19 +42,19 @@ export default function ApiKeyButton() {
     <div className="relative mt-4 flex justify-end">
       <button type="button" onClick={() => setOpen((value) => !value)} className="btn-secondary">
         Add API Key
-        <span className={`ml-2 h-2 w-2 rounded-full ${configured ? "bg-green-500" : "bg-gray-300"}`} />
+        <span className={`ml-2 h-2 w-2 rounded-full ${configured ? "bg-[var(--color-success)]" : "bg-[var(--color-rule)]"}`} />
       </button>
 
       {open && (
-        <div className="absolute bottom-full right-0 z-50 mb-2 w-[min(420px,calc(100vw-2rem))] rounded-xl border border-gray-200 bg-white p-5 text-left shadow-xl">
+        <div className="absolute bottom-full right-0 z-50 mb-2 w-[min(420px,calc(100vw-2rem))] rounded-[var(--radius-app)] border border-[var(--color-rule)] bg-[var(--color-paper)] p-5 text-left shadow-lg">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="font-semibold text-gray-900">Gemini API Key</h2>
-              <p className="mt-1 text-xs text-gray-500">
+              <h2 className="font-semibold text-[var(--color-ink)]">Gemini API Key</h2>
+              <p className="mt-1 text-xs text-[var(--color-muted)]">
                 Trạng thái: {configured ? "Đã cấu hình" : "Chưa cấu hình"}
               </p>
             </div>
-            <button type="button" onClick={() => setOpen(false)} className="text-sm text-gray-500">Đóng</button>
+            <button type="button" onClick={() => setOpen(false)} className="text-sm text-[var(--color-muted)]">Đóng</button>
           </div>
           <form onSubmit={save} className="mt-4">
             <input
@@ -70,10 +70,10 @@ export default function ApiKeyButton() {
               {saving ? "Đang lưu..." : configured ? "Thay API Key" : "Lưu API Key"}
             </button>
           </form>
-          <p className="mt-3 text-xs leading-relaxed text-gray-500">
+          <p className="mt-3 text-xs leading-relaxed text-[var(--color-muted)]">
             Key được mã hóa bằng AES-256-GCM trước khi lưu và không hiển thị lại trên trình duyệt.
           </p>
-          {message && <p className="mt-2 text-sm text-brand-700">{message}</p>}
+          {message && <p className="mt-2 text-sm text-[var(--color-accent)]">{message}</p>}
         </div>
       )}
     </div>

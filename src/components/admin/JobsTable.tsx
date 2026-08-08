@@ -26,16 +26,16 @@ export default function JobsTable({ jobs }: { jobs: Job[] }) {
 
   if (jobs.length === 0) {
     return (
-      <div className="rounded-xl border border-dashed border-gray-300 bg-white p-10 text-center text-gray-500">
+      <div className="rounded-[var(--radius-app)] border border-dashed border-[var(--color-rule)] bg-[var(--color-paper)] p-10 text-center text-[var(--color-muted)]">
         Chưa có tin tuyển dụng nào. Bấm "Đăng tin mới" để bắt đầu.
       </div>
     );
   }
 
   return (
-    <div className="overflow-x-auto rounded-xl border border-gray-200 bg-white shadow-sm">
-      <table className="min-w-full divide-y divide-gray-200 text-sm">
-        <thead className="bg-gray-50 text-left text-xs font-semibold uppercase text-gray-500">
+    <div className="overflow-x-auto rounded-[var(--radius-app)] border border-[var(--color-rule)] bg-[var(--color-paper)] shadow-sm">
+      <table className="min-w-full divide-y divide-[var(--color-rule)] text-sm">
+        <thead className="bg-[var(--color-paper-2)] text-left text-xs font-semibold uppercase text-[var(--color-muted)]">
           <tr>
             <th className="px-4 py-3">Vị trí</th>
             <th className="px-4 py-3">Phòng ban</th>
@@ -46,37 +46,37 @@ export default function JobsTable({ jobs }: { jobs: Job[] }) {
             <th className="px-4 py-3 text-right">Thao tác</th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-gray-100">
+        <tbody className="divide-y divide-[var(--color-rule)]">
           {jobs.map((job) => (
             <tr key={job.id}>
-              <td className="px-4 py-3 font-medium text-gray-900">{job.title}</td>
-              <td className="px-4 py-3 text-gray-600">{job.department}</td>
-              <td className="px-4 py-3 text-gray-600">{job.location}</td>
+              <td className="px-4 py-3 font-medium text-[var(--color-ink)]">{job.title}</td>
+              <td className="px-4 py-3 text-[var(--color-muted)]">{job.department}</td>
+              <td className="px-4 py-3 text-[var(--color-muted)]">{job.location}</td>
               <td className="px-4 py-3">
                 <span
                   className={`rounded-full px-2.5 py-1 text-xs font-medium ${
                     job.status === "OPEN"
-                      ? "bg-green-100 text-green-700"
-                      : "bg-gray-100 text-gray-600"
+                      ? "bg-[var(--color-success-soft)] text-[var(--color-success)]"
+                      : "bg-[var(--color-paper-2)] text-[var(--color-muted)]"
                   }`}
                 >
                   {job.status === "OPEN" ? "Đang tuyển" : "Đã đóng"}
                 </span>
               </td>
-              <td className="px-4 py-3 text-gray-500">{formatDate(job.createdAt)}</td>
+              <td className="px-4 py-3 text-[var(--color-muted)]">{formatDate(job.createdAt)}</td>
               <td className="px-4 py-3">
-                <Link href={`/admin/applications?jobId=${job.id}`} className="text-brand-600 hover:underline">
+                <Link href={`/admin/applications?jobId=${job.id}`} className="text-[var(--color-accent)] hover:underline">
                   {job._count?.applications ?? 0} hồ sơ
                 </Link>
               </td>
               <td className="px-4 py-3 text-right">
                 <div className="flex justify-end gap-3">
-                  <Link href={`/admin/jobs/${job.id}/edit`} className="text-brand-600 hover:underline">
+                  <Link href={`/admin/jobs/${job.id}/edit`} className="text-[var(--color-accent)] hover:underline">
                     Sửa
                   </Link>
                   <button
                     onClick={() => handleDelete(job.id, job.title)}
-                    className="text-red-600 hover:underline"
+                    className="text-[var(--color-error)] hover:underline"
                   >
                     Xóa
                   </button>

@@ -58,15 +58,15 @@ export async function POST(req: NextRequest) {
     const department = formData.get("department")?.toString().trim();
 
     if (!file || !title || !department) {
-      return NextResponse.json({ error: "Vui lòng nhập tên vị trí, phòng ban và chọn file JD." }, { status: 400 });
+      return NextResponse.json({ error: "Vui lòng nhập tên vị trí, phòng ban và chọn file Job Detail." }, { status: 400 });
     }
 
     const ext = path.extname(file.name).toLowerCase();
     if (!ALLOWED_EXTENSIONS.includes(ext)) {
-      return NextResponse.json({ error: "JD chỉ hỗ trợ PDF, DOCX hoặc TXT." }, { status: 400 });
+      return NextResponse.json({ error: "Job Detail chỉ hỗ trợ PDF, DOCX hoặc TXT." }, { status: 400 });
     }
     if (file.size > MAX_FILE_SIZE) {
-      return NextResponse.json({ error: "File JD không được vượt quá 10 MB." }, { status: 400 });
+      return NextResponse.json({ error: "File Job Detail không được vượt quá 10 MB." }, { status: 400 });
     }
 
     const content = await extractDocumentText(file);
@@ -88,7 +88,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json(document, { status: 201 });
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Không thể tải JD.";
+    const message = error instanceof Error ? error.message : "Không thể tải Job Detail.";
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }

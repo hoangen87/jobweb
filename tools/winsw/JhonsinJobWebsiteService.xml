@@ -4,8 +4,8 @@
   <description>Production server for the Jhonsin Vietnam job website.</description>
   <executable>C:\Program Files\nodejs\npm.cmd</executable>
   <arguments>run start</arguments>
-  <workingdirectory>D:\Job Website\job-website</workingdirectory>
-  <logpath>D:\Job Website\job-website\logs</logpath>
+  <workingdirectory>D:\AI SYSTEM\Recruitment</workingdirectory>
+  <logpath>D:\AI SYSTEM\Recruitment\logs</logpath>
   <log mode="roll-by-size-time">
     <sizeThreshold>10240</sizeThreshold>
     <pattern>yyyyMMdd</pattern>

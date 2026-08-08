@@ -8,8 +8,8 @@ export default async function EditJobPage({ params }: { params: { id: string } }
 
   return (
     <div className="container-page py-10">
-      <h1 className="text-2xl font-bold text-gray-900">Chỉnh sửa tin tuyển dụng</h1>
-      <div className="mt-6 max-w-3xl rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+      <h1 className="text-2xl font-bold text-[var(--color-ink)]">Chỉnh sửa tin tuyển dụng</h1>
+      <div className="mt-6 max-w-3xl rounded-[var(--radius-app)] border border-[var(--color-rule)] bg-[var(--color-paper)] p-6 shadow-sm">
         <JobForm
           initial={{
             id: job.id,

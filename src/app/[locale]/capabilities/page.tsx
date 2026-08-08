@@ -43,53 +43,53 @@ export default async function CapabilitiesPage({
       </section>
 
       <div className="container-page py-12">
-        <div className="grid gap-4 sm:grid-cols-3">
+        <div className="grid gap-px border border-[var(--color-rule)] bg-[var(--color-rule)] sm:grid-cols-3">
           {items.map((item) => (
             <div
               key={item.no}
-              className="rounded-sm border border-gray-200 bg-gray-50 p-6 transition hover:border-[var(--color-accent)] hover:bg-white"
+              className="bg-[var(--color-paper)] p-6 transition hover:bg-[var(--color-paper-2)]"
             >
               <span className="text-xs font-bold tracking-widest text-[var(--color-accent)]">{item.no}</span>
-              <h2 className="mt-2 text-base font-semibold text-brand-900">{item.title}</h2>
-              <p className="mt-3 text-sm leading-relaxed text-gray-600">{item.text}</p>
+              <h2 className="mt-2 text-base font-semibold text-[var(--color-ink)]">{item.title}</h2>
+              <p className="mt-3 text-sm leading-relaxed text-[var(--color-ink-2)]">{item.text}</p>
             </div>
           ))}
         </div>
 
-        <div className="mt-8 rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-          <h2 className="text-base font-semibold text-gray-900">{t("scaleTitle")}</h2>
-          <p className="mt-2 text-sm text-gray-600">{t("scaleIntro")}</p>
-          <div className="mt-5 grid gap-4 sm:grid-cols-2">
+        <div className="catalogue-rule mt-10 pt-8">
+          <h2 className="text-base font-semibold text-[var(--color-ink)]">{t("scaleTitle")}</h2>
+          <p className="mt-2 text-sm text-[var(--color-ink-2)]">{t("scaleIntro")}</p>
+          <div className="mt-5 grid gap-px border border-[var(--color-rule)] bg-[var(--color-rule)] sm:grid-cols-2">
             {stages.map((stage) => (
               <div
                 key={stage.label}
-                className="rounded-sm border border-gray-200 bg-gray-50 p-5 transition hover:border-[var(--color-accent)] hover:bg-white"
+                className="bg-[var(--color-paper)] p-5 transition hover:bg-[var(--color-paper-2)]"
               >
                 <div className="text-xs font-bold uppercase tracking-wide text-[var(--color-accent)]">{stage.label}</div>
-                <div className="mt-2 text-xl font-bold text-brand-900">{stage.capacity}</div>
-                <p className="mt-2 text-sm leading-relaxed text-gray-600">{stage.scope}</p>
+                <div className="mt-2 text-xl font-bold text-[var(--color-ink)]">{stage.capacity}</div>
+                <p className="mt-2 text-sm leading-relaxed text-[var(--color-ink-2)]">{stage.scope}</p>
               </div>
             ))}
           </div>
         </div>
 
-        <div className="mt-8 rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-          <h2 className="text-base font-semibold text-gray-900">{t("objectivesTitle")}</h2>
-          <p className="mt-2 text-sm text-gray-600">{t("objectivesIntro")}</p>
-          <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="catalogue-rule mt-10 pt-8">
+          <h2 className="text-base font-semibold text-[var(--color-ink)]">{t("objectivesTitle")}</h2>
+          <p className="mt-2 text-sm text-[var(--color-ink-2)]">{t("objectivesIntro")}</p>
+          <div className="mt-5 grid gap-px border border-[var(--color-rule)] bg-[var(--color-rule)] sm:grid-cols-2 lg:grid-cols-4">
             {kpis.map((kpi) => (
               <div
                 key={kpi.label}
-                className="rounded-sm border border-gray-200 bg-gray-50 p-5 text-center transition hover:border-[var(--color-accent)] hover:bg-white"
+                className="bg-[var(--color-paper)] p-5 text-center transition hover:bg-[var(--color-paper-2)]"
               >
                 <div className="text-2xl font-bold text-[var(--color-accent)]">{kpi.value}</div>
-                <div className="mt-2 text-xs leading-relaxed text-gray-600">{kpi.label}</div>
+                <div className="mt-2 text-xs leading-relaxed text-[var(--color-ink-2)]">{kpi.label}</div>
               </div>
             ))}
           </div>
         </div>
 
-        <p className="mt-6 max-w-2xl text-xs text-gray-400">{t("sourceNote")}</p>
+        <p className="mt-6 max-w-2xl text-xs text-[var(--color-muted)]">{t("sourceNote")}</p>
       </div>
     </div>
   );

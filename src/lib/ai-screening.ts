@@ -1,4 +1,4 @@
-// Gọi AI để đối chiếu nội dung CV thật với JD và chấm % phù hợp kèm nhận xét
+// Gọi AI để đối chiếu nội dung CV thật với Job Detail và chấm % phù hợp kèm nhận xét
 // — đây là vòng phân tích sâu (Hướng 3), chạy SAU vòng lọc nhanh theo dữ
 // liệu cấu trúc ở src/lib/screening.ts để tiết kiệm chi phí (chỉ phân tích
 // hồ sơ đã "lọt vòng đầu").
@@ -57,7 +57,7 @@ function buildPrompt(input: AiScreeningInput): string {
     .filter(Boolean)
     .join("\n");
 
-  return `Bạn là chuyên viên tuyển dụng nhân sự giàu kinh nghiệm tại nhà máy sản xuất. Hãy đối chiếu nội dung CV của ứng viên với mô tả công việc (JD) bên dưới và chấm % mức độ phù hợp tổng thể (0-100), xét cả kinh nghiệm, kỹ năng, học vấn lẫn mức độ liên quan thực tế của công việc đã làm trước đây.
+  return `Bạn là chuyên viên tuyển dụng nhân sự giàu kinh nghiệm tại nhà máy sản xuất. Hãy đối chiếu nội dung CV của ứng viên với mô tả công việc (Job Detail) bên dưới và chấm % mức độ phù hợp tổng thể (0-100), xét cả kinh nghiệm, kỹ năng, học vấn lẫn mức độ liên quan thực tế của công việc đã làm trước đây.
 
 === MÔ TẢ CÔNG VIỆC: ${input.jobTitle} ===
 ${input.jobDescription}

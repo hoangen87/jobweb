@@ -39,9 +39,9 @@ export default function ApplyForm({ jobId }: { jobId: string }) {
 
   if (status === "success") {
     return (
-      <div className="rounded-xl border border-green-200 bg-green-50 p-6 text-center">
-        <p className="text-lg font-semibold text-green-800">{t("successTitle")}</p>
-        <p className="mt-2 text-sm text-green-700">{t("successMessage")}</p>
+      <div className="border border-[var(--color-success)]/30 bg-[var(--color-success-soft)] p-6 text-center">
+        <p className="text-lg font-semibold text-[var(--color-success)]">{t("successTitle")}</p>
+        <p className="mt-2 text-sm text-[var(--color-success)]">{t("successMessage")}</p>
       </div>
     );
   }
@@ -124,12 +124,12 @@ export default function ApplyForm({ jobId }: { jobId: string }) {
           type="file"
           name="cv"
           accept=".pdf,.doc,.docx"
-          className="block w-full text-sm text-gray-600 file:mr-4 file:rounded-lg file:border-0 file:bg-brand-50 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-brand-700 hover:file:bg-brand-100"
+          className="block w-full text-sm text-[var(--color-muted)] file:mr-4 file:border-0 file:bg-[var(--color-accent-soft)] file:px-4 file:py-2 file:text-sm file:font-semibold file:text-[var(--color-accent)] hover:file:bg-[var(--color-accent-soft)]"
         />
       </div>
 
       {status === "error" && (
-        <p className="text-sm font-medium text-red-600">{errorMsg}</p>
+        <p className="text-sm font-medium text-[var(--color-error)]">{errorMsg}</p>
       )}
 
       <button type="submit" disabled={status === "loading"} className="btn-primary w-full">

@@ -2,6 +2,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { formatSalary, formatDate } from "@/lib/format";
 import type { Locale } from "@/i18n/routing";
+import { MapPin, Clock, Target, Users } from "lucide-react";
 
 type JobCardProps = {
   id: string;
@@ -30,11 +31,11 @@ export default function JobCard(job: JobCardProps) {
         <span className="badge whitespace-nowrap">{job.department}</span>
       </div>
       <div className="mt-5 flex flex-wrap gap-x-4 gap-y-1 text-sm text-[var(--color-muted)]">
-        <span>📍 {job.location}</span>
-        <span>🕒 {job.type}</span>
-        {job.level && <span>🎯 {job.level}</span>}
-        <span>
-          👥 {job.quantity} {t("positions")}
+        <span className="inline-flex items-center gap-1.5"><MapPin className="h-4 w-4" aria-hidden /> {job.location}</span>
+        <span className="inline-flex items-center gap-1.5"><Clock className="h-4 w-4" aria-hidden /> {job.type}</span>
+        {job.level && <span className="inline-flex items-center gap-1.5"><Target className="h-4 w-4" aria-hidden /> {job.level}</span>}
+        <span className="inline-flex items-center gap-1.5">
+          <Users className="h-4 w-4" aria-hidden /> {job.quantity} {t("positions")}
         </span>
       </div>
       <div className="mt-auto flex items-end justify-between gap-3 border-t border-[var(--color-rule)] pt-5">

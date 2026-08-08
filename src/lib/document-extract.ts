@@ -26,5 +26,5 @@ export async function extractDocumentText(file: File): Promise<string> {
     return text;
   }
 
-  throw new Error("Chỉ hỗ trợ JD dạng PDF, DOCX hoặc TXT.");
+  throw new Error("Chỉ hỗ trợ Job Detail dạng PDF, DOCX hoặc TXT.");
 }

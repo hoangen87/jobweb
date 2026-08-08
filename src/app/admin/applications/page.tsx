@@ -110,7 +110,7 @@ export default async function ApplicationsPage({
   return (
     <div className="container-page py-10">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-900">Hồ sơ ứng tuyển</h1>
+        <h1 className="text-2xl font-bold text-[var(--color-ink)]">Hồ sơ ứng tuyển</h1>
         <div className="relative flex items-center gap-2">
           <JobDescriptionManager
             jobDescriptions={jobDescriptions.map((jd) => ({
@@ -125,16 +125,16 @@ export default async function ApplicationsPage({
         </div>
       </div>
 
-      <p className="mt-1 text-sm text-gray-500">
+      <p className="mt-1 text-sm text-[var(--color-muted)]">
         Hồ sơ ứng viên nộp từ website được tập trung tại đây. Bộ lọc bên dưới chỉ dùng để khoanh vùng hồ sơ
-        theo thông tin cơ bản; HR chọn một JD và nhiều CV để Gemini hỗ trợ so sánh, chấm điểm và xếp hạng.
+        theo thông tin cơ bản; HR chọn một Job Detail và nhiều CV để Gemini hỗ trợ so sánh, chấm điểm và xếp hạng.
       </p>
 
       <div className="mt-4">
         <ApplicationFilter locations={locations} levels={levels} fields={fields} />
       </div>
 
-      <div className="mt-4 text-sm text-gray-500">Tìm thấy {applications.length} hồ sơ</div>
+      <div className="mt-4 text-sm text-[var(--color-muted)]">Tìm thấy {applications.length} hồ sơ</div>
 
       <div className="mt-2">
         <ApplicationsTable
@@ -143,6 +143,8 @@ export default async function ApplicationsPage({
             title: jd.title,
             department: jd.department,
             version: jd.version,
+            fileName: jd.fileName,
+            filePath: jd.filePath,
             updatedAt: jd.updatedAt.toISOString(),
           }))}
           applications={applications.map((a) => ({
