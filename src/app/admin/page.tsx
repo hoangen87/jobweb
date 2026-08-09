@@ -18,13 +18,10 @@ export default async function AdminDashboard() {
     <div className="container-page py-10">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-[var(--color-ink)]">Quản trị tuyển dụng</h1>
-          <p className="mt-1 text-sm text-[var(--color-muted)]">Quản lý tin tuyển dụng và hồ sơ ứng viên.</p>
+          <h1 className="text-2xl font-bold text-[var(--color-ink)]">Quản lý tin tuyển dụng</h1>
+          <p className="mt-1 text-sm text-[var(--color-muted)]">Tạo mới, chỉnh sửa và theo dõi trạng thái các tin tuyển dụng.</p>
         </div>
         <div className="flex gap-3">
-          <Link href="/admin/applications" className="btn-secondary">
-            Tất cả hồ sơ ({totalApplications})
-          </Link>
           <Link href="/admin/jobs/new" className="btn-primary">
             + Đăng tin mới
           </Link>

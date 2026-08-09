@@ -2,7 +2,6 @@ import { prisma } from "@/lib/prisma";
 import ApplicationsTable from "@/components/admin/ApplicationsTable";
 import ApplicationFilter from "@/components/admin/ApplicationFilter";
 import JobDescriptionManager from "@/components/admin/JobDescriptionManager";
-import Link from "next/link";
 import { ageRangeToDobRange } from "@/lib/format";
 import type { Prisma } from "@prisma/client";
 
@@ -110,7 +109,7 @@ export default async function ApplicationsPage({
   return (
     <div className="container-page py-10">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-[var(--color-ink)]">Hồ sơ ứng tuyển</h1>
+        <h1 className="text-2xl font-bold text-[var(--color-ink)]">Quản lý hồ sơ ứng viên</h1>
         <div className="relative flex items-center gap-2">
           <JobDescriptionManager
             jobDescriptions={jobDescriptions.map((jd) => ({
@@ -119,14 +118,11 @@ export default async function ApplicationsPage({
               updatedAt: jd.updatedAt.toISOString(),
             }))}
           />
-        <Link href="/admin" className="btn-secondary">
-          ← Quay lại
-        </Link>
         </div>
       </div>
 
       <p className="mt-1 text-sm text-[var(--color-muted)]">
-        Hồ sơ ứng viên nộp từ website được tập trung tại đây. Bộ lọc bên dưới chỉ dùng để khoanh vùng hồ sơ
+        Đây là nơi tiếp nhận và quản lý CV của ứng viên nộp từ website. Bộ lọc bên dưới dùng để khoanh vùng hồ sơ
         theo thông tin cơ bản; HR chọn một Job Detail và nhiều CV để Gemini hỗ trợ so sánh, chấm điểm và xếp hạng.
       </p>
 
