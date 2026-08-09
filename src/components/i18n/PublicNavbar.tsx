@@ -20,11 +20,14 @@ export default function PublicNavbar() {
 
   return (
     <header className="sticky top-0 z-40 border-b border-[var(--color-ink)] bg-[var(--color-paper)]">
-      <div className="container-page relative flex min-h-16 items-center justify-start border-b border-[var(--color-rule)] py-3 lg:justify-center">
+      <div className="container-page relative flex min-h-16 flex-wrap items-center justify-between gap-y-2 border-b border-[var(--color-rule)] py-3 lg:flex-nowrap">
         <Link href="/" className="shrink-0" aria-label="JHONSIN">
           <Logo className="h-7 max-w-[92px] sm:h-11 sm:max-w-none" />
         </Link>
-        <div className="absolute right-[var(--page-gutter)] flex items-center gap-2">
+        <div className="order-3 w-full px-1 text-center text-base font-bold uppercase leading-snug tracking-[0.08em] text-[var(--color-ink)] sm:text-lg lg:absolute lg:left-1/2 lg:order-none lg:w-auto lg:max-w-[52%] lg:-translate-x-1/2 lg:px-0">
+          {t("companyName")}
+        </div>
+        <div className="flex shrink-0 items-center gap-2">
           <LanguageSwitcher />
           <button
             type="button"

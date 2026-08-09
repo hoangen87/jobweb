@@ -25,7 +25,7 @@ export default function LanguageSwitcher() {
   }
 
   return (
-    <div className="flex items-center border border-[var(--color-rule)] bg-[var(--color-paper)] p-1">
+    <div className="flex items-center bg-[var(--color-paper)] p-1">
       {routing.locales.map((l) => (
         <button
           key={l}
