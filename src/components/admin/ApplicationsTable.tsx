@@ -137,8 +137,8 @@ export default function ApplicationsTable({
   }
 
   return (
-    <div>
-      <div className="rounded-[var(--radius-app)] border border-[var(--color-rule)] bg-[var(--color-paper)] p-4 shadow-sm">
+    <div className="flex flex-col">
+      <div className="order-2 mt-4 rounded-[var(--radius-app)] border border-[var(--color-rule)] bg-[var(--color-paper)] p-4 shadow-sm">
         <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_auto_auto] lg:items-end">
           <label className="block">
             <span className="mb-1.5 block text-sm font-semibold text-[var(--color-ink-2)]">Job Detail dùng để đánh giá</span>
@@ -230,11 +230,11 @@ export default function ApplicationsTable({
       </div>
 
       {applications.length === 0 ? (
-        <div className="mt-4 rounded-[var(--radius-app)] border border-dashed border-[var(--color-rule)] bg-[var(--color-paper)] p-10 text-center text-[var(--color-muted)]">
+        <div className="order-1 rounded-[var(--radius-app)] border border-dashed border-[var(--color-rule)] bg-[var(--color-paper)] p-10 text-center text-[var(--color-muted)]">
           Chưa có hồ sơ ứng viên hoặc không có hồ sơ nào khớp với bộ lọc hiện tại.
         </div>
       ) : (
-        <div className="mt-4 overflow-x-auto rounded-[var(--radius-app)] border border-[var(--color-rule)] bg-[var(--color-paper)] shadow-sm">
+        <div className="order-1 overflow-x-auto rounded-[var(--radius-app)] border border-[var(--color-rule)] bg-[var(--color-paper)] shadow-sm">
           <table className="min-w-full divide-y divide-[var(--color-rule)] text-sm">
             <thead className="bg-[var(--color-paper-2)] text-left text-xs font-semibold uppercase text-[var(--color-muted)]">
               <tr>
@@ -315,7 +315,7 @@ export default function ApplicationsTable({
       )}
 
       {results.length > 0 && (
-        <div className="mt-8">
+        <div className="order-3 mt-8">
           <div className="mb-3 flex items-end justify-between">
             <div>
               <h2 className="text-xl font-bold text-[var(--color-ink)]">Kết quả đánh giá và xếp hạng</h2>
@@ -358,7 +358,7 @@ export default function ApplicationsTable({
       )}
 
       {resultErrors.length > 0 && (
-        <div className="mt-4 rounded-[var(--radius-app)] border border-[var(--color-warning)]/30 bg-[var(--color-warning-soft)] p-4 text-sm text-[var(--color-warning)]">
+        <div className="order-4 mt-4 rounded-[var(--radius-app)] border border-[var(--color-warning)]/30 bg-[var(--color-warning-soft)] p-4 text-sm text-[var(--color-warning)]">
           <div className="font-semibold">Một số hồ sơ chưa đánh giá được:</div>
           <ul className="mt-2 list-disc space-y-1 pl-5">
             {resultErrors.map((item) => <li key={item.fullName}>{item.fullName}: {item.error}</li>)}

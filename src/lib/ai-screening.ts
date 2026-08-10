@@ -144,7 +144,21 @@ async function analyzeWithGemini(input: AiScreeningInput, apiKey: string, model:
     headers: { "content-type": "application/json" },
     body: JSON.stringify({
       contents: [{ parts: [{ text: buildPrompt(input) }] }],
-      generationConfig: { maxOutputTokens: 700 },
+      generationConfig: {
+        maxOutputTokens: 4096,
+        responseMimeType: "application/json",
+        responseSchema: {
+          type: "OBJECT",
+          required: ["score", "matchingExperience", "matchingSkills", "gaps", "summary"],
+          properties: {
+            score: { type: "INTEGER", minimum: 0, maximum: 100 },
+            matchingExperience: { type: "STRING" },
+            matchingSkills: { type: "STRING" },
+            gaps: { type: "STRING" },
+            summary: { type: "STRING" },
+          },
+        },
+      },
     }),
     signal: AbortSignal.timeout(45000),
   });
@@ -155,7 +169,14 @@ async function analyzeWithGemini(input: AiScreeningInput, apiKey: string, model:
   }
 
   const data = await res.json();
-  const raw: string = data?.candidates?.[0]?.content?.parts?.[0]?.text ?? "";
+  const candidate = data?.candidates?.[0];
+  const raw: string = candidate?.content?.parts
+    ?.map((part: { text?: string }) => part.text ?? "")
+    .join("") ?? "";
+  if (!raw.trim()) {
+    const finishReason = candidate?.finishReason || data?.promptFeedback?.blockReason || "không xác định";
+    throw new Error(`Gemini không trả về nội dung đánh giá (lý do: ${finishReason}).`);
+  }
   return { ...parseAiJson(raw), provider: "gemini" };
 }
 
