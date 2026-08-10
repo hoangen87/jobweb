@@ -1,31 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { randomUUID } from "crypto";
-import { mkdir, writeFile } from "fs/promises";
 import path from "path";
-import { put } from "@vercel/blob";
 import { getCurrentAdmin } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { extractDocumentText } from "@/lib/document-extract";
+import { saveUploadedFile } from "@/lib/upload-storage";
 
 export const maxDuration = 60;
 
 const ALLOWED_EXTENSIONS = [".pdf", ".docx", ".txt"];
 const MAX_FILE_SIZE = 10 * 1024 * 1024;
-
-async function saveJdFile(file: File, safeFileName: string): Promise<string> {
-  if (process.env.BLOB_READ_WRITE_TOKEN) {
-    const blob = await put(`jd/${safeFileName}`, file, {
-      access: "public",
-      addRandomSuffix: false,
-    });
-    return blob.url;
-  }
-
-  const uploadDir = path.join(process.cwd(), "public", "uploads", "jd");
-  await mkdir(uploadDir, { recursive: true });
-  await writeFile(path.join(uploadDir, safeFileName), Buffer.from(await file.arrayBuffer()));
-  return `/uploads/jd/${safeFileName}`;
-}
 
 export async function GET() {
   const admin = await getCurrentAdmin();
@@ -71,7 +55,10 @@ export async function POST(req: NextRequest) {
 
     const content = await extractDocumentText(file);
     const safeFileName = `${randomUUID()}${ext}`;
-    const filePath = await saveJdFile(file, safeFileName);
+    const filePath = await saveUploadedFile(file, safeFileName, {
+      blobFolder: "jd",
+      localSubdirectory: "jd",
+    });
     const document = await prisma.jobDescription.create({
       data: { title, department, fileName: file.name, filePath, content },
       select: {

@@ -205,7 +205,7 @@ export default function ApplicationsTable({
                     <td className="px-4 py-2.5 text-right">
                       <div className="flex justify-end gap-3">
                         <a
-                          href={jd.filePath}
+                          href={`/api/admin/files?type=jd&id=${jd.id}`}
                           target="_blank"
                           rel="noreferrer"
                           className="text-[var(--color-accent)] hover:underline"
@@ -282,7 +282,7 @@ export default function ApplicationsTable({
                     <div>{application.phone}</div>
                   </td>
                   <td className="px-4 py-3">
-                    <a href={application.cvFilePath} target="_blank" rel="noreferrer" className="text-[var(--color-accent)] hover:underline">
+                    <a href={`/api/admin/files?type=cv&id=${application.id}`} target="_blank" rel="noreferrer" className="text-[var(--color-accent)] hover:underline">
                       Xem CV
                     </a>
                   </td>

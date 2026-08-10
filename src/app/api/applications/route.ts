@@ -2,29 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getCurrentAdmin } from "@/lib/auth";
 import { randomUUID } from "crypto";
-import { mkdir, writeFile } from "fs/promises";
 import path from "path";
-
-// Trên Vercel, filesystem chỉ đọc (trừ /tmp không bền vững), nên khi có
-// BLOB_READ_WRITE_TOKEN (Vercel tự thêm khi bật Blob Storage) sẽ lưu CV lên
-// Vercel Blob. Khi chạy local không có token này, lưu vào public/uploads.
-async function saveCvFile(cv: File, safeFileName: string): Promise<string> {
-  if (process.env.BLOB_READ_WRITE_TOKEN) {
-    const { put } = await import("@vercel/blob");
-    const blob = await put(`cv/${safeFileName}`, cv, {
-      access: "public",
-      addRandomSuffix: false,
-    });
-    return blob.url;
-  }
-
-  const uploadsDir = path.join(process.cwd(), "public", "uploads");
-  await mkdir(uploadsDir, { recursive: true });
-  const filePath = path.join(uploadsDir, safeFileName);
-  const buffer = Buffer.from(await cv.arrayBuffer());
-  await writeFile(filePath, buffer);
-  return `/uploads/${safeFileName}`;
-}
+import { saveUploadedFile, UploadStorageConfigurationError } from "@/lib/upload-storage";
 
 const ALLOWED_EXT = [".pdf", ".doc", ".docx"];
 const MAX_SIZE = 5 * 1024 * 1024; // 5MB
@@ -98,7 +77,7 @@ export async function POST(req: NextRequest) {
     }
 
     const safeFileName = `${randomUUID()}${ext}`;
-    const cvFilePath = await saveCvFile(cv, safeFileName);
+    const cvFilePath = await saveUploadedFile(cv, safeFileName, { blobFolder: "cv" });
 
     const application = await prisma.application.create({
       data: {
@@ -118,6 +97,9 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ ok: true, id: application.id }, { status: 201 });
   } catch (err) {
+    if (err instanceof UploadStorageConfigurationError) {
+      return NextResponse.json({ error: err.message }, { status: 503 });
+    }
     console.error(err);
     return NextResponse.json({ error: "Có lỗi xảy ra khi nộp hồ sơ." }, { status: 500 });
   }

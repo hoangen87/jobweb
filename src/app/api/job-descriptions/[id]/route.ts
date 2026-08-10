@@ -1,24 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { randomUUID } from "crypto";
-import { mkdir, writeFile } from "fs/promises";
 import path from "path";
-import { put } from "@vercel/blob";
 import { getCurrentAdmin } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { extractDocumentText } from "@/lib/document-extract";
+import { saveUploadedFile } from "@/lib/upload-storage";
 
 export const maxDuration = 60;
-
-async function saveJdFile(file: File, safeFileName: string): Promise<string> {
-  if (process.env.BLOB_READ_WRITE_TOKEN) {
-    const blob = await put(`jd/${safeFileName}`, file, { access: "public", addRandomSuffix: false });
-    return blob.url;
-  }
-  const uploadDir = path.join(process.cwd(), "public", "uploads", "jd");
-  await mkdir(uploadDir, { recursive: true });
-  await writeFile(path.join(uploadDir, safeFileName), Buffer.from(await file.arrayBuffer()));
-  return `/uploads/jd/${safeFileName}`;
-}
 
 export async function DELETE(_req: NextRequest, { params }: { params: { id: string } }) {
   const admin = await getCurrentAdmin();
@@ -66,7 +54,10 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     }
 
     const content = await extractDocumentText(file);
-    const filePath = await saveJdFile(file, `${randomUUID()}${ext}`);
+    const filePath = await saveUploadedFile(file, `${randomUUID()}${ext}`, {
+      blobFolder: "jd",
+      localSubdirectory: "jd",
+    });
     const updated = await prisma.jobDescription.update({
       where: { id: params.id },
       data: {

@@ -84,7 +84,7 @@ export default function JobDescriptionManager({ jobDescriptions }: { jobDescript
                       {jd.department} · v{jd.version} · {jd.fileName}
                     </div>
                   </div>
-                  <a href={jd.filePath} target="_blank" rel="noreferrer" className="text-[var(--color-accent)] hover:underline">
+                  <a href={`/api/admin/files?type=jd&id=${jd.id}`} target="_blank" rel="noreferrer" className="text-[var(--color-accent)] hover:underline">
                     Xem Job Detail
                   </a>
                 </div>
