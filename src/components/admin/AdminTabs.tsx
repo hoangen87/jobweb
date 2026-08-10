@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 const tabs = [
   { href: "/admin", label: "Quản lý tin tuyển dụng", section: "jobs" },
   { href: "/admin/applications", label: "Quản lý hồ sơ ứng viên", section: "applications" },
+  { href: "/admin/settings/ai", label: "Cấu hình AI", section: "settings" },
 ] as const;
 
 export default function AdminTabs() {
@@ -13,11 +14,15 @@ export default function AdminTabs() {
 
   if (pathname === "/admin/login") return null;
 
-  const activeSection = pathname.startsWith("/admin/applications") ? "applications" : "jobs";
+  const activeSection = pathname.startsWith("/admin/settings")
+    ? "settings"
+    : pathname.startsWith("/admin/applications")
+      ? "applications"
+      : "jobs";
 
   return (
     <nav aria-label="Khu vực quản trị tuyển dụng" className="container-page pt-8">
-      <div className="grid grid-cols-2 border-b border-[var(--color-rule)]">
+      <div className="grid grid-cols-1 border-b sm:grid-cols-3 border-[var(--color-rule)]">
         {tabs.map((tab) => {
           const active = activeSection === tab.section;
 

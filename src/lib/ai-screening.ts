@@ -15,8 +15,7 @@
 
 const ANTHROPIC_MODEL = "claude-haiku-4-5-20251001";
 const ANTHROPIC_API_URL = "https://api.anthropic.com/v1/messages";
-const GEMINI_MODEL = "gemini-2.5-flash";
-const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
+const GEMINI_API_BASE_URL = "https://generativelanguage.googleapis.com/v1beta";
 const MAX_CV_CHARS = 6000; // Giới hạn để kiểm soát chi phí/độ trễ mỗi lần gọi.
 
 export class AiScreeningUnavailableError extends Error {}
@@ -139,13 +138,13 @@ async function analyzeWithClaude(input: AiScreeningInput, apiKey: string): Promi
   return { ...parseAiJson(raw), provider: "claude" };
 }
 
-async function analyzeWithGemini(input: AiScreeningInput, apiKey: string): Promise<AiScreeningResult> {
-  const res = await fetch(`${GEMINI_API_URL}?key=${apiKey}`, {
+async function analyzeWithGemini(input: AiScreeningInput, apiKey: string, model: string): Promise<AiScreeningResult> {
+  const res = await fetch(`${GEMINI_API_BASE_URL}/models/${model}:generateContent?key=${encodeURIComponent(apiKey)}`, {
     method: "POST",
     headers: { "content-type": "application/json" },
     body: JSON.stringify({
       contents: [{ parts: [{ text: buildPrompt(input) }] }],
-      generationConfig: { temperature: 0.2, maxOutputTokens: 700 },
+      generationConfig: { maxOutputTokens: 700 },
     }),
     signal: AbortSignal.timeout(45000),
   });
@@ -165,9 +164,9 @@ async function analyzeWithGemini(input: AiScreeningInput, apiKey: string): Promi
  * phương án dự phòng để không làm gián đoạn hệ thống cũ.
  */
 export async function analyzeApplicationWithAI(input: AiScreeningInput): Promise<AiScreeningResult> {
-  const geminiKey = await getGeminiApiKey();
-  if (geminiKey) {
-    return analyzeWithGemini(input, geminiKey);
+  const geminiConfig = await getActiveGeminiConfiguration();
+  if (geminiConfig) {
+    return analyzeWithGemini(input, geminiConfig.apiKey, geminiConfig.model);
   }
 
   const anthropicKey = process.env.ANTHROPIC_API_KEY;
@@ -179,4 +178,4 @@ export async function analyzeApplicationWithAI(input: AiScreeningInput): Promise
     "Chưa cấu hình ANTHROPIC_API_KEY hoặc GEMINI_API_KEY trên server."
   );
 }
-import { getGeminiApiKey } from "./secure-settings";
+import { getActiveGeminiConfiguration } from "./secure-settings";

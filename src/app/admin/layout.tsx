@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import ApiKeyButton from "@/components/admin/ApiKeyButton";
 import AdminTabs from "@/components/admin/AdminTabs";
 
 export const metadata: Metadata = {
@@ -16,7 +15,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <AdminTabs />
         {children}
       </main>
-      <Footer actions={<ApiKeyButton />} />
+      <Footer />
     </div>
   );
 }
