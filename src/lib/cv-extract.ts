@@ -1,3 +1,4 @@
+import { get } from "@vercel/blob";
 import path from "path";
 
 // Trích xuất nội dung text từ file CV đã nộp (PDF hoặc DOCX) để đưa vào phân
@@ -9,17 +10,29 @@ import path from "path";
 export type CvExtractResult = { text: string } | { error: string };
 
 async function fetchCvBuffer(cvFilePath: string, origin: string): Promise<Buffer> {
+  if (cvFilePath.startsWith("http")) {
+    const blobUrl = new URL(cvFilePath);
+    if (blobUrl.hostname.endsWith(".blob.vercel-storage.com")) {
+      const access = blobUrl.hostname.includes(".public.blob.vercel-storage.com") ? "public" : "private";
+      const result = await get(cvFilePath, { access });
+      if (!result || result.statusCode !== 200 || !result.stream) {
+        throw new Error("Không tải được file CV từ kho lưu trữ để đọc nội dung.");
+      }
+      return Buffer.from(await new Response(result.stream).arrayBuffer());
+    }
+  }
+
   const url = cvFilePath.startsWith("http") ? cvFilePath : `${origin}${cvFilePath}`;
   const res = await fetch(url, { signal: AbortSignal.timeout(20000) });
   if (!res.ok) {
     throw new Error(`Không tải được file CV để đọc nội dung (HTTP ${res.status}).`);
   }
-  const arrayBuffer = await res.arrayBuffer();
-  return Buffer.from(arrayBuffer);
+  return Buffer.from(await res.arrayBuffer());
 }
 
 export async function extractCvText(cvFilePath: string, origin: string): Promise<CvExtractResult> {
-  const ext = path.extname(cvFilePath).toLowerCase();
+  const pathname = cvFilePath.startsWith("http") ? new URL(cvFilePath).pathname : cvFilePath;
+  const ext = path.extname(pathname).toLowerCase();
 
   try {
     if (ext === ".pdf") {
