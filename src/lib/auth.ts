@@ -1,12 +1,28 @@
 import { cookies } from "next/headers";
+import { prisma } from "@/lib/prisma";
 import { getSessionCookieName, verifySessionToken } from "@/lib/session";
+import { hasPermission, normalizeRole, type Permission } from "@/lib/permissions";
 
 export { createSessionToken, getSessionCookieName, verifySessionToken } from "@/lib/session";
 
-// This helper is only used in Node.js runtime contexts. Middleware verifies
-// sessions through the runtime-neutral helpers in "@/lib/session" instead.
-export async function getCurrentAdmin(): Promise<string | null> {
+export async function getCurrentAdminUser() {
   const store = cookies();
   const token = store.get(getSessionCookieName())?.value;
-  return verifySessionToken(token);
+  const username = await verifySessionToken(token);
+  if (!username) return null;
+
+  const admin = await prisma.admin.findUnique({ where: { username } });
+  if (!admin || !admin.isActive) return null;
+
+  return { ...admin, role: normalizeRole(admin.role) };
+}
+
+export async function getCurrentAdmin(): Promise<string | null> {
+  const admin = await getCurrentAdminUser();
+  return admin?.username ?? null;
+}
+
+export async function currentAdminHasPermission(permission: Permission) {
+  const admin = await getCurrentAdminUser();
+  return !!admin && hasPermission(admin.role, permission);
 }

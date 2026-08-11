@@ -12,24 +12,22 @@ model Job {
   title                 String
   department            String
   location              String
-  type                  String // Toàn thời gian | Bán thời gian | Thời vụ | Thực tập
-  level                 String? // Nhân viên | Chuyên viên | Trưởng nhóm | Quản lý
+  type                  String
+  level                 String?
   quantity              Int           @default(1)
   salaryMin             Int?
   salaryMax             Int?
   description           String
   requirements          String
   benefits              String?
-  translations          Json? // Bản dịch tự động: { en: {...}, zh: {...} }
+  translations          Json?
   deadline              DateTime?
-  status                String        @default("OPEN") // OPEN | CLOSED
-  // Yêu cầu tuyển dụng dạng có cấu trúc (tùy chọn) — dùng để tự động chấm %
-  // phù hợp của ứng viên. Để trống nghĩa là không đặt yêu cầu cho tiêu chí đó.
-  reqEducationMin       String? // Học vấn tối thiểu: THPT | Trung cấp | Cao đẳng | Đại học | Sau đại học
-  reqExperienceYearsMin Int? // Số năm kinh nghiệm tối thiểu
-  reqAgeMin             Int? // Độ tuổi tối thiểu
-  reqAgeMax             Int? // Độ tuổi tối đa
-  reqField              String? // Từ khóa ngành nghề/chuyên môn yêu cầu (phân cách bằng dấu phẩy)
+  status                String        @default("OPEN")
+  reqEducationMin       String?
+  reqExperienceYearsMin Int?
+  reqAgeMin             Int?
+  reqAgeMax             Int?
+  reqField              String?
   createdAt             DateTime      @default(now())
   updatedAt             DateTime      @updatedAt
   applications          Application[]
@@ -41,20 +39,18 @@ model Application {
   job                Job                     @relation(fields: [jobId], references: [id], onDelete: Cascade)
   fullName           String
   email              String
-  phone              String
-  dateOfBirth        DateTime? // Ngày sinh - dùng để lọc theo độ tuổi
-  education          String? // Trình độ học vấn: THPT | Trung cấp | Cao đẳng | Đại học | Sau đại học
-  experienceYears    Int? // Số năm kinh nghiệm
-  fieldOfExpertise   String? // Ngành nghề / chuyên môn
+  phone               String
+  dateOfBirth        DateTime?
+  education          String?
+  experienceYears    Int?
+  fieldOfExpertise   String?
   coverLetter        String?
   cvFileName         String
   cvFilePath         String
-  status             String                  @default("NEW") // NEW | REVIEWING | INTERVIEW | REJECTED | HIRED
-  // Đánh giá AI (Hướng 3 — chỉ chạy cho hồ sơ đã "lọt vòng đầu" sàng lọc theo
-  // dữ liệu cấu trúc, hoặc khi tin tuyển dụng chưa đặt yêu cầu cấu trúc nào).
-  aiScore            Int? // % phù hợp theo AI (0-100), null nếu chưa phân tích/bị bỏ qua
-  aiSummary          String? // Nhận xét của AI: điểm phù hợp, điểm thiếu/rủi ro, đề xuất
-  aiStatus           String? // PENDING | DONE | SKIPPED | ERROR
+  status             String                  @default("NEW")
+  aiScore            Int?
+  aiSummary          String?
+  aiStatus           String?
   aiAnalyzedAt       DateTime?
   aiJobDescriptionId String?
   aiJobDescription   JobDescription?         @relation("ApplicationEvaluationJd", fields: [aiJobDescriptionId], references: [id], onDelete: SetNull)
@@ -98,9 +94,14 @@ model ApplicationEvaluation {
 }
 
 model Admin {
-  id           String @id @default(cuid())
-  username     String @unique
+  id           String   @id @default(cuid())
+  username     String   @unique
+  displayName  String?
   passwordHash String
+  role         String   @default("SUPER_ADMIN")
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @default(now()) @updatedAt
 }
 
 model SystemSetting {
