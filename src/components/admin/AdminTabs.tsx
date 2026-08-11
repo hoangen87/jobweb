@@ -2,30 +2,32 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { hasPermission } from "@/lib/permissions";
 
-const tabs = [
-  { href: "/admin", label: "Quản lý tin tuyển dụng", section: "jobs" },
-  { href: "/admin/applications", label: "Quản lý hồ sơ ứng viên", section: "applications" },
-  { href: "/admin/settings/ai", label: "Cấu hình AI", section: "settings" },
-] as const;
-
-export default function AdminTabs() {
+export default function AdminTabs({ role }: { role: string | null }) {
   const pathname = usePathname();
-
   if (pathname === "/admin/login") return null;
 
-  const activeSection = pathname.startsWith("/admin/settings")
-    ? "settings"
-    : pathname.startsWith("/admin/applications")
-      ? "applications"
-      : "jobs";
+  const tabs = [
+    { href: "/admin", label: "Quản lý tin tuyển dụng", section: "jobs", show: true },
+    { href: "/admin/applications", label: "Quản lý hồ sơ ứng viên", section: "applications", show: true },
+    { href: "/admin/settings/ai", label: "Cấu hình AI", section: "settings", show: hasPermission(role, "AI_CONFIGURE") },
+    { href: "/admin/users", label: "Người dùng & Phân quyền", section: "users", show: hasPermission(role, "USERS_MANAGE") },
+  ].filter((tab) => tab.show);
+
+  const activeSection = pathname.startsWith("/admin/users")
+    ? "users"
+    : pathname.startsWith("/admin/settings")
+      ? "settings"
+      : pathname.startsWith("/admin/applications")
+        ? "applications"
+        : "jobs";
 
   return (
     <nav aria-label="Khu vực quản trị tuyển dụng" className="container-page pt-8">
-      <div className="grid grid-cols-1 border-b sm:grid-cols-3 border-[var(--color-rule)]">
+      <div className="grid grid-cols-1 border-b border-[var(--color-rule)] sm:grid-cols-2 lg:grid-cols-4">
         {tabs.map((tab) => {
           const active = activeSection === tab.section;
-
           return (
             <Link
               key={tab.href}
