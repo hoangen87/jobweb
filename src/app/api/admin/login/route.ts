@@ -11,8 +11,8 @@ export async function POST(req: NextRequest) {
   }
 
   const admin = await prisma.admin.findUnique({ where: { username } });
-  if (!admin) {
-    return NextResponse.json({ error: "Sai tài khoản hoặc mật khẩu." }, { status: 401 });
+  if (!admin || !admin.isActive) {
+    return NextResponse.json({ error: "Sai tài khoản, mật khẩu hoặc tài khoản đã bị khóa." }, { status: 401 });
   }
 
   const valid = await bcrypt.compare(password, admin.passwordHash);
