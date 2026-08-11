@@ -1,22 +1,10 @@
-// Gọi AI để đối chiếu nội dung CV thật với Job Detail và chấm % phù hợp kèm nhận xét
-// — đây là vòng phân tích sâu (Hướng 3), chạy SAU vòng lọc nhanh theo dữ
-// liệu cấu trúc ở src/lib/screening.ts để tiết kiệm chi phí (chỉ phân tích
-// hồ sơ đã "lọt vòng đầu").
-//
-// Hỗ trợ 2 nhà cung cấp AI, tự động chọn theo biến môi trường có sẵn:
-// - ANTHROPIC_API_KEY (Claude, trả phí ~150đ/hồ sơ, cần nạp tối thiểu $5
-//   tại console.anthropic.com) — ưu tiên dùng nếu có.
-// - GEMINI_API_KEY (Google Gemini, MIỄN PHÍ trong hạn mức ~250 lượt/ngày,
-//   lấy tại aistudio.google.com/apikey, không cần thẻ) — dùng khi chưa
-//   cấu hình Claude, phù hợp giai đoạn test chưa muốn nạp tiền.
-//
-// Thêm vào Vercel: Project Settings -> Environment Variables.
-// Thêm local: file .env -> ANTHROPIC_API_KEY=... hoặc GEMINI_API_KEY=...
+import { getActiveGeminiConfiguration } from "./secure-settings";
+import { AI_LANGUAGE_NAMES, normalizeAdminLocale, type AdminLocale } from "./admin-i18n";
 
 const ANTHROPIC_MODEL = "claude-haiku-4-5-20251001";
 const ANTHROPIC_API_URL = "https://api.anthropic.com/v1/messages";
 const GEMINI_API_BASE_URL = "https://generativelanguage.googleapis.com/v1beta";
-const MAX_CV_CHARS = 6000; // Giới hạn để kiểm soát chi phí/độ trễ mỗi lần gọi.
+const MAX_CV_CHARS = 6000;
 
 export class AiScreeningUnavailableError extends Error {}
 
@@ -30,6 +18,7 @@ export type AiScreeningInput = {
   reqAgeMax?: number | null;
   reqField?: string | null;
   cvText: string;
+  locale?: AdminLocale;
 };
 
 export type AiScreeningResult = {
@@ -38,101 +27,70 @@ export type AiScreeningResult = {
   matchingExperience: string;
   matchingSkills: string;
   gaps: string;
-  /** Nhà cung cấp AI đã dùng để phân tích — hiển thị cho admin biết. */
   provider: "claude" | "gemini";
 };
 
+function localizedSystemInstruction(locale: AdminLocale) {
+  if (locale === "en") return "Write all human-readable evaluation text in English.";
+  if (locale === "zh-TW") return "請將所有可讀的評估文字完整使用繁體中文撰寫，禁止使用簡體中文。";
+  return "Viết toàn bộ nội dung đánh giá có thể đọc được bằng tiếng Việt.";
+}
+
 function buildPrompt(input: AiScreeningInput): string {
   const cvText = input.cvText.slice(0, MAX_CV_CHARS);
-
+  const locale = normalizeAdminLocale(input.locale);
+  const language = AI_LANGUAGE_NAMES[locale];
   const requirementLines = [
-    input.reqEducationMin ? `- Học vấn tối thiểu: ${input.reqEducationMin}` : null,
-    input.reqExperienceYearsMin != null ? `- Kinh nghiệm tối thiểu: ${input.reqExperienceYearsMin} năm` : null,
-    input.reqAgeMin != null || input.reqAgeMax != null
-      ? `- Độ tuổi: ${input.reqAgeMin ?? "?"}-${input.reqAgeMax ?? "?"} tuổi`
-      : null,
-    input.reqField ? `- Ngành nghề/chuyên môn: ${input.reqField}` : null,
-  ]
-    .filter(Boolean)
-    .join("\n");
+    input.reqEducationMin ? `- Minimum education: ${input.reqEducationMin}` : null,
+    input.reqExperienceYearsMin != null ? `- Minimum experience: ${input.reqExperienceYearsMin} years` : null,
+    input.reqAgeMin != null || input.reqAgeMax != null ? `- Age range: ${input.reqAgeMin ?? "?"}-${input.reqAgeMax ?? "?"}` : null,
+    input.reqField ? `- Required field/expertise: ${input.reqField}` : null,
+  ].filter(Boolean).join("\n");
 
-  return `Bạn là chuyên viên tuyển dụng nhân sự giàu kinh nghiệm tại nhà máy sản xuất. Hãy đối chiếu nội dung CV của ứng viên với mô tả công việc (Job Detail) bên dưới và chấm % mức độ phù hợp tổng thể (0-100), xét cả kinh nghiệm, kỹ năng, học vấn lẫn mức độ liên quan thực tế của công việc đã làm trước đây.
+  return `You are an experienced recruitment specialist for a manufacturing company. Compare the candidate CV with the Job Detail and score overall fit from 0 to 100 based on relevant experience, skills, education and actual similarity of prior work.
 
-=== MÔ TẢ CÔNG VIỆC: ${input.jobTitle} ===
+OUTPUT LANGUAGE: ${language}
+${localizedSystemInstruction(locale)}
+Keep JSON property names exactly as specified below. Only translate the string values.
+
+=== JOB DETAIL: ${input.jobTitle} ===
 ${input.jobDescription}
 
-=== YÊU CẦU ỨNG VIÊN ===
+=== CANDIDATE REQUIREMENTS ===
 ${input.jobRequirements}
-${requirementLines ? `\nYêu cầu cụ thể (dữ liệu có cấu trúc, đã qua vòng lọc sơ bộ):\n${requirementLines}` : ""}
+${requirementLines ? `\nStructured requirements:\n${requirementLines}` : ""}
 
-=== NỘI DUNG CV ỨNG VIÊN (trích xuất tự động từ file, có thể lỗi định dạng/thiếu dấu) ===
+=== CANDIDATE CV TEXT ===
 ${cvText}
 
-Chỉ trả lời bằng JSON hợp lệ duy nhất, không kèm bất kỳ văn bản nào khác ngoài JSON, đúng cấu trúc:
-{"score": <số nguyên 0-100>, "matchingExperience": "<kinh nghiệm phù hợp, tiếng Việt>", "matchingSkills": "<kỹ năng phù hợp, tiếng Việt>", "gaps": "<điểm còn thiếu hoặc chưa có bằng chứng, tiếng Việt>", "summary": "<nhận xét tổng hợp 3-5 câu bằng tiếng Việt>"}
+Return exactly one valid JSON object and no other text:
+{"score": <integer 0-100>, "matchingExperience": "<relevant matching experience in ${language}>", "matchingSkills": "<relevant matching skills in ${language}>", "gaps": "<missing points or evidence gaps in ${language}>", "summary": "<3-5 sentence overall assessment in ${language}>"}
 
-Không được suy đoán thông tin không có trong CV. Kết quả chỉ hỗ trợ HR sàng lọc, không được tự động đưa ra quyết định tuyển dụng.`;
+Do not invent information not present in the CV. The result is only decision support for HR and must not make an automatic hiring decision.`;
 }
 
 function parseAiJson(raw: string): Omit<AiScreeningResult, "provider"> {
   const jsonMatch = raw.match(/\{[\s\S]*\}/);
-  if (!jsonMatch) {
-    throw new Error("AI không trả về đúng định dạng JSON như yêu cầu.");
-  }
-
-  let parsed: {
-    score?: unknown;
-    summary?: unknown;
-    matchingExperience?: unknown;
-    matchingSkills?: unknown;
-    gaps?: unknown;
-  };
-  try {
-    parsed = JSON.parse(jsonMatch[0]);
-  } catch {
-    throw new Error("Không phân tích được JSON do AI trả về.");
-  }
-
+  if (!jsonMatch) throw new Error("AI did not return valid JSON.");
+  let parsed: { score?: unknown; summary?: unknown; matchingExperience?: unknown; matchingSkills?: unknown; gaps?: unknown };
+  try { parsed = JSON.parse(jsonMatch[0]); } catch { throw new Error("Could not parse AI JSON response."); }
   const score = Math.round(Number(parsed.score));
   const summary = String(parsed.summary ?? "").trim();
   const matchingExperience = String(parsed.matchingExperience ?? "").trim();
   const matchingSkills = String(parsed.matchingSkills ?? "").trim();
   const gaps = String(parsed.gaps ?? "").trim();
-
-  if (!Number.isFinite(score) || !summary || !matchingExperience || !matchingSkills || !gaps) {
-    throw new Error("AI trả về dữ liệu không hợp lệ hoặc thiếu các trường đánh giá.");
-  }
-
-  return {
-    score: Math.max(0, Math.min(100, score)),
-    summary,
-    matchingExperience,
-    matchingSkills,
-    gaps,
-  };
+  if (!Number.isFinite(score) || !summary || !matchingExperience || !matchingSkills || !gaps) throw new Error("AI returned incomplete evaluation data.");
+  return { score: Math.max(0, Math.min(100, score)), summary, matchingExperience, matchingSkills, gaps };
 }
 
 async function analyzeWithClaude(input: AiScreeningInput, apiKey: string): Promise<AiScreeningResult> {
   const res = await fetch(ANTHROPIC_API_URL, {
     method: "POST",
-    headers: {
-      "content-type": "application/json",
-      "x-api-key": apiKey,
-      "anthropic-version": "2023-06-01",
-    },
-    body: JSON.stringify({
-      model: ANTHROPIC_MODEL,
-      max_tokens: 700,
-      messages: [{ role: "user", content: buildPrompt(input) }],
-    }),
+    headers: { "content-type": "application/json", "x-api-key": apiKey, "anthropic-version": "2023-06-01" },
+    body: JSON.stringify({ model: ANTHROPIC_MODEL, max_tokens: 700, messages: [{ role: "user", content: buildPrompt(input) }] }),
     signal: AbortSignal.timeout(45000),
   });
-
-  if (!res.ok) {
-    const text = await res.text().catch(() => "");
-    throw new Error(`Gọi Claude API thất bại (HTTP ${res.status}): ${text.slice(0, 300)}`);
-  }
-
+  if (!res.ok) { const text = await res.text().catch(() => ""); throw new Error(`Claude API failed (HTTP ${res.status}): ${text.slice(0, 300)}`); }
   const data = await res.json();
   const raw: string = data?.content?.[0]?.text ?? "";
   return { ...parseAiJson(raw), provider: "claude" };
@@ -162,41 +120,22 @@ async function analyzeWithGemini(input: AiScreeningInput, apiKey: string, model:
     }),
     signal: AbortSignal.timeout(45000),
   });
-
-  if (!res.ok) {
-    const text = await res.text().catch(() => "");
-    throw new Error(`Gọi Gemini API thất bại (HTTP ${res.status}): ${text.slice(0, 300)}`);
-  }
-
+  if (!res.ok) { const text = await res.text().catch(() => ""); throw new Error(`Gemini API failed (HTTP ${res.status}): ${text.slice(0, 300)}`); }
   const data = await res.json();
   const candidate = data?.candidates?.[0];
-  const raw: string = candidate?.content?.parts
-    ?.map((part: { text?: string }) => part.text ?? "")
-    .join("") ?? "";
+  const raw: string = candidate?.content?.parts?.map((part: { text?: string }) => part.text ?? "").join("") ?? "";
   if (!raw.trim()) {
-    const finishReason = candidate?.finishReason || data?.promptFeedback?.blockReason || "không xác định";
-    throw new Error(`Gemini không trả về nội dung đánh giá (lý do: ${finishReason}).`);
+    const finishReason = candidate?.finishReason || data?.promptFeedback?.blockReason || "unknown";
+    throw new Error(`Gemini returned no evaluation content (${finishReason}).`);
   }
   return { ...parseAiJson(raw), provider: "gemini" };
 }
 
-/**
- * Ưu tiên Gemini theo luồng đánh giá hồ sơ của trang quản trị. Claude chỉ là
- * phương án dự phòng để không làm gián đoạn hệ thống cũ.
- */
 export async function analyzeApplicationWithAI(input: AiScreeningInput): Promise<AiScreeningResult> {
+  const normalizedInput = { ...input, locale: normalizeAdminLocale(input.locale) };
   const geminiConfig = await getActiveGeminiConfiguration();
-  if (geminiConfig) {
-    return analyzeWithGemini(input, geminiConfig.apiKey, geminiConfig.model);
-  }
-
+  if (geminiConfig) return analyzeWithGemini(normalizedInput, geminiConfig.apiKey, geminiConfig.model);
   const anthropicKey = process.env.ANTHROPIC_API_KEY;
-  if (anthropicKey) {
-    return analyzeWithClaude(input, anthropicKey);
-  }
-
-  throw new AiScreeningUnavailableError(
-    "Chưa cấu hình ANTHROPIC_API_KEY hoặc GEMINI_API_KEY trên server."
-  );
+  if (anthropicKey) return analyzeWithClaude(normalizedInput, anthropicKey);
+  throw new AiScreeningUnavailableError("No AI provider is configured on the server.");
 }
-import { getActiveGeminiConfiguration } from "./secure-settings";
