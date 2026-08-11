@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { calculateAge, formatDate } from "@/lib/format";
 import ExportEvaluationExcelButton from "@/components/admin/ExportEvaluationExcelButton";
+import { normalizeAdminLocale } from "@/lib/admin-i18n";
 
 type Application = {
   id: string; fullName: string; email: string; phone: string; dateOfBirth: string | null;
@@ -54,9 +55,10 @@ export default function ApplicationsTable({ applications, jobDescriptions }: { a
     if (!selectedJdId || selectedIds.size === 0) return;
     setEvaluating(true); setError(""); setResultErrors([]);
     try {
+      const locale = normalizeAdminLocale(typeof window !== "undefined" ? localStorage.getItem("admin-locale") : "vi");
       const response = await fetch("/api/evaluations/batch", {
         method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ jobDescriptionId: selectedJdId, applicationIds: Array.from(selectedIds) }),
+        body: JSON.stringify({ jobDescriptionId: selectedJdId, applicationIds: Array.from(selectedIds), locale }),
       });
       const data = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(data.error || "Không thể đánh giá hồ sơ.");
