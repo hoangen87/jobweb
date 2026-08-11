@@ -4,12 +4,14 @@ import { getCurrentAdmin } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { extractCvText } from "@/lib/cv-extract";
 import { analyzeApplicationWithAI } from "@/lib/ai-screening";
+import { normalizeAdminLocale } from "@/lib/admin-i18n";
 
 export const maxDuration = 300;
 
 const requestSchema = z.object({
   jobDescriptionId: z.string().min(1),
   applicationIds: z.array(z.string().min(1)).min(1).max(50),
+  locale: z.enum(["vi", "en", "zh-TW"]).optional(),
 });
 
 export async function POST(req: NextRequest) {
@@ -17,35 +19,20 @@ export async function POST(req: NextRequest) {
   if (!admin) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const parsed = requestSchema.safeParse(await req.json().catch(() => null));
-  if (!parsed.success) {
-    return NextResponse.json({ error: "Vui lòng chọn 01 Job Detail và ít nhất 01 hồ sơ." }, { status: 400 });
-  }
+  if (!parsed.success) return NextResponse.json({ error: "Invalid evaluation request." }, { status: 400 });
 
   const { jobDescriptionId, applicationIds } = parsed.data;
+  const locale = normalizeAdminLocale(parsed.data.locale);
   const [jd, applications] = await Promise.all([
     prisma.jobDescription.findUnique({ where: { id: jobDescriptionId } }),
-    prisma.application.findMany({
-      where: { id: { in: applicationIds } },
-      include: { job: true },
-    }),
+    prisma.application.findMany({ where: { id: { in: applicationIds } }, include: { job: true } }),
   ]);
-  if (!jd) return NextResponse.json({ error: "Không tìm thấy Job Detail đã chọn." }, { status: 404 });
-  if (applications.length !== new Set(applicationIds).size) {
-    return NextResponse.json({ error: "Có hồ sơ không tồn tại hoặc đã bị xóa." }, { status: 404 });
-  }
+  if (!jd) return NextResponse.json({ error: "Job Detail not found." }, { status: 404 });
+  if (applications.length !== new Set(applicationIds).size) return NextResponse.json({ error: "One or more applications no longer exist." }, { status: 404 });
 
-  const completed: Array<{
-    applicationId: string;
-    fullName: string;
-    score: number;
-    matchingExperience: string;
-    matchingSkills: string;
-    gaps: string;
-    aiComment: string;
-  }> = [];
+  const completed: Array<{ applicationId: string; fullName: string; score: number; matchingExperience: string; matchingSkills: string; gaps: string; aiComment: string }> = [];
   const errors: Array<{ applicationId: string; fullName: string; error: string }> = [];
 
-  // Chạy tuần tự để hạn chế lỗi quota của Gemini free tier khi HR chọn nhiều CV.
   for (const application of applications) {
     try {
       const extracted = await extractCvText(application.cvFilePath, req.nextUrl.origin);
@@ -54,17 +41,13 @@ export async function POST(req: NextRequest) {
       const result = await analyzeApplicationWithAI({
         jobTitle: jd.title,
         jobDescription: jd.content,
-        jobRequirements: `Phòng ban: ${jd.department}. Phiên bản Job Detail: ${jd.version}.`,
+        jobRequirements: `Department: ${jd.department}. Job Detail version: ${jd.version}.`,
         cvText: extracted.text,
+        locale,
       });
 
       await prisma.applicationEvaluation.upsert({
-        where: {
-          applicationId_jobDescriptionId: {
-            applicationId: application.id,
-            jobDescriptionId: jd.id,
-          },
-        },
+        where: { applicationId_jobDescriptionId: { applicationId: application.id, jobDescriptionId: jd.id } },
         create: {
           applicationId: application.id,
           jobDescriptionId: jd.id,
@@ -92,7 +75,7 @@ export async function POST(req: NextRequest) {
         data: {
           aiJobDescriptionId: jd.id,
           aiScore: result.score,
-          aiSummary: `[Gemini · ${jd.title} v${jd.version}] ${result.summary}`,
+          aiSummary: `[${result.provider} · ${jd.title} v${jd.version} · ${locale}] ${result.summary}`,
           aiStatus: "DONE",
           aiAnalyzedAt: new Date(),
         },
@@ -108,11 +91,7 @@ export async function POST(req: NextRequest) {
         aiComment: result.summary,
       });
     } catch (error) {
-      errors.push({
-        applicationId: application.id,
-        fullName: application.fullName,
-        error: error instanceof Error ? error.message : "Không thể đánh giá hồ sơ.",
-      });
+      errors.push({ applicationId: application.id, fullName: application.fullName, error: error instanceof Error ? error.message : "Evaluation failed." });
     }
   }
 
@@ -121,36 +100,14 @@ export async function POST(req: NextRequest) {
     include: { application: { select: { fullName: true } } },
     orderBy: [{ score: "desc" }, { updatedAt: "asc" }],
   });
-  await Promise.all(
-    allResultsForJd.map((item, index) =>
-      prisma.applicationEvaluation.update({
-        where: { id: item.id },
-        data: { rank: index + 1 },
-      })
-    )
-  );
-  const rankByApplication = new Map(
-    allResultsForJd.map((item, index) => [item.applicationId, index + 1])
-  );
-  completed.sort(
-    (a, b) =>
-      (rankByApplication.get(a.applicationId) ?? Number.MAX_SAFE_INTEGER) -
-      (rankByApplication.get(b.applicationId) ?? Number.MAX_SAFE_INTEGER)
-  );
+  await Promise.all(allResultsForJd.map((item, index) => prisma.applicationEvaluation.update({ where: { id: item.id }, data: { rank: index + 1 } })));
+  const rankByApplication = new Map(allResultsForJd.map((item, index) => [item.applicationId, index + 1]));
+  completed.sort((a, b) => (rankByApplication.get(a.applicationId) ?? Number.MAX_SAFE_INTEGER) - (rankByApplication.get(b.applicationId) ?? Number.MAX_SAFE_INTEGER));
 
   return NextResponse.json({
-    jobDescription: {
-      id: jd.id,
-      title: jd.title,
-      department: jd.department,
-      version: jd.version,
-      updatedAt: jd.updatedAt,
-    },
-    results: completed.map((item) => ({
-      ...item,
-      rank: rankByApplication.get(item.applicationId) ?? null,
-    })),
+    locale,
+    jobDescription: { id: jd.id, title: jd.title, department: jd.department, version: jd.version, updatedAt: jd.updatedAt },
+    results: completed.map((item) => ({ ...item, rank: rankByApplication.get(item.applicationId) ?? null })),
     errors,
-    disclaimer: "Kết quả AI chỉ hỗ trợ sàng lọc, không tự động quyết định tuyển dụng.",
   });
 }
