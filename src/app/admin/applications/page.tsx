@@ -36,7 +36,7 @@ export default async function ApplicationsPage({ searchParams }: { searchParams:
   const fields = applicationFields.map((a) => a.fieldOfExpertise as string).sort();
 
   return <div className="container-page py-10">
-    <div className="flex items-center justify-between"><h1 className="text-2xl font-bold text-[var(--color-ink)]">{adminT(locale, "appTitle")}</h1><div className="relative flex items-center gap-2"><JobDescriptionManager jobDescriptions={jobDescriptions.map((jd) => ({ ...jd, createdAt: jd.createdAt.toISOString(), updatedAt: jd.updatedAt.toISOString() }))} /></div></div>
+    <div className="flex items-center justify-between"><h1 className="text-2xl font-bold text-[var(--color-ink)]">{adminT(locale, "appTitle")}</h1><div className="relative flex items-center gap-2"><JobDescriptionManager locale={locale} jobDescriptions={jobDescriptions.map((jd) => ({ ...jd, createdAt: jd.createdAt.toISOString(), updatedAt: jd.updatedAt.toISOString() }))} /></div></div>
     <p className="mt-1 text-sm text-[var(--color-muted)]">{adminT(locale, "appDesc")}</p>
     <div className="mt-4"><ApplicationFilter locations={locations} levels={levels} fields={fields} locale={locale} /></div>
     <div className="mt-4 text-sm text-[var(--color-muted)]">{adminT(locale, "found")} {applications.length} {adminT(locale, "records")}</div>
